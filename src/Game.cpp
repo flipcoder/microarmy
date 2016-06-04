@@ -73,7 +73,7 @@ void Game :: preload()
     m_pCamera->listen(true);
 
     m_pViewLight = make_shared<Light>();
-    m_pViewLight->ambient(Color::white() * 1.0f);
+    m_pViewLight->ambient(Color::white() * 0.75f);
     m_pViewLight->diffuse(Color::black());
     m_pViewLight->specular(Color::black());
     m_pViewLight->dist(sw / 1.5f);
@@ -102,19 +102,22 @@ void Game :: preload()
             {
                 auto obj_cfg = obj->config();
                 obj->box() = obj->mesh()->box();
-                if(obj_cfg->at<string>("name","")=="spawn")
+                auto name = obj_cfg->at<string>("name","");
+                if(name=="spawn")
                 {
                     obj->visible(false);
                     obj->mesh()->visible(false);
                     m_Spawns.push_back(obj.get());
                     continue;
                 }
-                else if(not obj_cfg->at<string>("name","").empty())
+                else if(name=="altspawn")
                 {
+                    obj->visible(false);
+                    obj->mesh()->visible(false);
+                    m_AltSpawns.push_back(obj.get());
                     continue;
                 }
                 bool depth = layer->depth() || obj_cfg->has("depth");
-                bool fatal = obj_cfg->has("fatal");
                 if(depth)
                 {
                     auto n = make_shared<Node>();
@@ -151,8 +154,43 @@ void Game :: preload()
                         n->box().max().y = 1.0f - n->box().max().y;
                     }
                     obj->mesh()->add(n);
-                    if(fatal)
+                    if(obj_cfg->has("fatal"))
                         m_pPartitioner->register_object(n, FATAL);
+                    else if(name == "star")
+                    {
+                        auto l = make_shared<Light>();
+                        l->ambient(Color::yellow());
+                        l->diffuse(Color::black());
+                        l->dist(32.0f);
+                        obj->add(l);
+                        l->move(glm::vec3(8.0f, 8.0f, 0.0f));
+                        m_pPartitioner->register_object(n, THING);
+                    }
+                    else if(name == "heart")
+                    {
+                        auto l = make_shared<Light>();
+                        l->ambient(Color::red());
+                        l->diffuse(Color::black());
+                        l->dist(32.0f);
+                        obj->stick(l);
+                        l->move(glm::vec3(8.0f, 8.0f, 0.0f));
+                        m_pPartitioner->register_object(n, THING);
+                    }
+                    else if(name == "battery")
+                    {
+                        auto l = make_shared<Light>();
+                        l->ambient(Color::green());
+                        l->diffuse(Color::black());
+                        l->dist(32.0f);
+                        obj->stick(l);
+                        l->move(glm::vec3(8.0f, 8.0f, 0.0f));
+                        m_pPartitioner->register_object(n, THING);
+                    }
+
+                    else if(name != "")
+                    {
+                        m_pPartitioner->register_object(n, THING);
+                    }
                     else
                         m_pPartitioner->register_object(n, STATIC);
                     obj_cfg->set<string>("static", "");
@@ -171,6 +209,11 @@ void Game :: preload()
         CHARACTER, STATIC,
         std::bind(&Game::cb_to_tile, this, _::_1, _::_2)
     );
+    m_pPartitioner->on_collision(
+        CHARACTER, FATAL,
+        std::bind(&Game::cb_to_fatal, this, _::_1, _::_2)
+    );
+
     //m_pPartitioner->on_collision(
     //    THING, STATIC,
     //    std::bind(&Thing::cb_to_static, _::_1, _::_2)
@@ -183,10 +226,11 @@ void Game :: preload()
     //    THING, BULLET,
     //    std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
     //);
-    //m_pPartitioner->on_collision(
-    //    CHARACTER, THING,
-    //    std::bind(&Thing::cb_to_player, _::_1, _::_2)
-    //);
+    m_pPartitioner->on_collision(
+        CHARACTER, THING,
+        //std::bind(&Thing::cb_to_player, _::_1, _::_2)
+        std::bind(&Game::cb_to_thing, this, _::_1, _::_2)
+    );
 
     m_JumpTimer.set(Freq::Time::ms(0));
 }
@@ -196,9 +240,11 @@ void Game :: reset()
     //m_pChar->position(glm::vec3(0.0f, 0.0f, 0.0f));
     try{
         //m_Spawns.at(0)->stick(m_pChar);
+        m_pChar->position(m_Spawns.at(0)->position());
     }catch(...){
         WARNING("Map has no spawn points");
     }
+    m_pChar->move(glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 Game :: ~Game()
@@ -286,12 +332,34 @@ void Game :: cb_to_tile(Node* a, Node* b)
     cb_to_static(a, b, a->parent());
 }
 
+void Game :: cb_to_fatal(Node* a, Node* b)
+{
+    Sound::play(m_pCamera.get(), "die.wav", m_pResources);
+    reset();
+    //cb_to_static(a, b, a->parent());
+}
+
+void Game :: cb_to_thing(Node* a, Node* b)
+{
+    auto tile = (MapTile*)(b->parent()->parent()); // mask -> mesh -> tile
+    if(tile->visible()){
+        Sound::play(m_pCamera.get(), "pickup2.wav", m_pResources);
+        tile->visible(false);
+        tile->mesh()->visible(false);
+        auto lights = tile->hook_type<Light>();
+        for(auto&& light: lights){
+            LOG("light")
+            light->visible(false);
+        }
+    }
+}
+
 void Game :: cb_bullet_to_static(Node* a, Node* b)
 {
-    Node* bullet = a->parent();
-    //sound(bullet, "hit.wav");
-    bullet->on_tick.connect([bullet](Freq::Time){
-        bullet->detach();
+    LOG("hit");
+    Sound::play(a, "hit.wav", m_pResources);
+    a->on_tick.connect([a](Freq::Time){
+        a->safe_detach();
     });
 }
 
@@ -310,7 +378,7 @@ void Game :: enter()
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
     
     m_pCamera->ortho();
-    m_pPipeline->blend(false);
+    //m_pPipeline->blend(false);
     m_pPipeline->winding(true);
     m_pPipeline->bg_color(Color::black());
     m_pInput->relative_mouse(false);
@@ -356,6 +424,47 @@ void Game :: logic(Freq::Time t)
     }
 
     if(m_pController->button("shoot").pressed_now()){
+        auto shot = make_shared<Mesh>(
+            make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
+            vector<shared_ptr<IMeshModifier>>{
+                make_shared<Wrap>(Prefab::quad_wrap())
+            },
+            make_shared<MeshMaterial>("laser.png", m_pResources)
+        );
+
+        //m_pRoot->stick(shot);
+        //shot->position(m_pChar->position());
+        m_pRoot->add(shot);
+        auto l = make_shared<Light>();
+        l->ambient(Color::red());
+        l->diffuse(Color::black());
+        //l->specular(Color::red());
+        l->dist(32.0f);
+        l->move(glm::vec3(glm::vec3(4.0f, 1.0f, 0.0f)));
+        shot->add(l);
+        shot->position(m_pChar->position() + glm::vec3(
+            -m_pChar->origin().x*m_pChar->size().x +
+                m_pChar->mesh()->world_box().size().x / 2.0f,
+            -m_pChar->origin().y*m_pChar->size().y +
+                m_pChar->mesh()->world_box().size().y / 2.0f + 
+                -2.0f,
+            0.0f
+        ));
+        //m_pChar->stick(shot);
+        shot->velocity(glm::vec3(
+            (m_pChar->check_state("left")?-1.0f:1.0f) * 256.0f,
+            0.0f, 0.0f
+        ));
+        auto timer = make_shared<Freq::Alarm>(m_pQor->timer()->timeline());
+        timer->set(Freq::Time::seconds(1.0f));
+        auto shotptr = shot.get();
+        shot->on_tick.connect([timer,shotptr](Freq::Time t){
+            if(timer->elapsed())
+                shotptr->detach();
+        });
+        
+        m_pPartitioner->register_object(shot, BULLET);
+        
         Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
     }
         

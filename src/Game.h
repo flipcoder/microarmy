@@ -47,6 +47,8 @@ class Game:
         
         void cb_to_static(Node* a, Node* b, Node* m);
         void cb_to_tile(Node* a, Node* b);
+        void cb_to_fatal(Node* a, Node* b);
+        void cb_to_thing(Node* a, Node* b);
         void cb_bullet_to_static(Node* a, Node* b);
         void setup_player(std::shared_ptr<Sprite> player);
 
@@ -69,6 +71,7 @@ class Game:
         std::shared_ptr<Light> m_pViewLight;
         std::shared_ptr<Sound> m_pMusic;
         std::vector<MapTile*> m_Spawns;
+        std::vector<MapTile*> m_AltSpawns;
 
         int m_LastWallJumpDir = 0;
         Freq::Alarm m_JumpTimer;
