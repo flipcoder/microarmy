@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Thing.h"
 #include "Qor/BasicPartitioner.h"
 #include "Qor/Input.h"
 #include "Qor/Qor.h"
@@ -117,6 +118,20 @@ void Game :: preload()
                     m_AltSpawns.push_back(obj.get());
                     continue;
                 }
+                else if(Thing::get_id(obj_cfg))
+                {
+                    auto thing = make_shared<Thing>(
+                        obj_cfg,
+                        obj.get(),
+                        this,
+                        m_pMap.get(),
+                        m_pPartitioner,
+                        m_pQor->resources()
+                    );
+                    obj->add(thing);
+                    setup_thing(thing);
+                    continue;
+                }
                 bool depth = layer->depth() || obj_cfg->has("depth");
                 if(depth)
                 {
@@ -125,12 +140,6 @@ void Game :: preload()
                     auto mask = obj_cfg->at<shared_ptr<Meta>>("mask", shared_ptr<Meta>());
                     bool hflip = obj->orientation() & (unsigned)MapTile::Orientation::H;
                     bool vflip = obj->orientation() & (unsigned)MapTile::Orientation::V;
-                    //if(obj_cfg->has("sidewall") && not mask)
-                    //{
-                    //    hflip ^= obj_cfg->at<string>("sidewall","")=="right";
-                    //    mask = make_shared<Meta>();
-                    //    mask->append<double>({0.0, 0.0, 0.25, 1.0});
-                    //}
                     if(mask && mask->size()==4)
                     {
                         n->box() = Box(
@@ -156,41 +165,45 @@ void Game :: preload()
                     obj->mesh()->add(n);
                     if(obj_cfg->has("fatal"))
                         m_pPartitioner->register_object(n, FATAL);
-                    else if(name == "star")
-                    {
-                        auto l = make_shared<Light>();
-                        l->ambient(Color::yellow());
-                        l->diffuse(Color::black());
-                        l->dist(32.0f);
-                        obj->add(l);
-                        l->move(glm::vec3(8.0f, 8.0f, 0.0f));
-                        m_pPartitioner->register_object(n, THING);
-                    }
-                    else if(name == "heart")
-                    {
-                        auto l = make_shared<Light>();
-                        l->ambient(Color::red());
-                        l->diffuse(Color::black());
-                        l->dist(32.0f);
-                        obj->stick(l);
-                        l->move(glm::vec3(8.0f, 8.0f, 0.0f));
-                        m_pPartitioner->register_object(n, THING);
-                    }
-                    else if(name == "battery")
-                    {
-                        auto l = make_shared<Light>();
-                        l->ambient(Color::green());
-                        l->diffuse(Color::black());
-                        l->dist(32.0f);
-                        obj->stick(l);
-                        l->move(glm::vec3(8.0f, 8.0f, 0.0f));
-                        m_pPartitioner->register_object(n, THING);
-                    }
+                    //else if(name == "star")
+                    //{
+                    //    auto l = make_shared<Light>();
+                    //    l->ambient(Color::yellow());
+                    //    l->diffuse(Color::black());
+                    //    l->specular(Color::black());
+                    //    l->dist(32.0f);
+                    //    obj->add(l);
+                    //    l->move(glm::vec3(8.0f, 8.0f, 0.0f));
+                    //    m_pPartitioner->register_object(n, THING);
+                    //}
+                    //else if(name == "heart")
+                    //{
+                    //    auto l = make_shared<Light>();
+                    //    l->ambient(Color::red());
+                    //    l->diffuse(Color::black());
+                    //    l->specular(Color::black());
+                    //    l->dist(32.0f);
+                    //    obj->stick(l);
+                    //    l->move(glm::vec3(8.0f, 8.0f, 0.0f));
+                    //    m_pPartitioner->register_object(n, THING);
+                    //}
+                    //else if(name == "battery")
+                    //{
+                    //    auto l = make_shared<Light>();
+                    //    l->ambient(Color::green());
+                    //    l->diffuse(Color::black());
+                    //    l->specular(Color::black());
+                    //    l->dist(32.0f);
+                    //    obj->stick(l);
+                    //    l->move(glm::vec3(8.0f, 8.0f, 0.0f));
+                    //    m_pPartitioner->register_object(n, THING);
+                    //}
 
-                    else if(name != "")
-                    {
-                        m_pPartitioner->register_object(n, THING);
-                    }
+                    //else if(name != "")
+                    //{
+                    //    m_pPartitioner->register_object(n, THING);
+                    //}
+                    //else
                     else
                         m_pPartitioner->register_object(n, STATIC);
                     obj_cfg->set<string>("static", "");
@@ -250,6 +263,15 @@ void Game :: reset()
 Game :: ~Game()
 {
     m_pPipeline->partitioner()->clear();
+}
+
+void Game :: setup_thing(std::shared_ptr<Thing> thing)
+{
+    thing->init_thing();
+    m_Things.push_back(thing);
+
+    //for(auto&& player: m_Characters)
+    //    setup_player_to_thing(player,thing);
 }
 
 void Game :: setup_player(std::shared_ptr<Sprite> player)

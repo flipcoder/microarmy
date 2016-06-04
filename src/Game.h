@@ -13,6 +13,7 @@
 #include "Qor/Sprite.h"
 
 class Qor;
+class Thing;
 
 class Game:
     public State
@@ -51,6 +52,7 @@ class Game:
         void cb_to_thing(Node* a, Node* b);
         void cb_bullet_to_static(Node* a, Node* b);
         void setup_player(std::shared_ptr<Sprite> player);
+        void setup_thing(std::shared_ptr<Thing> thing);
 
     private:
         
@@ -72,6 +74,8 @@ class Game:
         std::shared_ptr<Sound> m_pMusic;
         std::vector<MapTile*> m_Spawns;
         std::vector<MapTile*> m_AltSpawns;
+
+        std::vector<std::shared_ptr<Thing>> m_Things;
 
         int m_LastWallJumpDir = 0;
         Freq::Alarm m_JumpTimer;
