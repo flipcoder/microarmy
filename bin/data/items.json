@@ -1,0 +1,18 @@
+{
+    "0,0": {
+        "name": "battery"
+    },
+    "1,0": {
+        "name": "heart"
+    },
+    "2,0": {
+        "name": "star"
+    },
+    "3,0": {
+        "name": "spawn"
+    },
+    "4,0": {
+        "name": "altspawn"
+    }
+
+}

@@ -1,0 +1,15 @@
+{
+    "type" : "sprite",
+    "size" : [ 16, 32 ],
+    "tile-size" : [ 16, 32 ],
+    "origin" : [ 0.5, 0.8 ],
+    "mask" : [ 0.25, 0.0, 0.75, 0.8 ],
+    "animation" : {
+        "speed" : 10.0,
+        "frames" : {
+            "left": [0,1,2,1],
+            "right": ["hflip",0,1,2,1]
+        }
+    }
+}
+

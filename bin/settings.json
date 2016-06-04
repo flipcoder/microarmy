@@ -1,0 +1,12 @@
+{
+    "video": {
+        "resolution": "1024x768",
+        "windowed": true,
+        "vsync": false
+    },
+    "audio": {
+        "volume": 100,
+        "sound-volume": 100,
+        "music-volume": 100
+    }
+}

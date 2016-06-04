@@ -1,0 +1,19 @@
+{
+    "name": "Player",
+    "sensitivity": 0.5,
+    "input": {
+        "binds": {
+            "gamepad hat 2": "up",
+            "gamepad hat 0": "left",
+            "gamepad hat 1": "right",
+            "gamepad 1": [
+                "shoot",
+                "back"
+            ],
+            "gamepad 0": [
+                "jump",
+                "select"
+            ]
+        }
+    }
+}
