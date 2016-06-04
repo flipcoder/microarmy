@@ -1,4 +1,4 @@
-solution("toys")
+solution("microarmy")
     configurations {"Debug", "Release"}
 
     targetdir("bin")
@@ -10,9 +10,9 @@ solution("toys")
         defines { "NDEBUG" }
         --optimize "speed"
         flags { "OptimizeSpeed" }
-        targetname("toys_dist")
+        targetname("microarmy_dist")
 
-    project("toys")
+    project("microarmy")
         --uuid("")
         kind("WindowedApp")
         language("C++")

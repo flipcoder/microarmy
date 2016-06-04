@@ -37,7 +37,7 @@ void Game :: preload()
     );
     m_pRoot->add(m_pCamera);
 
-    m_pMap = m_pQor->make<TileMap>("1.tmx");
+    m_pMap = m_pQor->make<TileMap>("2.tmx");
     m_pRoot->add(m_pMap);
 
     m_pMusic = m_pQor->make<Sound>("thejungle.ogg");
@@ -102,16 +102,16 @@ void Game :: preload()
             {
                 auto obj_cfg = obj->config();
                 obj->box() = obj->mesh()->box();
-                if(obj_cfg->at<string>("name","")=="player_start")
+                if(obj_cfg->at<string>("name","")=="spawn")
                 {
                     obj->visible(false);
                     obj->mesh()->visible(false);
                     m_Spawns.push_back(obj.get());
                     continue;
                 }
-                else
+                else if(not obj_cfg->at<string>("name","").empty())
                 {
-                    
+                    continue;
                 }
                 bool depth = layer->depth() || obj_cfg->has("depth");
                 bool fatal = obj_cfg->has("fatal");
@@ -165,6 +165,7 @@ void Game :: preload()
     }
     
     setup_player(m_pChar);
+    reset();
 
     m_pPartitioner->on_collision(
         CHARACTER, STATIC,
@@ -192,7 +193,12 @@ void Game :: preload()
 
 void Game :: reset()
 {
-    m_pChar->position(glm::vec3(0.0f, 0.0f, 0.0f));
+    //m_pChar->position(glm::vec3(0.0f, 0.0f, 0.0f));
+    try{
+        //m_Spawns.at(0)->stick(m_pChar);
+    }catch(...){
+        WARNING("Map has no spawn points");
+    }
 }
 
 Game :: ~Game()
@@ -201,7 +207,7 @@ Game :: ~Game()
 }
 
 void Game :: setup_player(std::shared_ptr<Sprite> player)
-{
+{ 
     // create masks
     auto n = make_shared<Node>();
     n->name("mask");

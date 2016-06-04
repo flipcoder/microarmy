@@ -1,7 +1,7 @@
 #ifndef _INFO_DEF_H_1VI18RQT
 #define _INFO_DEF_H_1VI18RQT
 
-#define PACKAGE "toys"
+#define PACKAGE "microarmy"
 #define PACKAGE_VERSION "test"
 
 namespace Info
