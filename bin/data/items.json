@@ -6,13 +6,25 @@
         "name": "heart"
     },
     "2,0": {
-        "name": "star"
+        "name": "star",
+        "type": "gold"
     },
     "3,0": {
         "name": "spawn"
     },
     "4,0": {
         "name": "altspawn"
+    },
+    "5,0": {
+        "name": "spring"
+    },
+    "6,0": {
+        "name": "star",
+        "type": "silver"
+    },
+    "7,0": {
+        "name": "star",
+        "type": "bronze"
     }
 
 }
