@@ -25,6 +25,11 @@
     "7,0": {
         "name": "star",
         "type": "bronze"
+    },
+    "8,0": {
+        "name": "mouse"
+    },
+    "9,0": {
+        "name": "snail"
     }
-
 }

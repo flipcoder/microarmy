@@ -2,10 +2,10 @@
 #define THING_CPP_USLBKY9A
 
 #include <memory>
-#include "Qor/Sprite.h"
 #include "Qor/TileMap.h" 
 #include "Qor/BasicPartitioner.h"
 class Game;
+class Sprite;
 
 class Thing:
     public Node
@@ -37,6 +37,7 @@ class Thing:
 
             MONSTERS,
             MOUSE = MONSTERS,
+            SNAIL,
             MONSTERS_END,
 
             ITEMS = MONSTERS_END,
@@ -83,6 +84,7 @@ class Thing:
         static std::shared_ptr<Thing> find_thing(Node* n);
 
         Game* game() { return m_pGame; }
+        Sprite* sprite() { return m_pSprite.get(); }
         
         static void cb_to_bullet(Node* thing_node, Node* bullet_node);
         static void cb_to_static(Node* thing_node, Node* static_node);
@@ -90,6 +92,9 @@ class Thing:
         
         void sound(const std::string& fn);
         MapTile* placeholder() { return m_pPlaceholder; }
+
+        virtual void lazy_logic_self(Freq::Time t) override;
+        virtual void logic_self(Freq::Time t) override;
         
     private:
         
@@ -103,7 +108,10 @@ class Thing:
         Game* m_pGame = nullptr;
         TileMap* m_pMap = nullptr;
         bool m_Solid = false;
-        std::shared_ptr<Sprite> m_pSprite; // optional for thing type
+        
+        // sprite is optional for thing type, not attached
+        std::shared_ptr<Sprite> m_pSprite;
+        
         std::string m_Identity;
         unsigned m_ThingID = 0;
 

@@ -20,7 +20,8 @@ Game :: Game(Qor* engine):
     m_pPipeline(engine->pipeline()),
     m_pPartitioner(engine->pipeline()->partitioner()),
     m_pController(engine->session()->active_profile(0)->controller()),
-    m_JumpTimer(engine->timer()->timeline())
+    m_JumpTimer(engine->timer()->timeline()),
+    m_ShootTimer(engine->timer()->timeline())
 {
 }
 
@@ -51,6 +52,7 @@ void Game :: preload()
     ));
 
     m_pChar = m_pQor->make<Sprite>("guy.json");
+    //m_pChar->texture()->ambient(Color::red(1.0f)*0.5f);
     m_pRoot->add(m_pChar);
     m_pChar->set_states({"stand","right"});
     //m_pCamera->position(glm::vec3(-64.0f, -64.0f, 0.0f));
@@ -101,6 +103,8 @@ void Game :: preload()
     for(auto&& layers: layer_types)
     for(auto&& layer: *layers)
     {
+        layer->set_main_camera(m_pCamera.get());
+        
         if(layer->config()->has("parallax"))
         {
             float parallax = boost::lexical_cast<float>(
@@ -284,6 +288,7 @@ void Game :: preload()
     );
 
     m_JumpTimer.set(Freq::Time::ms(0));
+    m_ShootTimer.set(Freq::Time::ms(0));
 }
 
 void Game :: reset()
@@ -527,7 +532,7 @@ void Game :: logic(Freq::Time t)
             }
         }
 
-        if(m_pController->button("shoot").pressed_now()){
+        if(m_pController->button("shoot") && m_ShootTimer.elapsed()){
             auto shot = make_shared<Mesh>(
                 make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
                 vector<shared_ptr<IMeshModifier>>{
@@ -571,6 +576,10 @@ void Game :: logic(Freq::Time t)
             m_pPartitioner->register_object(shot, BULLET);
             
             Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
+
+            m_ShootTimer.set(Freq::Time::ms(
+                m_pChar->config()->at<int>("power",0)>1?100:200
+            ));
         }
             
         bool block_jump = false;

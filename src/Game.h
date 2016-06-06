@@ -94,6 +94,7 @@ class Game:
 
         int m_LastWallJumpDir = 0;
         Freq::Alarm m_JumpTimer;
+        Freq::Alarm m_ShootTimer;
         bool m_WasInAir = false;
 
         unsigned m_Shader = 0;

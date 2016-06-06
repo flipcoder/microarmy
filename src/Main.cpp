@@ -12,7 +12,7 @@ int main(int argc, const char** argv)
     
     Args args(argc, argv);
     args.set("mod", PACKAGE);
-    args.set("title", PACKAGE);
+    args.set("title", "Micro Army");
     
     Texture::DEFAULT_FLAGS = Texture::TRANS | Texture::MIPMAP;
     
