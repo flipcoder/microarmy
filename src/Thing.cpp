@@ -20,6 +20,8 @@ const std::vector<std::string> Thing :: s_TypeNames({
     // objects
     "spring",
     "door",
+
+    "light",
 });
 
 Thing :: Thing(
@@ -79,7 +81,7 @@ void Thing :: init_thing()
             m_pResources
         );
         add(m_pSprite);
-        m_pSprite->set_state(0);
+        m_pSprite->set_state("left");
         if(m_pPlaceholder->tile_layer()->depth() || m_pConfig->has("depth"))
             m_pSprite->mesh()->set_geometry(m_pMap->tilted_tile_geometry());
         collapse(); // detach from placeholder
@@ -98,7 +100,7 @@ void Thing :: init_thing()
         m_pSprite->mesh()->config()->set<Thing*>("thing", this);
         m_pSprite->mesh()->set_box(m_Box);
         m_pPartitioner->register_object(m_pSprite->mesh(), Game::THING);
-        m_Solid = true;
+        //m_Solid = true;
 
         velocity(vec3(-10.0f, 0.0f, 0.0f));
 
@@ -141,6 +143,11 @@ void Thing :: init_thing()
         l->dist(50.0f);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         stick(l);
+    } else if(m_ThingID == Thing::DOOR) {
+        //name("door");
+        //m_pPlaceholder->name("door");
+        //m_pPlaceholder->mesh()->name("door");
+        m_Solid = true;
     }
 }
 
@@ -210,7 +217,47 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
             vel.y > 250.0f ? -vel.y : -250.0f,
             0.0f)
         );
+    }else if(thing->id() == Thing::KEY){
+        if(thing->placeholder()->visible()){
+            thing->sound("pickup.wav");
+            thing->placeholder()->visible(false);
+            thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+                thing->placeholder()->visible(true);
+            });
+            //LOG(".");
+            //auto layer = thing->m_pPlaceholder->tile_layer();
+            ////auto doors = layer->hook("door");
+            ////LOGf("%s doors", doors.size());
+            //LOG(".");
+            //auto keycol = thing->config()->at<string>("type");
+            //LOG(".");
+            //for(auto&& tile: thing->m_pPlaceholder->tile_layer()->tiles())
+            //{
+            //    LOG("a");
+            //    if(not tile)
+            //        continue;
+            //    if(tile->name() == "door"){
+            //        LOG("b");
+            //        LOG("DOOR!")
+            //        auto col = tile->config()->at<string>("type","");
+            //        if(col == keycol){
+            //            LOG("c");
+            //            thing->placeholder()->mesh()->visible(false);
+            //            LOG("unlocking door");
+            //        }
+            //    }
+            //}
+        }
+    }else if(thing->id() == Thing::DOOR){
+        if(thing->placeholder()->visible())
+            thing->m_pGame->cb_to_tile(player_node, thing_node);
+    }else if(thing->is_monster()){
+        thing->m_pGame->reset();
     }
+
+    //if(thing->m_Solid)
+    //    thing->m_pGame->cb_to_tile(player_node,thing_node);
+        
     //else if(thing->id() == Thing::SNAIL){
     //    auto player = player_node->parent();// mask -> mesh -> sprite
     //    player->velocity(vec3(0.0f));
