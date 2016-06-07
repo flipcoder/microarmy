@@ -39,13 +39,13 @@ void Game :: preload()
     );
     m_pRoot->add(m_pCamera);
 
-    m_pMap = m_pQor->make<TileMap>("2.tmx");
+    m_pMap = m_pQor->make<TileMap>("1.tmx");
     m_pRoot->add(m_pMap);
 
     m_pMusic = m_pQor->make<Sound>("thejungle.ogg");
     m_pRoot->add(m_pMusic);
     
-    auto scale = 150.0f / std::max<float>(sw * 1.0f,1.0f);
+    auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f);
     m_pCamera->rescale(glm::vec3(
         scale, scale,
         1.0f

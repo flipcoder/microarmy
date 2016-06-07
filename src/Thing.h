@@ -44,10 +44,12 @@ class Thing:
             BATTERY = ITEMS,
             HEART,
             STAR,
+            KEY,
             ITEMS_END,
 
             OBJECTS = ITEMS_END,
             SPRING = OBJECTS,
+            DOOR,
             OBJECTS_END,
             
             MARKERS = OBJECTS_END,
@@ -95,6 +97,8 @@ class Thing:
 
         virtual void lazy_logic_self(Freq::Time t) override;
         virtual void logic_self(Freq::Time t) override;
+
+        void gib(Node* bullet);
         
     private:
         

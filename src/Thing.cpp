@@ -15,9 +15,11 @@ const std::vector<std::string> Thing :: s_TypeNames({
     "battery",
     "heart",
     "star",
+    "key",
     
     // objects
     "spring",
+    "door",
 });
 
 Thing :: Thing(
@@ -264,19 +266,21 @@ void Thing :: cb_to_static(Node* thing_node, Node* static_node)
 void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
 {
     auto thing = thing_node->config()->at<Thing*>("thing",nullptr);
-    //if(not thing)
-    //    return;
+    if(not thing)
+        return;
     if(thing->is_monster() && thing->alive() && not bullet->detaching())
     {
         thing->sound("damage.wav");
-        thing->damage(bullet->config()->at("damage",1));
-        bullet->safe_detach();
+        if(thing->damage(bullet->config()->at("damage",1))){
+            for(int i=0;i<20;++i)
+                thing->gib(bullet);
+            bullet->safe_detach();
+        }
     }
 }
 
 bool Thing :: damage(int dmg)
 {
-    LOGf("thing damage %s", dmg)
     if(m_HP <= 0 || dmg < 0)
         return false;
     m_HP = std::max(m_HP-dmg, 0);
@@ -292,13 +296,32 @@ void Thing :: logic_self(Freq::Time t)
     clear_snapshots();
     snapshot();
 
-    //if(not alive())
-    //    detach();
+    if(not alive())
+        detach();
 }
 
 void Thing :: lazy_logic_self(Freq::Time t)
 {
     Node::lazy_logic_self(t);
     m_pPlaceholder->logic_self(t);
+}
+
+void Thing :: gib(Node* bullet)
+{
+    auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
+    gib->set_state(0);
+    auto dir = Angle::degrees(1.0f * (std::rand() % 360)).vector();
+    add(gib);
+    gib->move(glm::vec3(std::rand() % 32 - 16.0f, std::rand() % 32 - 16.0f, 2.0f));
+    gib->velocity(glm::vec3(dir, 0.0f) * 100.0f);
+    gib->acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
+    gib->scale(std::rand() % 100 / 100.0 * 2.0f);
+    auto life = make_shared<float>(0.25f * (std::rand() % 4));
+    auto gibptr = gib.get();
+    gib->on_tick.connect([gibptr, life](Freq::Time t){
+        *life -= t.s();
+        if(*life < 0.0f)
+            gibptr->detach();
+    });
 }
 
