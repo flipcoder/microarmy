@@ -178,8 +178,8 @@ void Game :: preload()
                     if(mask && mask->size()==4)
                     {
                         n->box() = Box(
-                            vec3(mask->at<double>(0), mask->at<double>(1), K_EPSILON * 5.0f),
-                            vec3(mask->at<double>(2), mask->at<double>(3), 0.5f)
+                            vec3(mask->at<double>(0), mask->at<double>(1), -5.0f),
+                            vec3(mask->at<double>(2), mask->at<double>(3), 5.0f)
                         );
                     }
                     else
@@ -463,9 +463,9 @@ void Game :: cb_to_fatal(Node* a, Node* b)
 void Game :: cb_bullet_to_static(Node* a, Node* b)
 {
     Sound::play(a, "hit.wav", m_pResources);
-    a->on_tick.connect([a](Freq::Time){
+    //a->on_tick.connect([a](Freq::Time){
         a->safe_detach();
-    });
+    //});
 }
 
 void Game :: enter()
@@ -551,14 +551,16 @@ void Game :: logic(Freq::Time t)
             l->dist(32.0f);
             l->move(glm::vec3(glm::vec3(4.0f, 1.0f, 0.0f)));
             shot->add(l);
-            shot->position(player->position() + glm::vec3(
+            shot->position(glm::vec3(
+                player->position().x +
                 -player->origin().x*player->size().x +
                     player->mesh()->world_box().size().x / 2.0f,
                     //((player->check_state("left")?-1.0f:1.0f) * 4.0f),
-                -player->origin().y*player->size().y +
+                player->position().y +
+                    -player->origin().y*player->size().y +
                     player->mesh()->world_box().size().y / 2.0f + 
                     -2.0f,
-                0.0f
+                player->position().z
             ));
             //player->stick(shot);
             shot->velocity(glm::vec3(
@@ -579,6 +581,13 @@ void Game :: logic(Freq::Time t)
 
             m_ShootTimer.set(Freq::Time::ms(
                 m_pChar->config()->at<int>("power",0)>1?100:200
+            ));
+            
+            // increase box Z width
+            auto shotbox = shot->box();
+            shot->set_box(Box(
+                vec3(shotbox.min().x, shotbox.min().y, -5.0),
+                vec3(shotbox.max().x, shotbox.max().y, 5.0)
             ));
         }
             

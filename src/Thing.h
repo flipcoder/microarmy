@@ -74,7 +74,7 @@ class Thing:
         //    return m_ThingID >= WEAPONS && m_ThingID < WEAPONS_END;
         //}
 
-        bool alive() const { return not m_Dead; }
+        bool alive() const { return not m_Dead and not m_Dying; }
 
         bool damage(int dmg);
 
@@ -86,7 +86,7 @@ class Thing:
         Game* game() { return m_pGame; }
         Sprite* sprite() { return m_pSprite.get(); }
         
-        static void cb_to_bullet(Node* thing_node, Node* bullet_node);
+        static void cb_to_bullet(Node* thing_node, Node* bullet);
         static void cb_to_static(Node* thing_node, Node* static_node);
         static void cb_to_player(Node* player_node, Node* thing_node);
         

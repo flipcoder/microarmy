@@ -66,7 +66,7 @@ void Thing :: init_thing()
         
         auto mask = m_pConfig->meta("mask");
         m_Box = Box(
-            vec3(mask->at<double>(0), mask->at<double>(1), K_EPSILON * 5.0f),
+            vec3(mask->at<double>(0), mask->at<double>(1), -0.5f),
             vec3(mask->at<double>(2), mask->at<double>(3), 0.5f)
         );
         
@@ -209,6 +209,10 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
             0.0f)
         );
     }
+    //else if(thing->id() == Thing::SNAIL){
+    //    auto player = player_node->parent();// mask -> mesh -> sprite
+    //    player->velocity(vec3(0.0f));
+    //}
 }
 
 void Thing :: cb_to_static(Node* thing_node, Node* static_node)
@@ -257,26 +261,22 @@ void Thing :: cb_to_static(Node* thing_node, Node* static_node)
     }
 }
 
-void Thing :: cb_to_bullet(Node* thing_node, Node* bullet_node)
+void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
 {
     auto thing = thing_node->config()->at<Thing*>("thing",nullptr);
-    if(not thing)
-        return;
-    //Thing* thing = (Thing*)thing_node->parent()->parent();
-    Node* bullet = bullet_node->parent();
-    if(thing->is_monster() && thing->alive())
+    //if(not thing)
+    //    return;
+    if(thing->is_monster() && thing->alive() && not bullet->detaching())
     {
-        if(thing->damage(bullet->config()->at("damage",1)))
-        {
-            bullet->on_tick.connect([bullet](Freq::Time){
-                bullet->detach();
-            });
-        }
+        thing->sound("damage.wav");
+        thing->damage(bullet->config()->at("damage",1));
+        bullet->safe_detach();
     }
 }
 
 bool Thing :: damage(int dmg)
 {
+    LOGf("thing damage %s", dmg)
     if(m_HP <= 0 || dmg < 0)
         return false;
     m_HP = std::max(m_HP-dmg, 0);
@@ -291,6 +291,9 @@ void Thing :: logic_self(Freq::Time t)
 {
     clear_snapshots();
     snapshot();
+
+    //if(not alive())
+    //    detach();
 }
 
 void Thing :: lazy_logic_self(Freq::Time t)
