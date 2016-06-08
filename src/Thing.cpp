@@ -124,7 +124,9 @@ void Thing :: init_thing()
         l->specular(Color::black());
         l->dist(50.0f);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
-        stick(l);
+        add(l);
+        collapse();
+        //stick(l);
     }
     else if(m_ThingID == Thing::BATTERY) {
         auto l = make_shared<Light>();
@@ -133,7 +135,9 @@ void Thing :: init_thing()
         l->specular(Color::black());
         l->dist(50.0f);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
-        stick(l);
+        add(l);
+        collapse();
+        //stick(l);
     }
     else if(m_ThingID == Thing::HEART) {
         auto l = make_shared<Light>();
@@ -142,7 +146,9 @@ void Thing :: init_thing()
         l->specular(Color::black());
         l->dist(50.0f);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
-        stick(l);
+        add(l);
+        collapse();
+        //stick(l);
     } else if(m_ThingID == Thing::DOOR) {
         //name("door");
         //m_pPlaceholder->name("door");
@@ -187,24 +193,30 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
     if(thing->id() == Thing::STAR){
         if(thing->placeholder()->visible()){
             thing->sound("pickup2.wav");
+            thing->visible(false);
             thing->placeholder()->visible(false);
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+                thing->visible(true);
                 thing->placeholder()->visible(true);
             });
         }
     }else if(thing->id() == Thing::HEART){
         if(thing->placeholder()->visible()){
             thing->sound("pickup.wav");
+            thing->visible(false);
             thing->placeholder()->visible(false);
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+                thing->visible(true);
                 thing->placeholder()->visible(true);
             });
         }
     }else if(thing->id() == Thing::BATTERY){
         if(thing->placeholder()->visible()){
             thing->sound("pickup.wav");
+            thing->visible(false);
             thing->placeholder()->visible(false);
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+                thing->visible(true);
                 thing->placeholder()->visible(true);
             });
         }
@@ -252,7 +264,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
         if(thing->placeholder()->visible())
             thing->m_pGame->cb_to_tile(player_node, thing_node);
     }else if(thing->is_monster()){
-        thing->m_pGame->reset();
+        if(thing->alive())
+            thing->m_pGame->reset();
     }
 
     //if(thing->m_Solid)
@@ -275,12 +288,18 @@ void Thing :: cb_to_static(Node* thing_node, Node* static_node)
         {
             //unsigned r = thing_node->world_box().classify(static_node->world_box());
             //if(r==0)
-            thing->velocity(-thing->velocity());
-            auto vx = thing->velocity().x;
-            if(vx > K_EPSILON)
-                thing->sprite()->set_state("right");
-            else if(vx < K_EPSILON)
+            if(static_node->world_box().center().x > thing->world_box().center().x){
+                thing->velocity(-abs(thing->velocity()));
                 thing->sprite()->set_state("left");
+            }else if(static_node->world_box().center().x < thing->world_box().center().x){
+                thing->velocity(abs(thing->velocity()));
+                thing->sprite()->set_state("right");
+            }
+            //auto vx = thing->velocity().x;
+            //if(vx > K_EPSILON)
+            //    thing->sprite()->set_state("right");
+            //else if(vx < K_EPSILON)
+            //    thing->sprite()->set_state("left");
             //if(r & kit::bit(3) && (not(r&kit::bit(1)) || (not(r&kit::bit(4))))){
             //    thing->restore_snapshot(0);
             //    thing->velocity(vec3(-abs(thing->velocity().x), 0.0f, 0.0f));
