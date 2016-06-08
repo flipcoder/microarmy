@@ -99,10 +99,14 @@ class Thing:
         virtual void logic_self(Freq::Time t) override;
 
         void gib(Node* bullet);
+
+        float hp_fraction() { return m_HP * 1.0f / m_MaxHP; }
         
     private:
         
         int m_HP = 1;
+        int m_MaxHP = 1;
+        float m_Speed = 0.0f;
         bool m_Dying = false;
         bool m_Dead = false;
         Cache<Resource, std::string>* m_pResources = nullptr;
@@ -120,6 +124,10 @@ class Thing:
         unsigned m_ThingID = 0;
 
         boost::signals2::scoped_connection m_ResetCon;
+
+        // ground detection for monsters
+        std::shared_ptr<Mesh> m_pLeft;
+        std::shared_ptr<Mesh> m_pRight;
 };
 
 #endif

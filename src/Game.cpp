@@ -274,6 +274,10 @@ void Game :: preload()
         std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
+        THING, FATAL,
+        std::bind(&Thing::cb_to_static, _::_1, _::_2)
+    );
+    m_pPartitioner->on_collision(
         BULLET, STATIC,
         std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
     );
@@ -563,10 +567,11 @@ void Game :: logic(Freq::Time t)
                 player->position().z
             ));
             //player->stick(shot);
-            shot->velocity(glm::vec3(
+            shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+            shot->velocity(shot->orient_to_world(glm::vec3(
                 (player->check_state("left")?-1.0f:1.0f) * 256.0f,
                 0.0f, 0.0f
-            ));
+            )));
             auto timer = make_shared<Freq::Alarm>(m_pQor->timer()->timeline());
             timer->set(Freq::Time::seconds(1.0f));
             auto shotptr = shot.get();
@@ -580,7 +585,7 @@ void Game :: logic(Freq::Time t)
             Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
 
             m_ShootTimer.set(Freq::Time::ms(
-                m_pChar->config()->at<int>("power",0)>1?100:200
+                m_pChar->config()->at<int>("power",0)>1?50:100
             ));
             
             // increase box Z width

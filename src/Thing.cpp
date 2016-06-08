@@ -74,7 +74,29 @@ void Thing :: init_thing()
             vec3(mask->at<double>(2), mask->at<double>(3), 0.5f)
         );
         
+        m_pLeft = make_shared<Mesh>();
+        auto lbox = m_Box;
+        lbox.min().x -= m_Box.size().x;
+        lbox.max().x -= m_Box.size().x;
+        lbox.min().y += m_Box.size().y;
+        lbox.max().y += m_Box.size().y;
+        m_pLeft->set_box(lbox);
+        LOG(box().string());
+        LOG(m_pLeft->box().string());
+        add(m_pLeft);
+        
+        m_pRight = make_shared<Mesh>();
+        auto rbox = m_Box;
+        rbox.min().x += m_Box.size().x;
+        rbox.max().x += m_Box.size().x;
+        rbox.min().y += m_Box.size().y;
+        rbox.max().y += m_Box.size().y;
+        m_pRight->set_box(rbox);
+        add(m_pRight);
+
         m_HP = m_pConfig->at<int>("hp",5);
+        m_MaxHP = m_pConfig->at<int>("hp",5);
+        m_Speed = m_pConfig->at<double>("speed",10.0);
         //LOGf("hp: %s", m_HP);
         m_pSprite = make_shared<Sprite>(
             m_pResources->transform(m_Identity+".json"),
@@ -102,7 +124,7 @@ void Thing :: init_thing()
         m_pPartitioner->register_object(m_pSprite->mesh(), Game::THING);
         //m_Solid = true;
 
-        velocity(vec3(-10.0f, 0.0f, 0.0f));
+        velocity(vec3(-m_Speed, 0.0f, 0.0f));
 
         //on_lazy_tick.connect([t]{
         //    move(vec3(10.0f * t.s(), 0.0f, 0.0f));
@@ -342,6 +364,9 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
                 thing->gib(bullet);
             bullet->safe_detach();
         }
+        thing->m_pSprite->material()->ambient(kit::mix(
+            Color::red(), Color::white(), thing->hp_fraction()
+        ));
     }
 }
 
@@ -362,6 +387,19 @@ void Thing :: logic_self(Freq::Time t)
     clear_snapshots();
     snapshot();
 
+    //if(is_monster()){
+    //    auto cols = m_pPartitioner->get_collisions_for(m_pLeft.get(), STATIC);
+    //    if(cols.empty()){
+    //        //LOG("left fall");
+    //        velocity(abs(velocity()));
+    //    }
+    //    cols = m_pPartitioner->get_collisions_for(m_pRight.get(), STATIC);
+    //    if(cols.empty()){
+    //        //LOG("right fall");
+    //        velocity(-abs(velocity()));
+    //    }
+    //}
+
     if(not alive())
         detach();
 }
@@ -381,7 +419,7 @@ void Thing :: gib(Node* bullet)
     gib->move(glm::vec3(std::rand() % 32 - 16.0f, std::rand() % 32 - 16.0f, 2.0f));
     gib->velocity(glm::vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
-    gib->scale(std::rand() % 100 / 100.0 * 2.0f);
+    gib->scale(std::rand() % 100 / 100.0 * 0.5f);
     auto life = make_shared<float>(0.25f * (std::rand() % 4));
     auto gibptr = gib.get();
     gib->on_tick.connect([gibptr, life](Freq::Time t){
