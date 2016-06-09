@@ -13,7 +13,7 @@
             },
             "hit":{
                 "left": [1],
-                "right": ["hflip"]
+                "right": ["hflip",1]
             }
         }
     },

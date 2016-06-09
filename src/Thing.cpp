@@ -10,6 +10,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     // monsters
     "mouse",
     "snail",
+    "wizard",
     
     // items
     "battery",

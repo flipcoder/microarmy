@@ -47,6 +47,9 @@
     "13,0": {
         "name": "door",
         "type": "blue"
+    },
+    "14,0": {
+        "name": "wizard"
     }
 
 }
