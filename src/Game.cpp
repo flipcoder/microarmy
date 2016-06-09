@@ -42,7 +42,7 @@ void Game :: preload()
     m_pMap = m_pQor->make<TileMap>("2.tmx");
     m_pRoot->add(m_pMap);
 
-    m_pMusic = m_pQor->make<Sound>("thejungle.ogg");
+    m_pMusic = m_pQor->make<Sound>("2.ogg");
     m_pRoot->add(m_pMusic);
     
     auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f);
