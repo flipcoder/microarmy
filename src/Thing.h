@@ -128,6 +128,8 @@ class Thing:
         // ground detection for monsters
         std::shared_ptr<Mesh> m_pLeft;
         std::shared_ptr<Mesh> m_pRight;
+
+        glm::vec3 m_Impulse;
 };
 
 #endif

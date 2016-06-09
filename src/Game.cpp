@@ -78,7 +78,7 @@ void Game :: preload()
 
     m_pViewLight = make_shared<Light>();
     m_pViewLight->ambient(Color::white() * 0.75f);
-    m_pViewLight->diffuse(Color::black());
+    m_pViewLight->diffuse(Color::white());
     m_pViewLight->specular(Color::black());
     m_pViewLight->dist(sw / 1.5f);
     m_pViewLight->position(glm::vec3(
@@ -476,7 +476,7 @@ void Game :: enter()
 {
     m_pMusic->play();
     
-    m_Shader = m_pPipeline->load_shaders({"lit"});
+    m_Shader = m_pPipeline->load_shaders({"detail2"});
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
     for(int i=0; i<2; ++i){
         m_pQor->pipeline()->shader(i)->use();
@@ -550,8 +550,8 @@ void Game :: logic(Freq::Time t)
             m_pRoot->add(shot);
             auto l = make_shared<Light>();
             l->ambient(Color::red());
-            l->diffuse(Color::black());
-            //l->specular(Color::red());
+            l->diffuse(Color::red()); // black
+            l->specular(Color::white());
             l->dist(32.0f);
             l->move(glm::vec3(glm::vec3(4.0f, 1.0f, 0.0f)));
             shot->add(l);
@@ -573,7 +573,7 @@ void Game :: logic(Freq::Time t)
                 0.0f, 0.0f
             )));
             auto timer = make_shared<Freq::Alarm>(m_pQor->timer()->timeline());
-            timer->set(Freq::Time::seconds(1.0f));
+            timer->set(Freq::Time::seconds(0.5f));
             auto shotptr = shot.get();
             shot->on_tick.connect([timer,shotptr](Freq::Time t){
                 if(timer->elapsed())

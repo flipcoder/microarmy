@@ -62,6 +62,9 @@ void Thing :: init_thing()
     m_Box = m_pPlaceholder->box();
 
     m_pPartitioner->register_object(shared_from_this(), Game::THING);
+    
+    const float item_dist = 200.0f;
+    const float glow = 0.3f;
 
     if(is_monster()) {
         TRY(m_pConfig->merge(make_shared<Meta>(
@@ -81,8 +84,8 @@ void Thing :: init_thing()
         lbox.min().y += m_Box.size().y;
         lbox.max().y += m_Box.size().y;
         m_pLeft->set_box(lbox);
-        LOG(box().string());
-        LOG(m_pLeft->box().string());
+        //LOG(box().string());
+        //LOG(m_pLeft->box().string());
         add(m_pLeft);
         
         m_pRight = make_shared<Mesh>();
@@ -133,8 +136,8 @@ void Thing :: init_thing()
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
         //if(type == "gold"){
-            l->ambient(Color::white());
-            l->diffuse(Color::white());
+            l->ambient(Color::white() * glow);
+            l->diffuse(Color::white() * glow);
         //}else if(type == "silver"){
         //    l->ambient(Color::gray());
         //    l->diffuse(Color::gray());
@@ -143,8 +146,8 @@ void Thing :: init_thing()
         //    l->diffuse(Color("8c7853"));
         //}
         //l->diffuse(Color::yellow());
-        l->specular(Color::black());
-        l->dist(50.0f);
+        l->specular(Color::white());
+        l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
@@ -152,10 +155,10 @@ void Thing :: init_thing()
     }
     else if(m_ThingID == Thing::BATTERY) {
         auto l = make_shared<Light>();
-        l->ambient(Color::green());
-        l->diffuse(Color::green());
-        l->specular(Color::black());
-        l->dist(50.0f);
+        l->ambient(Color::green() * glow);
+        l->diffuse(Color::green() * glow);
+        l->specular(Color::white());
+        l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
@@ -163,10 +166,10 @@ void Thing :: init_thing()
     }
     else if(m_ThingID == Thing::HEART) {
         auto l = make_shared<Light>();
-        l->ambient(Color::red());
-        l->diffuse(Color::red());
-        l->specular(Color::black());
-        l->dist(50.0f);
+        l->ambient(Color::red() * glow);
+        l->diffuse(Color::red() * glow);
+        l->specular(Color::white());
+        l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
@@ -360,8 +363,23 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
     {
         thing->sound("damage.wav");
         if(thing->damage(bullet->config()->at("damage",1))){
-            for(int i=0;i<20;++i)
+            auto gibs = thing->m_Dying?5:20;
+            for(int i=0;i<gibs;++i)
                 thing->gib(bullet);
+            auto vel = thing->velocity();
+            thing->move(glm::vec3(-kit::sign(vel.x) * 1.0f, 0.0f, 0.0f));
+            
+            if(bullet->velocity().x > K_EPSILON){
+                thing->velocity(-abs(thing->velocity()));
+                thing->sprite()->set_state("left");
+            }else if(bullet->velocity().x < K_EPSILON){
+                thing->velocity(abs(thing->velocity()));
+                thing->sprite()->set_state("right");
+            }
+
+            
+            //thing->m_Impulse = glm::vec3(thing->m_Speed * 1000.0f, 0.0f, 0.0f);
+
             bullet->safe_detach();
         }
         thing->m_pSprite->material()->ambient(kit::mix(
@@ -387,6 +405,11 @@ void Thing :: logic_self(Freq::Time t)
     clear_snapshots();
     snapshot();
 
+    //if(abs(m_Impulse.x) > K_EPSILON){
+        //move(m_Impulse);
+        //m_Impulse = glm::vec3();
+    //}
+
     //if(is_monster()){
     //    auto cols = m_pPartitioner->get_collisions_for(m_pLeft.get(), STATIC);
     //    if(cols.empty()){
@@ -406,8 +429,9 @@ void Thing :: logic_self(Freq::Time t)
 
 void Thing :: lazy_logic_self(Freq::Time t)
 {
-    Node::lazy_logic_self(t);
-    m_pPlaceholder->logic_self(t);
+    //LOG("lazy logic!")
+    //Node::lazy_logic_self(t);
+    //m_pPlaceholder->logic_self(t);
 }
 
 void Thing :: gib(Node* bullet)
@@ -415,12 +439,12 @@ void Thing :: gib(Node* bullet)
     auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
     gib->set_state(0);
     auto dir = Angle::degrees(1.0f * (std::rand() % 360)).vector();
-    add(gib);
-    gib->move(glm::vec3(std::rand() % 32 - 16.0f, std::rand() % 32 - 16.0f, 2.0f));
+    stick(gib);
+    gib->move(glm::vec3(std::rand() % 16 - 8.0f, std::rand() % 32 - 16.0f, 2.0f));
     gib->velocity(glm::vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
     gib->scale(std::rand() % 100 / 100.0 * 0.5f);
-    auto life = make_shared<float>(0.25f * (std::rand() % 4));
+    auto life = make_shared<float>(0.5f * (std::rand() % 4));
     auto gibptr = gib.get();
     gib->on_tick.connect([gibptr, life](Freq::Time t){
         *life -= t.s();
