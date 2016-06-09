@@ -161,6 +161,7 @@ void Game :: preload()
                         this,
                         m_pMap.get(),
                         m_pPartitioner,
+                        m_pQor->timer()->timeline(),
                         m_pQor->resources()
                     );
                     obj->add(thing);

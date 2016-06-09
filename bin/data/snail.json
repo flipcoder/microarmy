@@ -7,8 +7,14 @@
     "animation" : {
         "speed" : 10.0,
         "frames" : {
-            "left": [0,1],
-            "right": ["hflip",0,1]
+            "unhit":{
+                "left": [0,1],
+                "right": ["hflip",1]
+            },
+            "hit":{
+                "left": [1],
+                "right": ["hflip"]
+            }
         }
     },
     "hp": 8,

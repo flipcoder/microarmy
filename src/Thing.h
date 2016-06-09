@@ -18,6 +18,7 @@ class Thing:
             Game* game,
             TileMap* map,
             BasicPartitioner* partitioner,
+            Freq::Timeline* timeline,
             Cache<Resource, std::string>* resources
         );
         virtual ~Thing() {}
@@ -102,6 +103,8 @@ class Thing:
 
         float hp_fraction() { return m_HP * 1.0f / m_MaxHP; }
         
+        void stun();
+        
     private:
         
         int m_HP = 1;
@@ -130,6 +133,7 @@ class Thing:
         std::shared_ptr<Mesh> m_pRight;
 
         glm::vec3 m_Impulse;
+        Freq::Alarm m_StunTimer;
 };
 
 #endif

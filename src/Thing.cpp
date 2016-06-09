@@ -30,6 +30,7 @@ Thing :: Thing(
     Game* game,
     TileMap* map,
     BasicPartitioner* partitioner,
+    Freq::Timeline* timeline,
     Cache<Resource, std::string>* resources
 ):
     Node(config),
@@ -39,7 +40,8 @@ Thing :: Thing(
     m_pMap(map),
     m_pResources(resources),
     m_Identity(config->at<string>("name","")),
-    m_ThingID(get_id(config))
+    m_ThingID(get_id(config)),
+    m_StunTimer(timeline)
 {
 }
 
@@ -106,7 +108,7 @@ void Thing :: init_thing()
             m_pResources
         );
         add(m_pSprite);
-        m_pSprite->set_state("left");
+        m_pSprite->set_states({"unhit", "left"});
         if(m_pPlaceholder->tile_layer()->depth() || m_pConfig->has("depth"))
             m_pSprite->mesh()->set_geometry(m_pMap->tilted_tile_geometry());
         collapse(); // detach from placeholder
@@ -132,6 +134,7 @@ void Thing :: init_thing()
         //on_lazy_tick.connect([t]{
         //    move(vec3(10.0f * t.s(), 0.0f, 0.0f));
         //});
+        
     } else if(m_ThingID == Thing::STAR) {
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
@@ -367,7 +370,9 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
             for(int i=0;i<gibs;++i)
                 thing->gib(bullet);
             auto vel = thing->velocity();
-            thing->move(glm::vec3(-kit::sign(vel.x) * 1.0f, 0.0f, 0.0f));
+            thing->move(glm::vec3(-kit::sign(vel.x) * 5.0f, 0.0f, 0.0f));
+            
+            thing->stun();
             
             if(bullet->velocity().x > K_EPSILON){
                 thing->velocity(-abs(thing->velocity()));
@@ -376,7 +381,6 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
                 thing->velocity(abs(thing->velocity()));
                 thing->sprite()->set_state("right");
             }
-
             
             //thing->m_Impulse = glm::vec3(thing->m_Speed * 1000.0f, 0.0f, 0.0f);
 
@@ -386,6 +390,12 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
             Color::red(), Color::white(), thing->hp_fraction()
         ));
     }
+}
+
+void Thing :: stun()
+{
+    m_pSprite->set_state("hit");
+    m_StunTimer.set(Freq::Time::ms(200));
 }
 
 bool Thing :: damage(int dmg)
@@ -404,6 +414,11 @@ void Thing :: logic_self(Freq::Time t)
 {
     clear_snapshots();
     snapshot();
+    
+    if(m_StunTimer.elapsed()){
+        m_pSprite->set_state("unhit");
+        m_StunTimer.reset();
+    }
 
     //if(abs(m_Impulse.x) > K_EPSILON){
         //move(m_Impulse);
