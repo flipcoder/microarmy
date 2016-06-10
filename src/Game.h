@@ -63,6 +63,7 @@ class Game:
         struct ParallaxLayer
         {
             std::shared_ptr<Node> root;
+            std::shared_ptr<Light> light;
             float scale = 1.0f;
         };
         

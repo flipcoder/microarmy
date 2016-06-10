@@ -40,6 +40,7 @@ class Thing:
             MOUSE = MONSTERS,
             SNAIL,
             WIZARD,
+            ROBOT,
             MONSTERS_END,
 
             ITEMS = MONSTERS_END,

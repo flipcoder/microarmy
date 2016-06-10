@@ -11,6 +11,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     "mouse",
     "snail",
     "wizard",
+    "robot",
     
     // items
     "battery",
@@ -67,7 +68,7 @@ void Thing :: init_thing()
     m_pPartitioner->register_object(shared_from_this(), Game::THING);
     
     const float item_dist = 200.0f;
-    const float glow = 0.3f;
+    const float glow = 1.0f;
 
     if(is_monster()) {
         TRY(m_pConfig->merge(make_shared<Meta>(
@@ -150,7 +151,7 @@ void Thing :: init_thing()
         //    l->diffuse(Color("8c7853"));
         //}
         //l->diffuse(Color::yellow());
-        l->specular(Color::white());
+        l->specular(Color::white() * glow);
         l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
@@ -161,7 +162,7 @@ void Thing :: init_thing()
         auto l = make_shared<Light>();
         l->ambient(Color::green() * glow);
         l->diffuse(Color::green() * glow);
-        l->specular(Color::white());
+        l->specular(Color::white() * glow);
         l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
@@ -172,7 +173,19 @@ void Thing :: init_thing()
         auto l = make_shared<Light>();
         l->ambient(Color::red() * glow);
         l->diffuse(Color::red() * glow);
-        l->specular(Color::white());
+        l->specular(Color::white() * glow);
+        l->dist(item_dist);
+        l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
+        add(l);
+        collapse();
+        //stick(l);
+    } else if(m_ThingID == Thing::KEY) {
+        auto l = make_shared<Light>();
+        string typ = config()->at<string>("type");
+        auto col = typ == "red" ? Color::red() : Color::blue();
+        l->ambient(col * glow);
+        l->diffuse(col * glow);
+        l->specular(Color::white() * glow);
         l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
@@ -453,7 +466,7 @@ void Thing :: lazy_logic_self(Freq::Time t)
 void Thing :: gib(Node* bullet)
 {
     auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
-    gib->set_state(0);
+    gib->set_state("animated");
     auto dir = Angle::degrees(1.0f * (std::rand() % 360)).vector();
     stick(gib);
     gib->move(glm::vec3(std::rand() % 16 - 8.0f, std::rand() % 32 - 16.0f, 2.0f));

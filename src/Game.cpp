@@ -45,7 +45,7 @@ void Game :: preload()
     m_pMusic = m_pQor->make<Sound>("2.ogg");
     m_pRoot->add(m_pMusic);
     
-    auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f);
+    auto scale = 150.0f / std::max<float>(sw * 1.0f,1.0f);
     m_pCamera->rescale(glm::vec3(
         scale, scale,
         1.0f
@@ -77,7 +77,7 @@ void Game :: preload()
     m_pCamera->listen(true);
 
     m_pViewLight = make_shared<Light>();
-    m_pViewLight->ambient(Color::white() * 0.75f);
+    m_pViewLight->ambient(Color::white() * 0.50f);
     m_pViewLight->diffuse(Color::white());
     m_pViewLight->specular(Color::black());
     m_pViewLight->dist(sw / 1.5f);
@@ -110,6 +110,9 @@ void Game :: preload()
             float parallax = boost::lexical_cast<float>(
                 layer->config()->at<string>("parallax", "1.0")
             );
+            Color color = Color(
+                layer->config()->at<string>("color", "ffffff")
+            );
             auto pl = ParallaxLayer();
             //pl.camera = make_shared<Camera>(m_pResources, m_pQor->window());
             //pl.camera->ortho();
@@ -120,10 +123,13 @@ void Game :: preload()
             pl.scale = parallax;
             //m_pRoot->add(pl.camera);
             m_ParallaxLayers.push_back(pl);
-            //auto l = make_shared<Light>();
-            //l->dist(1000.0f);
-            //l->ambient(Color::white());
-            //pl.root->add(l);
+            auto l = make_shared<Light>();
+            l->ambient(color);
+            l->diffuse(color);
+            l->specular(color);
+            l->dist(10000.0f);
+            pl.root->add(l);
+            pl.light = l;
             continue;
         }
         
@@ -688,26 +694,39 @@ void Game :: render() const
 {
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
     unsigned idx = 0;
-    //auto pos = m_pCamera->position();
-    //for(auto&& layer: m_ParallaxLayers){
-        //layer.root->visible(true);
+    auto pos = m_pCamera->position();
+    for(auto&& layer: m_ParallaxLayers){
+        layer.root->visible(true);
     //    //m_pParallaxCamera->position(
     //    //    m_pCamera->position().x * layer.scale,
     //    //    m_pCamera->position().y * layer.scale,
     //    //    0.0f
     //    //);
-        //m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 0.0f);
-        //m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
-        //layer.root->visible(false);
-        //++idx;
+        m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 5.0f);
+        //float sw = m_pQor->window()->size().x;
+        //auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f) / layer.scale;
+        //m_pCamera->rescale(glm::vec3(
+        //    scale, scale,
+        //    1.0f
+        //));
+
+        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+        layer.root->visible(false);
         //layer.root->parent()->position(
         //    -m_pCamera->position().x,
         //    -m_pCamera->position().y,
         //    layer.root->parent()->position().z
         //);
-        //++idx;
-    //}
-    //m_pCamera->position(pos);
+        ++idx;
+    }
+    float sw = m_pQor->window()->size().x;
+    //auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f);
+    //m_pCamera->rescale(glm::vec3(
+    //    scale, scale,
+    //    1.0f
+    //));
+
+    m_pCamera->position(pos);
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
 }
