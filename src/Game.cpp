@@ -39,7 +39,7 @@ void Game :: preload()
     );
     m_pRoot->add(m_pCamera);
 
-    m_pMap = m_pQor->make<TileMap>("1.tmx");
+    m_pMap = m_pQor->make<TileMap>("2.tmx");
     m_pRoot->add(m_pMap);
 
     m_pMusic = m_pQor->make<Sound>("2.ogg");
