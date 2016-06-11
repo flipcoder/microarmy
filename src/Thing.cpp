@@ -12,6 +12,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     "snail",
     "wizard",
     "robot",
+    "duck",
     
     // items
     "battery",
@@ -43,7 +44,8 @@ Thing :: Thing(
     m_pResources(resources),
     m_Identity(config->at<string>("name","")),
     m_ThingID(get_id(config)),
-    m_StunTimer(timeline)
+    m_StunTimer(timeline),
+    m_pTimeline(timeline)
 {
 }
 
@@ -396,9 +398,8 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
                 thing->sprite()->set_state("right");
             }
             
-            //thing->m_Impulse = glm::vec3(thing->m_Speed * 1000.0f, 0.0f, 0.0f);
-
             bullet->safe_detach();
+            thing->shoot(thing->m_pSprite.get());
         }
         thing->m_pSprite->material()->ambient(kit::mix(
             Color::red(), Color::white(), thing->hp_fraction()
@@ -480,5 +481,55 @@ void Thing :: gib(Node* bullet)
         if(*life < 0.0f)
             gibptr->detach();
     });
+}
+
+void Thing :: shoot(Sprite* origin)
+{
+    auto shot = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
+        vector<shared_ptr<IMeshModifier>>{
+            make_shared<Wrap>(Prefab::quad_wrap(
+                glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
+            ))
+        },
+        make_shared<MeshMaterial>("laser.png", m_pResources)
+    );
+
+    m_pPlaceholder->root()->add(shot);
+    shot->reset_orientation();
+    shot->position(glm::vec3(
+        origin->position().x +
+        -origin->origin().x*origin->size().x +
+            origin->mesh()->world_box().size().x / 2.0f,
+            //((origin->check_state("left")?-1.0f:1.0f) * 4.0f),
+        origin->position().y +
+            -origin->origin().y*origin->size().y +
+            origin->mesh()->world_box().size().y / 2.0f + 
+            -2.0f,
+        origin->position().z
+    ));
+    shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+    shot->velocity(shot->orient_to_world(glm::vec3(
+        (origin->check_state("left")?-1.0f:1.0f) * 256.0f,
+        0.0f, 0.0f
+    )));
+    auto timer = make_shared<Freq::Alarm>(m_pTimeline);
+    timer->set(Freq::Time::seconds(0.5f));
+    auto shotptr = shot.get();
+    shot->on_tick.connect([timer,shotptr](Freq::Time t){
+        if(timer->elapsed())
+            shotptr->detach();
+    });
+    
+    //m_pPartitioner->register_object(shot, BULLET);
+    
+    Sound::play(origin, "shoot.wav", m_pResources);
+
+    // increase box Z width
+    auto shotbox = shot->box();
+    shot->set_box(Box(
+        vec3(shotbox.min().x, shotbox.min().y, -5.0),
+        vec3(shotbox.max().x, shotbox.max().y, 5.0)
+    ));
 }
 

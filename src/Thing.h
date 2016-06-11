@@ -41,6 +41,7 @@ class Thing:
             SNAIL,
             WIZARD,
             ROBOT,
+            DUCK,
             MONSTERS_END,
 
             ITEMS = MONSTERS_END,
@@ -106,6 +107,8 @@ class Thing:
         float hp_fraction() { return m_HP * 1.0f / m_MaxHP; }
         
         void stun();
+        void origin();
+        void shoot(Sprite* origin);
         
     private:
         
@@ -136,6 +139,7 @@ class Thing:
 
         glm::vec3 m_Impulse;
         Freq::Alarm m_StunTimer;
+        Freq::Timeline* m_pTimeline;
 };
 
 #endif

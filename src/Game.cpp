@@ -39,10 +39,10 @@ void Game :: preload()
     );
     m_pRoot->add(m_pCamera);
 
-    m_pMap = m_pQor->make<TileMap>("2.tmx");
+    m_pMap = m_pQor->make<TileMap>("1.tmx");
     m_pRoot->add(m_pMap);
 
-    m_pMusic = m_pQor->make<Sound>("2.ogg");
+    m_pMusic = m_pQor->make<Sound>("1.ogg");
     m_pRoot->add(m_pMusic);
     
     auto scale = 150.0f / std::max<float>(sw * 1.0f,1.0f);
@@ -79,7 +79,7 @@ void Game :: preload()
     m_pViewLight = make_shared<Light>();
     m_pViewLight->ambient(Color::white() * 0.50f);
     m_pViewLight->diffuse(Color::white());
-    m_pViewLight->specular(Color::black());
+    m_pViewLight->specular(Color::white());
     m_pViewLight->dist(sw / 1.5f);
     m_pViewLight->position(glm::vec3(
         m_pQor->window()->center().x * 1.0f,
@@ -544,63 +544,7 @@ void Game :: logic(Freq::Time t)
         }
 
         if(m_pController->button("shoot") && m_ShootTimer.elapsed()){
-            auto shot = make_shared<Mesh>(
-                make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
-                vector<shared_ptr<IMeshModifier>>{
-                    make_shared<Wrap>(Prefab::quad_wrap())
-                },
-                make_shared<MeshMaterial>("laser.png", m_pResources)
-            );
-
-            //m_pRoot->stick(shot);
-            //shot->position(player->position());
-            m_pRoot->add(shot);
-            auto l = make_shared<Light>();
-            l->ambient(Color::red());
-            l->diffuse(Color::red()); // black
-            l->specular(Color::white());
-            l->dist(32.0f);
-            l->move(glm::vec3(glm::vec3(4.0f, 1.0f, 0.0f)));
-            shot->add(l);
-            shot->position(glm::vec3(
-                player->position().x +
-                -player->origin().x*player->size().x +
-                    player->mesh()->world_box().size().x / 2.0f,
-                    //((player->check_state("left")?-1.0f:1.0f) * 4.0f),
-                player->position().y +
-                    -player->origin().y*player->size().y +
-                    player->mesh()->world_box().size().y / 2.0f + 
-                    -2.0f,
-                player->position().z
-            ));
-            //player->stick(shot);
-            shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-            shot->velocity(shot->orient_to_world(glm::vec3(
-                (player->check_state("left")?-1.0f:1.0f) * 256.0f,
-                0.0f, 0.0f
-            )));
-            auto timer = make_shared<Freq::Alarm>(m_pQor->timer()->timeline());
-            timer->set(Freq::Time::seconds(0.5f));
-            auto shotptr = shot.get();
-            shot->on_tick.connect([timer,shotptr](Freq::Time t){
-                if(timer->elapsed())
-                    shotptr->detach();
-            });
-            
-            m_pPartitioner->register_object(shot, BULLET);
-            
-            Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
-
-            m_ShootTimer.set(Freq::Time::ms(
-                m_pChar->config()->at<int>("power",0)>1?50:100
-            ));
-            
-            // increase box Z width
-            auto shotbox = shot->box();
-            shot->set_box(Box(
-                vec3(shotbox.min().x, shotbox.min().y, -5.0),
-                vec3(shotbox.max().x, shotbox.max().y, 5.0)
-            ));
+            shoot(player.get());
         }
             
         bool block_jump = false;
@@ -688,6 +632,69 @@ void Game :: logic(Freq::Time t)
     //    layer.camera->logic(t); // tile partitioner bypasses logic
     //}
     m_pRoot->logic(t);
+}
+
+void Game :: shoot(Sprite* origin)
+{
+    auto shot = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
+        vector<shared_ptr<IMeshModifier>>{
+            make_shared<Wrap>(Prefab::quad_wrap(
+                glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
+            ))
+        },
+        make_shared<MeshMaterial>("laser.png", m_pResources)
+    );
+    shot->material()->emissive(Color::white());
+    //m_pRoot->stick(shot);
+    //shot->position(origin->position());
+    m_pRoot->add(shot);
+    //auto l = make_shared<Light>();
+    //l->ambient(Color::red());
+    //l->diffuse(Color::red()); // black
+    //l->specular(Color::white());
+    //l->dist(32.0f);
+    //l->move(glm::vec3(glm::vec3(4.0f, 1.0f, 0.0f)));
+    //shot->add(l);
+    shot->position(glm::vec3(
+        origin->position().x +
+        -origin->origin().x*origin->size().x +
+            origin->mesh()->world_box().size().x / 2.0f,
+            //((origin->check_state("left")?-1.0f:1.0f) * 4.0f),
+        origin->position().y +
+            -origin->origin().y*origin->size().y +
+            origin->mesh()->world_box().size().y / 2.0f + 
+            -2.0f,
+        origin->position().z
+    ));
+    //origin->stick(shot);
+    shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+    shot->velocity(shot->orient_to_world(glm::vec3(
+        (origin->check_state("left")?-1.0f:1.0f) * 256.0f,
+        0.0f, 0.0f
+    )));
+    auto timer = make_shared<Freq::Alarm>(m_pQor->timer()->timeline());
+    timer->set(Freq::Time::seconds(0.5f));
+    auto shotptr = shot.get();
+    shot->on_tick.connect([timer,shotptr](Freq::Time t){
+        if(timer->elapsed())
+            shotptr->detach();
+    });
+    
+    m_pPartitioner->register_object(shot, BULLET);
+    
+    Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
+
+    m_ShootTimer.set(Freq::Time::ms(
+        m_pChar->config()->at<int>("power",0)>0 ? 50 : 100
+    ));
+    
+    // increase box Z width
+    auto shotbox = shot->box();
+    shot->set_box(Box(
+        vec3(shotbox.min().x, shotbox.min().y, -5.0),
+        vec3(shotbox.max().x, shotbox.max().y, 5.0)
+    ));
 }
 
 void Game :: render() const

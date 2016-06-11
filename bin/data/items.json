@@ -53,6 +53,13 @@
     },
     "15,0": {
         "name": "robot"
+    },
+    "16,0": {
+        "name": "door",
+        "type": "star"
+    },
+    "17,0": {
+        "name": "duck"
     }
 
 }

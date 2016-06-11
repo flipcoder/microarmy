@@ -69,6 +69,8 @@ class Game:
         
         boost::signals2::signal<void()> on_reset;
 
+        void shoot(Sprite* origin);
+        
     private:
         
         Qor* m_pQor = nullptr;
