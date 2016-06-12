@@ -1,6 +1,7 @@
 #ifndef PREGAME_H_OTKL19RW
 #define PREGAME_H_OTKL19RW
 
+#include "Qor/ResourceCache.h"
 #include "Qor/Node.h"
 #include "Qor/State.h"
 #include "Qor/Input.h"
@@ -32,6 +33,7 @@ class Pregame:
         Qor* m_pQor = nullptr;
         Input* m_pInput = nullptr;
         Pipeline* m_pPipeline = nullptr;
+        ResourceCache* m_pResources = nullptr;
 
         std::shared_ptr<Node> m_pRoot;
         std::shared_ptr<Camera> m_pCamera;

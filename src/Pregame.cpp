@@ -1,6 +1,7 @@
 #include "Pregame.h"
 #include "Qor/BasicPartitioner.h"
 #include "Qor/Input.h"
+#include "Qor/Material.h"
 #include "Qor/Qor.h"
 #include <glm/glm.hpp>
 #include <cstdlib>
@@ -13,17 +14,35 @@ Pregame :: Pregame(Qor* engine):
     m_pQor(engine),
     m_pInput(engine->input()),
     m_pRoot(make_shared<Node>()),
+    m_pResources(engine->resources()),
     m_pPipeline(engine->pipeline()),
     m_pController(engine->session()->active_profile(0)->controller().get())
 {}
 
 void Pregame :: preload()
 {
+    auto win = m_pQor->window();
+    float sw = m_pQor->window()->size().x;
+    float sh = m_pQor->window()->size().y;
+
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pRoot->add(m_pCamera);
 
     m_pMusic = m_pQor->make<Sound>("score.ogg");
     m_pRoot->add(m_pMusic);
+
+    auto mat = make_shared<Material>("title.png", m_pResources);
+    auto bg = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(vec2(sw, sh), vec2(0.0f, 0.0f))),
+        vector<shared_ptr<IMeshModifier>>{
+            make_shared<Wrap>(Prefab::quad_wrap())
+        },
+        make_shared<MeshMaterial>(mat)
+    );
+    bg->material()->ambient(Color::white() * 0.25f);
+    mat->diffuse(Color(1.0f, 0.25f));
+    bg->position(vec3(0.0f,0.0f,-1.0f));
+    m_pRoot->add(bg);
 }
 
 Pregame :: ~Pregame()

@@ -99,7 +99,8 @@ class Game:
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;
         bool m_WasInAir = false;
-
+        unsigned m_Power = 0;
+        
         unsigned m_Shader = 0;
 
         std::vector<std::shared_ptr<Sprite>> m_Players;

@@ -45,10 +45,13 @@ class Intro:
         std::shared_ptr<MenuGUI> m_pMenuGUI;
         MenuContext m_MenuContext;
         Menu m_MainMenu;
+        Menu m_OptionsMenu;
+        
+        std::shared_ptr<std::string> m_pVolumeText;
+        std::shared_ptr<std::string> m_pSoundText;
+        std::shared_ptr<std::string> m_pMusicText;
 
         Controller* m_pController = nullptr;
-        
-        glm::vec2 m_WrapAccum;
 };
 
 #endif

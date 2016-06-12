@@ -263,6 +263,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
                 thing->visible(true);
                 thing->placeholder()->visible(true);
             });
+            player_node->parent()->event("battery");
         }
     }else if(thing->id() == Thing::SPRING){
         if(thing->hook_type<Sound>().empty())

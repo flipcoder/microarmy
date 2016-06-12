@@ -39,10 +39,14 @@ void Game :: preload()
     );
     m_pRoot->add(m_pCamera);
 
-    m_pMap = m_pQor->make<TileMap>("1.tmx");
+    string lev = m_pQor->args().value("map");
+    if(lev.empty())
+        lev = "1";
+    
+    m_pMap = m_pQor->make<TileMap>(lev+".tmx");
     m_pRoot->add(m_pMap);
 
-    m_pMusic = m_pQor->make<Sound>("1.ogg");
+    m_pMusic = m_pQor->make<Sound>(lev+".ogg");
     m_pRoot->add(m_pMusic);
     
     auto scale = 150.0f / std::max<float>(sw * 1.0f,1.0f);
@@ -260,8 +264,13 @@ void Game :: preload()
         }
     }
     
-    for(auto&& player: m_Players)
+    for(auto&& player: m_Players){
+        auto _this = this;
+        player->event("battery", [_this](const shared_ptr<Meta>&){
+            ++_this->m_Power;
+        });
         setup_player(player);
+    }
     reset();
 
     m_pPartitioner->on_collision(
@@ -686,7 +695,8 @@ void Game :: shoot(Sprite* origin)
     Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
 
     m_ShootTimer.set(Freq::Time::ms(
-        m_pChar->config()->at<int>("power",0)>0 ? 50 : 100
+        //m_pChar->config()->at<int>("power",0)>0 ? 50 : 100
+        m_Power==0 ? 200 : 100
     ));
     
     // increase box Z width
