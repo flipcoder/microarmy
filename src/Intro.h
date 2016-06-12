@@ -1,0 +1,55 @@
+#ifndef PREGAME_H_Q9JIKEWU
+#define PREGAME_H_Q9JIKEWU
+
+#include "Qor/ResourceCache.h"
+#include "Qor/Node.h"
+#include "Qor/State.h"
+#include "Qor/Input.h"
+#include "Qor/Camera.h"
+#include "Qor/Pipeline.h"
+#include "Qor/Mesh.h"
+#include "Qor/Menu.h"
+
+class Qor;
+class Sound;
+class Canvas;
+
+class Intro:
+    public State
+{
+    public:
+        
+        Intro(Qor* engine);
+        virtual ~Intro();
+
+        virtual void preload() override;
+        virtual void enter() override;
+        virtual void logic(Freq::Time t) override;
+        virtual void render() const override;
+        virtual bool needs_load() const override {
+            return true;
+        }
+
+    private:
+        
+        Qor* m_pQor = nullptr;
+        Input* m_pInput = nullptr;
+        Pipeline* m_pPipeline = nullptr;
+        ResourceCache* m_pResources = nullptr;
+
+        std::shared_ptr<Node> m_pRoot;
+        std::shared_ptr<Camera> m_pCamera;
+        std::shared_ptr<Sound> m_pMusic;
+        
+        std::shared_ptr<Canvas> m_pCanvas;
+        std::shared_ptr<MenuGUI> m_pMenuGUI;
+        MenuContext m_MenuContext;
+        Menu m_MainMenu;
+
+        Controller* m_pController = nullptr;
+        
+        glm::vec2 m_WrapAccum;
+};
+
+#endif
+

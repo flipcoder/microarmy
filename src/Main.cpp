@@ -4,6 +4,8 @@
 #include "Qor/Qor.h"
 #include "Info.h"
 #include "Game.h"
+#include "Intro.h"
+#include "Pregame.h"
 using namespace std;
 using namespace kit;
 
@@ -20,8 +22,10 @@ int main(int argc, const char** argv)
     try{
 #endif
         auto engine = kit::make_unique<Qor>(args);
+        engine->states().register_class<Intro>("intro");
+        engine->states().register_class<Pregame>("pregame");
         engine->states().register_class<Game>("game");
-        engine->run("game");
+        engine->run("intro");
 #ifndef DEBUG
     }catch(const Error&){
         // already logged

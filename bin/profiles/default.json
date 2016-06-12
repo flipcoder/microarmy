@@ -6,6 +6,7 @@
             "gamepad hat 2": "up",
             "gamepad hat 0": "left",
             "gamepad hat 1": "right",
+            "gamepad hat 3": "down",
             "gamepad 1": [
                 "shoot",
                 "back"
