@@ -30,7 +30,7 @@ Intro :: Intro(Qor* engine):
         m_pPipeline->partitioner(),
         m_pCanvas.get(),
         m_pResources,
-        "Roboto Condensed",
+        "PRESS START 2P",
         engine->window()->size().y / 30.0f,
         nullptr,
         7,

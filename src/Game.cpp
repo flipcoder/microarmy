@@ -49,7 +49,7 @@ void Game :: preload()
     m_pMusic = m_pQor->make<Sound>(lev+".ogg");
     m_pRoot->add(m_pMusic);
     
-    auto scale = 150.0f / std::max<float>(sw * 1.0f,1.0f);
+    auto scale = 250.0f / std::max<float>(sw * 1.0f,1.0f);
     m_pCamera->rescale(glm::vec3(
         scale, scale,
         1.0f
@@ -178,9 +178,41 @@ void Game :: preload()
                     setup_thing(thing);
                     continue;
                 }
-                bool depth = layer->depth() || obj_cfg->has("depth");
+                //bool collision = layer->has_prop("collision");
+                bool depth = layer->depth() || obj->config()->has("depth");
                 if(depth)
                 {
+                    m_pPartitioner->register_provider(STATIC, [layer](Box box){
+                        vector<std::weak_ptr<Node>> r;
+                        auto nodes = layer->query(box, [](Node* n){
+                            return n->config()->has("static");
+                        });
+                        std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                            return std::weak_ptr<Node>(n->as_node());
+                        });
+                        return r;
+                    });
+                    m_pPartitioner->register_provider(LEDGE, [layer](Box box){
+                        vector<std::weak_ptr<Node>> r;
+                        auto nodes = layer->query(box, [](Node* n){
+                            return n->config()->has("ledge");
+                        });
+                        std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                            return std::weak_ptr<Node>(n->as_node());
+                        });
+                        return r;
+                    });
+                    m_pPartitioner->register_provider(FATAL, [layer](Box box){
+                        vector<std::weak_ptr<Node>> r;
+                        auto nodes = layer->query(box, [](Node* n){
+                            return n->config()->has("fatal");
+                        });
+                        std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                            return std::weak_ptr<Node>(n->as_node());
+                        });
+                        return r;
+                    });
+                    
                     auto n = make_shared<Node>();
                     n->name("mask");
                     auto mask = obj_cfg->at<shared_ptr<Meta>>("mask", shared_ptr<Meta>());
@@ -209,8 +241,10 @@ void Game :: preload()
                         n->box().max().y = 1.0f - n->box().max().y;
                     }
                     obj->mesh()->add(n);
-                    if(obj_cfg->has("fatal"))
+                    if(obj_cfg->has("fatal")){
+                        obj_cfg->set<string>("ledge", "");
                         m_pPartitioner->register_object(n, FATAL);
+                    }
                     //else if(name == "star")
                     //{
                     //    auto l = make_shared<Light>();
@@ -251,14 +285,16 @@ void Game :: preload()
                     //}
                     //else
                     else if(obj_cfg->has("ledge"))
-                        m_pPartitioner->register_object(n, LEDGE);
+                        //m_pPartitioner->register_object(n, LEDGE);
+                        //m_pPartitioner->register_object(n, STATIC);
+                        obj_cfg->set<string>("ledge", "");
                     else{
-                        m_pPartitioner->register_object(n, STATIC);
+                        //m_pPartitioner->register_object(n, STATIC);
                         obj_cfg->set<string>("static", "");
                     }
                 } else {
-                    m_pPartitioner->register_object(obj->mesh(), GROUND);
-                    obj->mesh()->config()->set<string>("static", "");
+                    //m_pPartitioner->register_object(obj->mesh(), GROUND);
+                    //obj->mesh()->config()->set<string>("static", "");
                 }
             }
         }
@@ -415,7 +451,12 @@ void Game :: cb_to_static(Node* a, Node* b, Node* m)
     };
 
     //Box overlap = a->world_box().intersect(b->world_box());
-    auto old_pos = Matrix::translation(kit::safe_ptr(m->snapshot(0))->world_transform);
+    vec3 old_pos;
+    try{
+        old_pos = Matrix::translation(kit::safe_ptr(m->snapshot(0))->world_transform);
+    }catch(...){
+        return;
+    }
     
     //vec3 overlap_sz = overlap.size() + vec3(1.0f);
 
@@ -714,35 +755,11 @@ void Game :: render() const
     auto pos = m_pCamera->position();
     for(auto&& layer: m_ParallaxLayers){
         layer.root->visible(true);
-    //    //m_pParallaxCamera->position(
-    //    //    m_pCamera->position().x * layer.scale,
-    //    //    m_pCamera->position().y * layer.scale,
-    //    //    0.0f
-    //    //);
         m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 5.0f);
-        //float sw = m_pQor->window()->size().x;
-        //auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f) / layer.scale;
-        //m_pCamera->rescale(glm::vec3(
-        //    scale, scale,
-        //    1.0f
-        //));
-
         m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
         layer.root->visible(false);
-        //layer.root->parent()->position(
-        //    -m_pCamera->position().x,
-        //    -m_pCamera->position().y,
-        //    layer.root->parent()->position().z
-        //);
         ++idx;
     }
-    float sw = m_pQor->window()->size().x;
-    //auto scale = 200.0f / std::max<float>(sw * 1.0f,1.0f);
-    //m_pCamera->rescale(glm::vec3(
-    //    scale, scale,
-    //    1.0f
-    //));
-
     m_pCamera->position(pos);
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);

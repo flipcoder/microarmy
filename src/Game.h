@@ -22,7 +22,6 @@ class Game:
 
         enum ObjectTypes
         {
-            GROUND,
             STATIC,
             LEDGE,
             FATAL,

@@ -307,7 +307,13 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
         }
     }else if(thing->id() == Thing::DOOR){
         if(thing->placeholder()->visible())
+        {
             thing->m_pGame->cb_to_tile(player_node, thing_node);
+            string typ = thing->config()->at<string>("type");
+            if(typ == "star"){
+                thing->m_pGame->event("stardoor");
+            }
+        }
     }else if(thing->is_monster()){
         if(thing->alive())
             thing->m_pGame->reset();
