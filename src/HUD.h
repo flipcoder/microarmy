@@ -2,29 +2,25 @@
 #define HUD_H_KW10MMV6
 
 #include <boost/circular_buffer.hpp>
-#include "Window.h"
-#include "Canvas.h"
-#include "Input.h"
+#include "Qor/Window.h"
+#include "Qor/Canvas.h"
+#include "Qor/Input.h"
 
-class Console:
+class HUD:
     public Node
 {
     public:
 
-        Console(
-            Interpreter* interp, 
+        HUD(
             Window* window,
             Input* input,
             Cache<Resource,std::string>* cache
         );
-        virtual ~Console() {}
-
-        //Console(const Console&) = default;
-        //Console(Console&&) = default;
-        //Console& operator=(const Console&) = default;
-        //Console& operator=(Console&&) = default;
+        virtual ~HUD() {}
 
         virtual void logic_self(Freq::Time) override;
+
+        void set(int star_lev, int stars, int max_stars);
         
     private:
         
@@ -32,13 +28,18 @@ class Console:
 
         Window* m_pWindow = nullptr;
         Input* m_pInput = nullptr;
-        //std::shared_ptr<Canvas> m_pCanvas;
-        std::shared_ptr<Canvas> m_pTextCanvas;
+        std::shared_ptr<Canvas> m_pCanvas;
         Cache<Resource, std::string>* m_pCache;
         Pango::FontDescription m_FontDesc;
+        std::shared_ptr<Mesh> m_pMesh;
 
-        bool m_bInput = false;
         bool m_bDirty = true;
+
+        int m_StarLev = -1;
+        int m_Stars = 0;
+        int m_MaxStars = 0;
+
+        static const std::vector<int> STAR_LEVELS;
 };
 
 #endif

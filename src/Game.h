@@ -7,10 +7,10 @@
 #include "Qor/Camera.h"
 #include "Qor/Pipeline.h"
 #include "Qor/Mesh.h"
-#include "Qor/Console.h"
 #include "Qor/TileMap.h"
 #include "Qor/Sound.h"
 #include "Qor/Sprite.h"
+#include "HUD.h"
 
 class Qor;
 class Thing;
@@ -79,9 +79,9 @@ class Game:
         BasicPartitioner* m_pPartitioner = nullptr;
 
         std::shared_ptr<Node> m_pRoot;
-        std::shared_ptr<Console> m_pConsole;
+        std::shared_ptr<Node> m_pOrthoRoot;
+        std::shared_ptr<Camera> m_pOrthoCamera;
         std::shared_ptr<Camera> m_pCamera;
-        std::shared_ptr<Camera> m_pParallaxCamera;
         std::shared_ptr<TileMap> m_pMap;
         std::shared_ptr<Controller> m_pController;
         std::shared_ptr<Sprite> m_pChar;
@@ -91,6 +91,7 @@ class Game:
         std::shared_ptr<Sound> m_pMusic;
         std::vector<MapTile*> m_Spawns;
         std::vector<MapTile*> m_AltSpawns;
+        std::shared_ptr<HUD> m_pHUD;
 
         std::vector<std::shared_ptr<Thing>> m_Things;
 
@@ -99,6 +100,9 @@ class Game:
         Freq::Alarm m_ShootTimer;
         bool m_WasInAir = false;
         unsigned m_Power = 0;
+        std::vector<int> m_Stars;
+        std::vector<int> m_MaxStars;
+        int m_StarLevel = 0;
         
         unsigned m_Shader = 0;
 

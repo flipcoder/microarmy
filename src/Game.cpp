@@ -31,13 +31,17 @@ void Game :: preload()
     float sh = m_pQor->window()->size().y;
 
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
-    m_pConsole = make_shared<Console>(
-        m_pQor->interpreter(),
+    m_pRoot->add(m_pCamera);
+    
+    m_pHUD = make_shared<HUD>(
         m_pQor->window(),
         m_pQor->input(),
         m_pQor->resources()
     );
-    m_pRoot->add(m_pCamera);
+    m_pOrthoCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
+    m_pOrthoRoot = make_shared<Node>();
+    m_pOrthoCamera->ortho(false);
+    m_pOrthoRoot->add(m_pHUD);
 
     string lev = m_pQor->args().value("map");
     if(lev.empty())
@@ -45,7 +49,7 @@ void Game :: preload()
     
     m_pMap = m_pQor->make<TileMap>(lev+".tmx");
     m_pRoot->add(m_pMap);
-
+    
     m_pMusic = m_pQor->make<Sound>(lev+".ogg");
     m_pRoot->add(m_pMusic);
     
@@ -71,6 +75,7 @@ void Game :: preload()
     m_Players.push_back(m_pChar);
     
     m_pCamera->mode(Tracker::FOLLOW);
+    //m_pCamera->threshold(1.0f);
     m_pCamera->track(m_pCharFocusRight);
     m_pCamera->focus_time(Freq::Time::ms(200));
     m_pCamera->focal_offset(vec3(
@@ -91,14 +96,17 @@ void Game :: preload()
         1.0f
     ));
     m_pCamera->add(m_pViewLight);
-    m_pParallaxCamera = make_shared<Camera>(m_pResources, m_pQor->window());
-    m_pParallaxCamera->ortho();
-    //m_pParallaxCamera->mode(Tracker::STICK);
-    m_pParallaxCamera->rescale(glm::vec3(
-        scale, scale,
-        1.0f
-    ));
-    m_pRoot->add(m_pParallaxCamera);
+    //m_pParallaxCamera = make_shared<Camera>(m_pResources, m_pQor->window());
+    //m_pParallaxCamera->ortho();
+    ////m_pParallaxCamera->mode(Tracker::STICK);
+    //m_pParallaxCamera->rescale(glm::vec3(
+    //    scale, scale,
+    //    1.0f
+    //));
+    //m_pRoot->add(m_pParallaxCamera);
+
+    m_Stars = { 0, 0, 0 };
+    m_MaxStars = { 0, 0, 0 };
     
     vector<vector<shared_ptr<TileLayer>>*> layer_types {
         &m_pMap->layers(),
@@ -108,6 +116,9 @@ void Game :: preload()
     for(auto&& layer: *layers)
     {
         layer->set_main_camera(m_pCamera.get());
+        //m_pCamera->on_move.connect([layer]{
+        //    layer->dirty(true);
+        //});
         
         if(layer->config()->has("parallax"))
         {
@@ -165,6 +176,17 @@ void Game :: preload()
                 }
                 else if(Thing::get_id(obj_cfg))
                 {
+                    if(name == "star")
+                    {
+                        auto typ = obj_cfg->at<string>("type");
+                        if(typ == "bronze")
+                            ++m_MaxStars[0];
+                        else if(typ == "silver")
+                            ++m_MaxStars[1];
+                        else if(typ == "gold")
+                            ++m_MaxStars[2];
+                    }
+                    
                     auto thing = make_shared<Thing>(
                         obj_cfg,
                         obj.get(),
@@ -242,8 +264,8 @@ void Game :: preload()
                     }
                     obj->mesh()->add(n);
                     if(obj_cfg->has("fatal")){
-                        obj_cfg->set<string>("ledge", "");
-                        m_pPartitioner->register_object(n, FATAL);
+                        obj_cfg->set<string>("fatal", "");
+                        //m_pPartitioner->register_object(n, FATAL);
                     }
                     //else if(name == "star")
                     //{
@@ -299,12 +321,38 @@ void Game :: preload()
             }
         }
     }
-    
+
+    m_pHUD->set(m_StarLevel, m_Stars[0], m_MaxStars[0]);
+
     for(auto&& player: m_Players){
         auto _this = this;
         player->event("battery", [_this](const shared_ptr<Meta>&){
             ++_this->m_Power;
         });
+        player->event("star", [_this](const shared_ptr<Meta>& m){
+            auto typs = m->at<string>("type");
+            int typ = 0;
+            if(typs == "bronze")
+                typ = 0;
+            else if(typs == "silver")
+                typ = 1;
+            else if(typs == "gold")
+                typ = 2;
+            ++_this->m_Stars[typ];
+            
+            int stars=0;
+            int max_stars=0;
+            
+            do{
+                stars = _this->m_Stars[_this->m_StarLevel];
+                max_stars = _this->m_MaxStars[_this->m_StarLevel];
+                if(stars == max_stars)
+                    _this->m_StarLevel = std::min<int>(_this->m_StarLevel+1,2);
+            }while(stars == max_stars && _this->m_StarLevel <= 1);
+            
+            _this->m_pHUD->set(_this->m_StarLevel, stars, max_stars);
+        });
+
         setup_player(player);
     }
     reset();
@@ -682,6 +730,7 @@ void Game :: logic(Freq::Time t)
     //    layer.camera->logic(t); // tile partitioner bypasses logic
     //}
     m_pRoot->logic(t);
+    m_pOrthoRoot->logic(t);
 }
 
 void Game :: shoot(Sprite* origin)
@@ -763,5 +812,9 @@ void Game :: render() const
     m_pCamera->position(pos);
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
+    
+    m_pPipeline->winding(true);
+    m_pPipeline->render(m_pOrthoRoot.get(), m_pOrthoCamera.get(), nullptr, Pipeline::NO_CLEAR | Pipeline::NO_DEPTH);
+
 }
 

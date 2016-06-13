@@ -243,6 +243,9 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
                 thing->visible(true);
                 thing->placeholder()->visible(true);
             });
+            auto meta = make_shared<Meta>();
+            meta->set<string>("type", thing->config()->at<string>("type"));
+            player_node->parent()->event("star", meta);
         }
     }else if(thing->id() == Thing::HEART){
         if(thing->placeholder()->visible()){
