@@ -116,9 +116,10 @@ void Game :: preload()
     for(auto&& layer: *layers)
     {
         layer->set_main_camera(m_pCamera.get());
-        //m_pCamera->on_move.connect([layer]{
-        //    layer->dirty(true);
-        //});
+        layer->bake_visible();
+        m_pCamera->on_move.connect([layer]{
+            layer->bake_visible();
+        });
         
         if(layer->config()->has("parallax"))
         {
