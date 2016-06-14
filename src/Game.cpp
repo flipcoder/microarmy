@@ -117,7 +117,8 @@ void Game :: preload()
     {
         layer->set_main_camera(m_pCamera.get());
         layer->bake_visible();
-        m_pCamera->on_move.connect([layer]{
+        auto camera = m_pCamera.get();
+        m_pCamera->on_move.connect([layer, camera]{
             layer->bake_visible();
         });
         
@@ -582,7 +583,7 @@ void Game :: enter()
 {
     m_pMusic->play();
     
-    m_Shader = m_pPipeline->load_shaders({"detail2"});
+    m_Shader = m_pPipeline->load_shaders({"detail2d"});
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
     for(int i=0; i<2; ++i){
         m_pQor->pipeline()->shader(i)->use();
