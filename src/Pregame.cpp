@@ -35,7 +35,7 @@ void Pregame :: preload()
     auto bg = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(vec2(sw, sh), vec2(0.0f, 0.0f))),
         vector<shared_ptr<IMeshModifier>>{
-            make_shared<Wrap>(Prefab::quad_wrap())
+            make_shared<Wrap>(Prefab::quad_wrap(vec2(1.0f, 0.0f), vec2(0.0f, 1.0f)))
         },
         make_shared<MeshMaterial>(mat)
     );
