@@ -284,29 +284,23 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 thing->placeholder()->visible(true);
             });
-            //LOG(".");
-            //auto layer = thing->m_pPlaceholder->tile_layer();
-            ////auto doors = layer->hook("door");
-            ////LOGf("%s doors", doors.size());
-            //LOG(".");
-            //auto keycol = thing->config()->at<string>("type");
-            //LOG(".");
-            //for(auto&& tile: thing->m_pPlaceholder->tile_layer()->tiles())
-            //{
-            //    LOG("a");
-            //    if(not tile)
-            //        continue;
-            //    if(tile->name() == "door"){
-            //        LOG("b");
-            //        LOG("DOOR!")
-            //        auto col = tile->config()->at<string>("type","");
-            //        if(col == keycol){
-            //            LOG("c");
-            //            thing->placeholder()->mesh()->visible(false);
-            //            LOG("unlocking door");
-            //        }
-            //    }
-            //}
+            auto layer = thing->m_pPlaceholder->tile_layer();
+            //LOGf("%s doors", doors.size());
+            auto keycol = thing->config()->at<string>("type");
+            for(auto&& tile: thing->m_pPlaceholder->tile_layer()->tiles())
+            {
+                if(not tile)
+                    continue;
+                for(auto&& ch: *tile)
+                {
+                    if(ch->name() == "door"){
+                        auto col = ch->config()->at<string>("type","");
+                        if(col == keycol){
+                            ch->parent()->visible(false);
+                        }
+                    }
+                }
+            }
         }
     }else if(thing->id() == Thing::DOOR){
         if(thing->placeholder()->visible())
