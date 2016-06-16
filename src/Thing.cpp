@@ -281,9 +281,9 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
         if(thing->placeholder()->visible()){
             thing->sound("pickup.wav");
             thing->placeholder()->visible(false);
-            thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
-                thing->placeholder()->visible(true);
-            });
+            //thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+            //    thing->placeholder()->visible(true);
+            //});
             auto layer = thing->m_pPlaceholder->tile_layer();
             //LOGf("%s doors", doors.size());
             auto keycol = thing->config()->at<string>("type");

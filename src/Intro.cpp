@@ -93,6 +93,7 @@ Intro :: ~Intro()
 
 void Intro :: enter()
 {
+    auto qor = m_pQor;
     m_pMusic->play();
     
     m_pCamera->ortho();
@@ -103,7 +104,7 @@ void Intro :: enter()
     //m_pPipeline->blend(true);
     
     m_MainMenu.options().emplace_back("PLAY", [this]{
-        m_pQor->change_state("pregame");
+        m_MenuContext.push(&m_LevelMenu);
     });
     m_MainMenu.options().emplace_back("OPTIONS", [this]{
         m_MenuContext.push(&m_OptionsMenu);
@@ -111,6 +112,24 @@ void Intro :: enter()
     m_MainMenu.options().emplace_back("QUIT", [this]{
         m_pQor->pop_state();
     });
+
+    m_LevelMenu.options().emplace_back("HOUSE", [qor]{
+        qor->change_state("pregame");
+    });
+    m_LevelMenu.options().emplace_back("BACKYARD", [qor]{
+        qor->args().set("map", "2");
+        qor->change_state("pregame");
+    });
+    m_LevelMenu.options().emplace_back(
+        "BACK",
+        [this]{
+            m_pQor->save_settings();
+            m_MenuContext.pop();
+        },
+        std::function<bool(int)>(),
+        string(), // no desc
+        Menu::Option::BACK
+    );
 
     m_pVolumeText = std::make_shared<string>(string("Global Vol: ") + to_string(
         m_pResources->config()->meta("audio")->at<int>("volume")
@@ -124,6 +143,7 @@ void Intro :: enter()
         m_pResources->config()->meta("audio")->at<int>("music-volume")
         ) + "%"
     );
+
     m_OptionsMenu.options().emplace_back(m_pVolumeText,
         [this]{
         },

@@ -45,6 +45,7 @@ class Intro:
         std::shared_ptr<MenuGUI> m_pMenuGUI;
         MenuContext m_MenuContext;
         Menu m_MainMenu;
+        Menu m_LevelMenu;
         Menu m_OptionsMenu;
         
         std::shared_ptr<std::string> m_pVolumeText;
