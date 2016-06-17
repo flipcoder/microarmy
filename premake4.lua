@@ -82,7 +82,7 @@ solution("microarmy")
             --"`pkg-config --libs cairomm pangomm`"
         }
         configuration {"debug"}
-            defines { "BACKWARD_HAS_BFD=1" }
+            defines { "BACKWARD_HAS_BFD=1", "GLM_FORCE_RADIANS" }
             links {
                 "z",
                 "bfd",
