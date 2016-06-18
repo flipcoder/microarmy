@@ -109,11 +109,15 @@ class Thing:
         void stun();
         void origin();
         void shoot(Sprite* origin);
+        void activate();
+
+        void register_player(Sprite* p);
         
     private:
         
         int m_HP = 1;
         int m_MaxHP = 1;
+        float m_StartSpeed = 0.0f;
         float m_Speed = 0.0f;
         bool m_Dying = false;
         bool m_Dead = false;
@@ -140,6 +144,8 @@ class Thing:
         glm::vec3 m_Impulse;
         Freq::Alarm m_StunTimer;
         Freq::Timeline* m_pTimeline;
+
+        std::vector<Sprite*> m_Players;
 };
 
 #endif

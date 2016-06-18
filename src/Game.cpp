@@ -354,6 +354,14 @@ void Game :: preload()
             
             _this->m_pHUD->set(_this->m_StarLevel, stars, max_stars);
         });
+        event("stardoor", [_this](const shared_ptr<Meta>& m){
+            if(_this->m_Stars[0] == _this->m_MaxStars[0]){
+                auto mapname = _this->m_pQor->args().value_or("map","1");
+                auto nextmap = to_string(boost::lexical_cast<int>(mapname) + 1);
+                _this->m_pQor->args().set("map", nextmap);
+                _this->m_pQor->change_state("pregame");
+            }
+        });
 
         setup_player(player);
     }

@@ -8,7 +8,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     "",
     
     // monsters
-    "mouse",
+    "",
     "snail",
     "wizard",
     "robot",
@@ -105,7 +105,8 @@ void Thing :: init_thing()
 
         m_HP = m_pConfig->at<int>("hp",5);
         m_MaxHP = m_pConfig->at<int>("hp",5);
-        m_Speed = m_pConfig->at<double>("speed",10.0);
+        m_StartSpeed = m_pConfig->at<double>("speed",10.0);
+        m_Speed = m_StartSpeed;
         //LOGf("hp: %s", m_HP);
         m_pSprite = make_shared<Sprite>(
             m_pResources->transform(m_Identity+".json"),
@@ -403,7 +404,7 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
             }
             
             bullet->safe_detach();
-            thing->shoot(thing->m_pSprite.get());
+            thing->activate();
         }
         thing->m_pSprite->material()->ambient(kit::mix(
             Color::red(), Color::white(), thing->hp_fraction()
@@ -499,19 +500,20 @@ void Thing :: shoot(Sprite* origin)
         make_shared<MeshMaterial>("laser.png", m_pResources)
     );
 
-    m_pPlaceholder->root()->add(shot);
-    shot->reset_orientation();
-    shot->position(glm::vec3(
-        origin->position().x +
-        -origin->origin().x*origin->size().x +
-            origin->mesh()->world_box().size().x / 2.0f,
-            //((origin->check_state("left")?-1.0f:1.0f) * 4.0f),
-        origin->position().y +
-            -origin->origin().y*origin->size().y +
-            origin->mesh()->world_box().size().y / 2.0f + 
-            -2.0f,
-        origin->position().z
-    ));
+    auto par = origin->parent();
+    par->add(shot);
+    //shot->reset_orientation();
+    //shot->position(glm::vec3(
+    //    origin->position().x +
+    //    -origin->origin().x*origin->size().x +
+    //        origin->mesh()->world_box().size().x / 2.0f,
+    //        //((origin->check_state("left")?-1.0f:1.0f) * 4.0f),
+    //    origin->position().y +
+    //        -origin->origin().y*origin->size().y +
+    //        origin->mesh()->world_box().size().y / 2.0f + 
+    //        -2.0f,
+    //    origin->position().z
+    //));
     shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
     shot->velocity(shot->orient_to_world(glm::vec3(
         (origin->check_state("left")?-1.0f:1.0f) * 256.0f,
@@ -535,5 +537,21 @@ void Thing :: shoot(Sprite* origin)
         vec3(shotbox.min().x, shotbox.min().y, -5.0),
         vec3(shotbox.max().x, shotbox.max().y, 5.0)
     ));
+}
+
+void Thing :: activate()
+{
+    if(is_monster())
+    {
+        if(m_ThingID == MOUSE)
+        {
+            shoot(m_pSprite.get());
+        }
+    }
+}
+
+void Thing :: register_player(Sprite* p)
+{
+    m_Players.push_back(p);
 }
 
