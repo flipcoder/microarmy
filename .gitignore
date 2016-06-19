@@ -1,0 +1,5 @@
+Makefile
+src/Qor
+obj
+bin/microarmy
+microarmy.make
