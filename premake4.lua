@@ -1,21 +1,40 @@
 solution("microarmy")
+    targetdir("bin")
+    
     configurations {"Debug", "Release"}
 
-    targetdir("bin")
-    configuration "Debug"
-        defines { "DEBUG" }
-        --optimize "debug"
-        flags { "Symbols" }
-    configuration "Release"
-        defines { "NDEBUG" }
-        --optimize "speed"
-        flags { "OptimizeSpeed" }
-        targetname("microarmy_dist")
+        -- Debug Config
+        configuration "Debug"
+            defines { "DEBUG", "BACKWARD_HAS_BFD=1", "GLM_FORCE_RADIANS" }
+            flags { "Symbols" }
+            links {
+                "z",
+                "bfd",
+                "iberty"
+            }
+            linkoptions { "`llvm-config --libs core` `llvm-config --ldflags`" }
 
-    project("microarmy")
-        --uuid("")
-        kind("WindowedApp")
-        language("C++")
+        -- Release Config
+        configuration "Release"
+            defines { "NDEBUG" }
+            flags { "OptimizeSpeed" }
+            targetname("microarmy_dist")
+
+        -- gmake Config
+        configuration "gmake"
+            buildoptions { "-std=c++11" }
+            -- Uncomment the following line to get in depth debugging 
+            --buildoptions { "-std=c++11", "-pedantic", "-Wall", "-Wextra" }
+
+        -- OS X Config
+        configuration "macosx"
+            buildoptions { "-U__STRICT_ANSI__", "-stdlib=libc++" }
+            linkoptions { "-stdlib=libc++" }
+
+
+    project "microarmy"
+        kind "WindowedApp"
+        language "C++"
         links {
             "pthread",
             "GL",
@@ -43,32 +62,43 @@ solution("microarmy")
             "z",
             "RakNetDLL"
         }
+
+        -- Project Files
         files {
             "src/**.h",
-            "src/**.cpp"
+            "src/**.cpp",
+            -- "lib/**.h",
+            -- "lib/**.cpp"
         }
+
+        -- Exluding Files
         excludes {
             "src/Qor/Main.cpp",
             "src/Qor/Info.cpp",
-
-                "src/Qor/DemoState.*",
-            
+            "src/Qor/DemoState.*",
             "src/Qor/tests/**",
             "src/Qor/scripts/**",
             "src/Qor/addons/**",
-            "src/Qor/shaders/**"
+            "src/Qor/shaders/**",
+            "lib/Qor/src/Main.cpp",
+            "lib/Qor/src/Info.cpp",
+            "lib/Qor/src/DemoState.*",
+            "lib/Qor/src/tests/**",
+            "lib/Qor/src/scripts/**",
+            "lib/Qor/src/addons/**",
+            "lib/Qor/src/shaders/**"
         }
+
         includedirs {
             "vendor/include/",
             "/usr/local/include/",
-            "/usr/local/include/",
-            --"/usr/include/cegui-0/",
             "/usr/include/bullet/",
             "/usr/include/raknet/DependentExtensions"
         }
+
         libdirs {
-            --"/usr/lib/cegui-0.8/",
-            "/usr/local/lib/",
+            -- "lib",
+            "/usr/local/lib",
             "/usr/local/lib64/",
         }
         
@@ -76,32 +106,8 @@ solution("microarmy")
             "`python2-config --includes`",
             "`pkg-config --cflags cairomm-1.0 pangomm-1.4`"
         }
+
         linkoptions {
             "`python2-config --libs`",
             "`pkg-config --libs cairomm-1.0 pangomm-1.4`"
-            --"`pkg-config --libs cairomm pangomm`"
         }
-        configuration {"debug"}
-            defines { "BACKWARD_HAS_BFD=1", "GLM_FORCE_RADIANS" }
-            links {
-                "z",
-                "bfd",
-                "iberty"
-            }
-            linkoptions { "`llvm-config --libs core` `llvm-config --ldflags`" }
-        configuration {}
-
-        --configuration { "linux" }
-        --    includedirs {
-        --        "/usr/include/lua5.1",
-        --    }
-        --configuration {}
-
-        configuration { "gmake" }
-            buildoptions { "-std=c++11" }
-            --buildoptions { "-std=c++11",  "-pedantic", "-Wall", "-Wextra" }
-            configuration { "macosx" }
-                buildoptions { "-U__STRICT_ANSI__", "-stdlib=libc++" }
-                linkoptions { "-stdlib=libc++" }
-        configuration {}
-        
