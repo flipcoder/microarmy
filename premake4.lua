@@ -24,7 +24,7 @@ solution("microarmy")
         configuration "gmake"
             buildoptions { "-std=c++11" }
             -- Uncomment the following line to get in depth debugging 
-            --buildoptions { "-std=c++11", "-pedantic", "-Wall", "-Wextra" }
+            -- buildoptions { "-std=c++11", "-pedantic", "-Wall", "-Wextra", '-v', '-fsyntax-only'}
 
         -- OS X Config
         configuration "macosx"
@@ -60,44 +60,40 @@ solution("microarmy")
             "BulletCollision",
             "LinearMath",
             "z",
-            "RakNetDLL"
+            "RakNetDLL",
         }
 
         -- Project Files
         files {
             "src/**.h",
             "src/**.cpp",
-            -- "lib/**.h",
-            -- "lib/**.cpp"
+            "lib/Qor/Qor/**.h",
+            "lib/Qor/Qor/**.cpp",
+            "lib/Qor/lib/kit/**.h",
+            "lib/Qor/lib/kit/**.cpp"
         }
 
         -- Exluding Files
         excludes {
-            "src/Qor/Main.cpp",
-            "src/Qor/Info.cpp",
-            "src/Qor/DemoState.*",
-            "src/Qor/tests/**",
-            "src/Qor/scripts/**",
-            "src/Qor/addons/**",
-            "src/Qor/shaders/**",
-            "lib/Qor/src/Main.cpp",
-            "lib/Qor/src/Info.cpp",
-            "lib/Qor/src/DemoState.*",
-            "lib/Qor/src/tests/**",
-            "lib/Qor/src/scripts/**",
-            "lib/Qor/src/addons/**",
-            "lib/Qor/src/shaders/**"
+            "lib/Qor/Qor/Main.cpp",
+            "lib/Qor/Qor/Info.cpp",
+            "lib/Qor/Qor/DemoState.*",
+            "lib/Qor/Qor/tests/**",
+            "lib/Qor/Qor/scripts/**",
+            "lib/Qor/Qor/addons/**",
+            "lib/Qor/lib/kit/tests/**",
+            "lib/Qor/lib/kit/toys/**"
         }
 
         includedirs {
-            "vendor/include/",
+            "lib/Qor/",
+            "lib/Qor/lib/kit",
             "/usr/local/include/",
             "/usr/include/bullet/",
             "/usr/include/raknet/DependentExtensions"
         }
 
         libdirs {
-            -- "lib",
             "/usr/local/lib",
             "/usr/local/lib64/",
         }

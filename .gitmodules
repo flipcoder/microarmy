@@ -1,3 +1,4 @@
-[submodule "lib/qor"]
-	path = lib/qor
+
+[submodule "lib/Qor"]
+	path = lib/Qor
 	url = https://github.com/flipcoder/qor.git
