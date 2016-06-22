@@ -16,7 +16,8 @@ Pregame :: Pregame(Qor* engine):
     m_pRoot(make_shared<Node>()),
     m_pResources(engine->resources()),
     m_pPipeline(engine->pipeline()),
-    m_pController(engine->session()->active_profile(0)->controller().get())
+    m_pController(engine->session()->active_profile(0)->controller().get()),
+    m_Transition(engine->timer()->timeline())
 {}
 
 void Pregame :: preload() {
@@ -42,6 +43,8 @@ void Pregame :: preload() {
     mat->diffuse(Color(1.0f, 0.25f));
     bg->position(vec3(0.0f,0.0f,-1.0f));
     m_pRoot->add(bg);
+
+    m_Transition.set(Freq::Time::seconds(11.0f));
 }
 
 Pregame :: ~Pregame() {
@@ -62,11 +65,14 @@ void Pregame :: logic(Freq::Time t) {
         m_pQor->quit();
 
     if (m_pInput->key(SDLK_SPACE) ||
-       m_pInput->key(SDLK_RETURN) ||
-       m_pController->button("select").pressed_now()
+        m_pInput->key(SDLK_RETURN) ||
+        m_pController->button("select").pressed_now()
     ){
         m_pQor->change_state("game");
     }
+    
+    if(m_Transition.elapsed())
+        m_pQor->change_state("game");
     
     m_pRoot->logic(t);
 }

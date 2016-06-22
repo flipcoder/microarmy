@@ -38,6 +38,8 @@ class Pregame: public State {
         std::shared_ptr<Sound> m_pMusic;
         
         Controller* m_pController = nullptr;
+
+        Freq::Alarm m_Transition;
 };
 
 #endif
