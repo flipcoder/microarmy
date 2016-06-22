@@ -15,8 +15,8 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="64" name="items" tilewidth="16" tileheight="16" tilecount="18" columns="18">
-  <image source="../tilesets/items.png" trans="ff00ff" width="288" height="16"/>
+ <tileset firstgid="64" name="items" tilewidth="16" tileheight="16" tilecount="24" columns="24">
+  <image source="../tilesets/items.png" trans="ff00ff" width="384" height="16"/>
  </tileset>
  <layer name="parallax" width="250" height="90">
   <properties>
