@@ -3,4 +3,3 @@ microarmy.make
 src/Qor
 obj
 bin/microarmy
-bin/shaders
