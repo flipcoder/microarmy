@@ -4,6 +4,7 @@
             "CXX": "clang++"
         },
         "makefile_params": [
+            "microarmy",
             "CXX='clang++'"
         ]
     }
