@@ -3,15 +3,15 @@
     "sensitivity": 0.5,
     "input": {
         "binds": {
-            "gamepad hat 2": "up",
-            "gamepad hat 0": "left",
-            "gamepad hat 1": "right",
-            "gamepad hat 3": "down",
-            "gamepad 1": [
+            "up": "up",
+            "left": "left",
+            "right": "right",
+            "down": "down",
+            "z": [
                 "shoot",
                 "back"
             ],
-            "gamepad 0": [
+            "x": [
                 "jump",
                 "select"
             ]
