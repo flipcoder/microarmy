@@ -112,6 +112,7 @@ void Intro :: enter() {
     });
 
     m_LevelMenu.options().emplace_back("HOUSE", [qor]{
+        qor->args().set("map", "1");
         qor->change_state("pregame");
     });
     m_LevelMenu.options().emplace_back("BACKYARD", [qor]{
