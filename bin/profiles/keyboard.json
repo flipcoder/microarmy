@@ -1,0 +1,20 @@
+{
+    "name": "Player",
+    "sensitivity": 0.5,
+    "input": {
+        "binds": {
+            "up": "up",
+            "left": "left",
+            "right": "right",
+            "down": "down",
+            "z": [
+                "shoot",
+                "back"
+            ],
+            "x": [
+                "jump",
+                "select"
+            ]
+        }
+    }
+}
