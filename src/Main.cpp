@@ -1,6 +1,6 @@
 #include <iostream>
 #include <memory>
-#include "Qor/kit/kit.h"
+#include "kit/kit.h"
 #include "Qor/Qor.h"
 #include "Info.h"
 #include "Game.h"
