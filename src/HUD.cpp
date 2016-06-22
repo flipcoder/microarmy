@@ -19,8 +19,7 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache):
     set(0,0,0);
 }
 
-void HUD :: redraw()
-{
+void HUD :: redraw() {
     auto sw = m_pWindow->size().x;
     auto sh = m_pWindow->size().y;
     
@@ -41,25 +40,24 @@ void HUD :: redraw()
     m_pCanvas->dirty(true);
 }
 
-void HUD :: logic_self(Freq::Time)
-{
-    if(m_bDirty) {
+void HUD :: logic_self(Freq::Time) {
+    if (m_bDirty) {
         redraw();
         m_bDirty = false;
     }
 }
 
-void HUD :: set(int star_lev, int stars, int max_stars)
-{
-    if(star_lev != m_StarLev)
-    {
+void HUD :: set(int star_lev, int stars, int max_stars) {
+    if (star_lev != m_StarLev) {
         m_StarLev = star_lev;
         
         auto sw = m_pWindow->size().x;
         auto sh = m_pWindow->size().y;
         auto mat = make_shared<MeshMaterial>("items.png", m_pCache);
-        if(m_pMesh)
+
+        if (m_pMesh)
             m_pMesh->detach();
+
         m_pMesh = make_shared<Mesh>(
             make_shared<MeshGeometry>(Prefab::quad(vec2(sw/24, sw/24))),
             vector<shared_ptr<IMeshModifier>>{
@@ -78,4 +76,3 @@ void HUD :: set(int star_lev, int stars, int max_stars)
     m_MaxStars = max_stars;
     m_bDirty = true;
 }
-

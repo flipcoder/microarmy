@@ -4,13 +4,39 @@
 #include <memory>
 #include "Qor/TileMap.h" 
 #include "Qor/BasicPartitioner.h"
+
 class Game;
 class Sprite;
 
-class Thing:
-    public Node
-{
+class Thing: public Node {
     public:
+        enum Type {
+            INVALID_THING = 0,
+
+            MONSTERS,
+                MOUSE = MONSTERS,
+                SNAIL,
+                WIZARD,
+                ROBOT,
+                DUCK,
+            MONSTERS_END,
+
+            ITEMS = MONSTERS_END,
+                BATTERY = ITEMS,
+                HEART,
+                STAR,
+                KEY,
+            ITEMS_END,
+
+            OBJECTS = ITEMS_END,
+                SPRING = OBJECTS,
+                DOOR,
+            OBJECTS_END,
+            
+            MARKERS = OBJECTS_END,
+                LIGHT = MARKERS,
+            MARKERS_END
+        };
 
         Thing(
             const std::shared_ptr<Meta>& config,
@@ -32,34 +58,6 @@ class Thing:
         static unsigned get_id(const std::shared_ptr<Meta>& config);
         static bool is_thing(std::string name);
 
-        enum Type
-        {
-            INVALID_THING = 0,
-
-            MONSTERS,
-            MOUSE = MONSTERS,
-            SNAIL,
-            WIZARD,
-            ROBOT,
-            DUCK,
-            MONSTERS_END,
-
-            ITEMS = MONSTERS_END,
-            BATTERY = ITEMS,
-            HEART,
-            STAR,
-            KEY,
-            ITEMS_END,
-
-            OBJECTS = ITEMS_END,
-            SPRING = OBJECTS,
-            DOOR,
-            OBJECTS_END,
-            
-            MARKERS = OBJECTS_END,
-            LIGHT = MARKERS,
-            MARKERS_END
-        };
         
         const static std::vector<std::string> s_TypeNames;
 
@@ -149,4 +147,3 @@ class Thing:
 };
 
 #endif
-

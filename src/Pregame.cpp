@@ -19,8 +19,7 @@ Pregame :: Pregame(Qor* engine):
     m_pController(engine->session()->active_profile(0)->controller().get())
 {}
 
-void Pregame :: preload()
-{
+void Pregame :: preload() {
     auto win = m_pQor->window();
     float sw = m_pQor->window()->size().x;
     float sh = m_pQor->window()->size().y;
@@ -45,13 +44,11 @@ void Pregame :: preload()
     m_pRoot->add(bg);
 }
 
-Pregame :: ~Pregame()
-{
+Pregame :: ~Pregame() {
     m_pPipeline->partitioner()->clear();
 }
 
-void Pregame :: enter()
-{
+void Pregame :: enter() {
     m_pMusic->play();
     
     m_pCamera->ortho();
@@ -60,12 +57,11 @@ void Pregame :: enter()
     m_pInput->relative_mouse(false);
 }
 
-void Pregame :: logic(Freq::Time t)
-{
-    if(m_pInput->key(SDLK_ESCAPE))
+void Pregame :: logic(Freq::Time t) {
+    if (m_pInput->key(SDLK_ESCAPE))
         m_pQor->quit();
 
-    if(m_pInput->key(SDLK_SPACE) ||
+    if (m_pInput->key(SDLK_SPACE) ||
        m_pInput->key(SDLK_RETURN) ||
        m_pController->button("select").pressed_now()
     ){
@@ -75,8 +71,6 @@ void Pregame :: logic(Freq::Time t)
     m_pRoot->logic(t);
 }
 
-void Pregame :: render() const
-{
+void Pregame :: render() const {
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get());
 }
-

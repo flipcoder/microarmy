@@ -15,13 +15,10 @@
 class Qor;
 class Thing;
 
-class Game:
-    public State
-{
+class Game: public State {
     public:
 
-        enum ObjectTypes
-        {
+        enum ObjectTypes {
             STATIC,
             LEDGE,
             FATAL,
@@ -111,5 +108,3 @@ class Game:
 };
 
 #endif
-
-

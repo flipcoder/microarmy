@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <thread>
+
 using namespace std;
 using namespace glm;
 
@@ -42,8 +43,7 @@ Intro :: Intro(Qor* engine):
     ))
 {}
 
-void Intro :: preload()
-{
+void Intro :: preload() {
     auto win = m_pQor->window();
     float sw = m_pQor->window()->size().x;
     float sh = m_pQor->window()->size().y;
@@ -86,13 +86,11 @@ void Intro :: preload()
     m_pRoot->add(bg);
 }
 
-Intro :: ~Intro()
-{
+Intro :: ~Intro() {
     m_pPipeline->partitioner()->clear();
 }
 
-void Intro :: enter()
-{
+void Intro :: enter() {
     auto qor = m_pQor;
     m_pMusic->play();
     
@@ -203,8 +201,7 @@ void Intro :: enter()
     m_pRoot->add(m_pMenuGUI);
 }
 
-void Intro :: logic(Freq::Time t)
-{
+void Intro :: logic(Freq::Time t) {
     if(m_pInput->key(SDLK_ESCAPE))
         m_pQor->quit();
     
@@ -218,8 +215,6 @@ void Intro :: logic(Freq::Time t)
     m_pRoot->logic(t);
 }
 
-void Intro :: render() const
-{
+void Intro :: render() const {
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get());
 }
-

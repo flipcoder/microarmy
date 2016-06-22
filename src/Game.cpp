@@ -8,8 +8,10 @@
 #include <cstdlib>
 #include <chrono>
 #include <thread>
+
 using namespace std;
 using namespace glm;
+
 namespace _ = std::placeholders;
 
 Game :: Game(Qor* engine):
@@ -25,8 +27,7 @@ Game :: Game(Qor* engine):
 {
 }
 
-void Game :: preload()
-{
+void Game :: preload() {
     float sw = m_pQor->window()->size().x;
     float sh = m_pQor->window()->size().y;
 
@@ -44,6 +45,7 @@ void Game :: preload()
     m_pOrthoRoot->add(m_pHUD);
 
     string lev = m_pQor->args().value("map");
+    
     if(lev.empty())
         lev = "1";
     
@@ -112,9 +114,9 @@ void Game :: preload()
         &m_pMap->layers(),
         &m_pMap->object_layers()
     };
+
     for(auto&& layers: layer_types)
-    for(auto&& layer: *layers)
-    {
+    for(auto&& layer: *layers) {
         layer->set_main_camera(m_pCamera.get());
         layer->bake_visible();
         auto camera = m_pCamera.get();
@@ -122,8 +124,7 @@ void Game :: preload()
             layer->bake_visible();
         });
         
-        if(layer->config()->has("parallax"))
-        {
+        if (layer->config()->has("parallax")) {
             float parallax = boost::lexical_cast<float>(
                 layer->config()->at<string>("parallax", "1.0")
             );
@@ -147,45 +148,46 @@ void Game :: preload()
             l->dist(10000.0f);
             pl.root->add(l);
             pl.light = l;
+
             continue;
         }
         
-        for(auto&& tile_ptr: layer->all_descendants())
-        {
-            if(not tile_ptr)
+        for (auto&& tile_ptr: layer->all_descendants()) {
+            if (not tile_ptr)
                 continue;
+
             auto tile = tile_ptr->as_node();
             // read object properties and replace
             auto obj = std::dynamic_pointer_cast<MapTile>(tile);
-            if(obj)
-            {
+
+            if(obj) {
                 auto obj_cfg = obj->config();
                 obj->box() = obj->mesh()->box();
                 auto name = obj_cfg->at<string>("name","");
-                if(name=="spawn")
-                {
+                if(name=="spawn") {
                     obj->visible(false);
                     obj->mesh()->visible(false);
                     m_Spawns.push_back(obj.get());
+                    
                     continue;
                 }
-                else if(name=="altspawn")
-                {
+
+                else if (name=="altspawn") {
                     obj->visible(false);
                     obj->mesh()->visible(false);
                     m_AltSpawns.push_back(obj.get());
+
                     continue;
                 }
-                else if(Thing::get_id(obj_cfg))
-                {
-                    if(name == "star")
-                    {
+                else if (Thing::get_id(obj_cfg)) {
+                    if (name == "star") {
                         auto typ = obj_cfg->at<string>("type");
-                        if(typ == "bronze")
+
+                        if (typ == "bronze")
                             ++m_MaxStars[0];
-                        else if(typ == "silver")
+                        else if (typ == "silver")
                             ++m_MaxStars[1];
-                        else if(typ == "gold")
+                        else if (typ == "gold")
                             ++m_MaxStars[2];
                     }
                     
@@ -204,8 +206,7 @@ void Game :: preload()
                 }
                 //bool collision = layer->has_prop("collision");
                 bool depth = layer->depth() || obj->config()->has("depth");
-                if(depth)
-                {
+                if (depth) {
                     m_pPartitioner->register_provider(STATIC, [layer](Box box){
                         vector<std::weak_ptr<Node>> r;
                         auto nodes = layer->query(box, [](Node* n){
@@ -214,6 +215,7 @@ void Game :: preload()
                         std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
                             return std::weak_ptr<Node>(n->as_node());
                         });
+
                         return r;
                     });
                     m_pPartitioner->register_provider(LEDGE, [layer](Box box){
@@ -242,30 +244,30 @@ void Game :: preload()
                     auto mask = obj_cfg->at<shared_ptr<Meta>>("mask", shared_ptr<Meta>());
                     bool hflip = obj->orientation() & (unsigned)MapTile::Orientation::H;
                     bool vflip = obj->orientation() & (unsigned)MapTile::Orientation::V;
-                    if(mask && mask->size()==4)
-                    {
+                    if (mask && mask->size() == 4) {
                         n->box() = Box(
                             vec3(mask->at<double>(0), mask->at<double>(1), -5.0f),
                             vec3(mask->at<double>(2), mask->at<double>(3), 5.0f)
                         );
                     }
-                    else
-                    {
+                    else {
                         n->box() = Box(
                             vec3(0.0f, 0.0f, -5.0f),
                             vec3(1.0f, 1.0f, 5.0f)
                         );
                     }
-                    if(hflip){
+
+                    if(hflip) {
                         n->box().min().x = 1.0f - n->box().min().x;
                         n->box().max().x = 1.0f - n->box().max().x;
                     }
-                    if(vflip){
+                    if(vflip) {
                         n->box().min().y = 1.0f - n->box().min().y;
                         n->box().max().y = 1.0f - n->box().max().y;
                     }
+
                     obj->mesh()->add(n);
-                    if(obj_cfg->has("fatal")){
+                    if (obj_cfg->has("fatal")) {
                         obj_cfg->set<string>("fatal", "");
                         //m_pPartitioner->register_object(n, FATAL);
                     }
@@ -326,7 +328,7 @@ void Game :: preload()
 
     m_pHUD->set(m_StarLevel, m_Stars[0], m_MaxStars[0]);
 
-    for(auto&& player: m_Players){
+    for (auto&& player: m_Players) {
         auto _this = this;
         player->event("battery", [_this](const shared_ptr<Meta>&){
             ++_this->m_Power;
@@ -334,6 +336,7 @@ void Game :: preload()
         player->event("star", [_this](const shared_ptr<Meta>& m){
             auto typs = m->at<string>("type");
             int typ = 0;
+
             if(typs == "bronze")
                 typ = 0;
             else if(typs == "silver")
@@ -345,12 +348,12 @@ void Game :: preload()
             int stars=0;
             int max_stars=0;
             
-            do{
+            do {
                 stars = _this->m_Stars[_this->m_StarLevel];
                 max_stars = _this->m_MaxStars[_this->m_StarLevel];
                 if(stars == max_stars)
                     _this->m_StarLevel = std::min<int>(_this->m_StarLevel+1,2);
-            }while(stars == max_stars && _this->m_StarLevel <= 1);
+            } while(stars == max_stars && _this->m_StarLevel <= 1);
             
             _this->m_pHUD->set(_this->m_StarLevel, stars, max_stars);
         });
@@ -405,27 +408,25 @@ void Game :: preload()
     m_ShootTimer.set(Freq::Time::ms(0));
 }
 
-void Game :: reset()
-{
+void Game :: reset() {
     //m_pChar->position(glm::vec3(0.0f, 0.0f, 0.0f));
-    try{
+    try {
         //m_Spawns.at(0)->stick(m_pChar);
         m_pChar->position(m_Spawns.at(0)->position());
-    }catch(...){
+    } catch(...) {
         WARNING("Map has no spawn points");
     }
+
     m_pChar->move(glm::vec3(0.0f, 0.0f, 1.0f));
 
     on_reset();
 }
 
-Game :: ~Game()
-{
+Game :: ~Game() {
     m_pPipeline->partitioner()->clear();
 }
 
-void Game :: setup_thing(std::shared_ptr<Thing> thing)
-{
+void Game :: setup_thing(std::shared_ptr<Thing> thing) {
     thing->init_thing();
     m_Things.push_back(thing);
 
@@ -433,8 +434,7 @@ void Game :: setup_thing(std::shared_ptr<Thing> thing)
         setup_player_to_thing(player,thing);
 }
 
-void Game :: setup_player(std::shared_ptr<Sprite> player)
-{ 
+void Game :: setup_player(std::shared_ptr<Sprite> player) {
     // create masks
     auto n = make_shared<Node>();
     n->name("mask");
@@ -465,12 +465,12 @@ void Game :: setup_player(std::shared_ptr<Sprite> player)
     m_pPartitioner->register_object(n, CHARACTER_SIDES);
 
     setup_player_to_map(player);
-    for(auto&& thing: m_Things)
+
+    for (auto&& thing: m_Things)
         setup_player_to_thing(player,thing);
 }
 
-void Game :: setup_player_to_map(std::shared_ptr<Sprite> player)
-{
+void Game :: setup_player_to_map(std::shared_ptr<Sprite> player) {
     if(not m_pMap)
         return;
 }
@@ -479,14 +479,13 @@ void Game :: setup_player_to_thing(std::shared_ptr<Sprite> player, std::shared_p
 {
 }
 
-std::vector<Node*> Game :: get_static_collisions(Node* a)
-{
+std::vector<Node*> Game :: get_static_collisions(Node* a) {
     auto static_cols = m_pPartitioner->get_collisions_for(a, STATIC);
     auto ledge_cols = m_pPartitioner->get_collisions_for(a, LEDGE);
     
     auto m = a->parent();
     vec3 old_pos;
-    if(m->num_snapshots())
+    if (m->num_snapshots())
         old_pos = Matrix::translation(kit::safe_ptr(m->snapshot(0))->world_transform);
     else
         old_pos = m->position(Space::WORLD);
@@ -494,12 +493,13 @@ std::vector<Node*> Game :: get_static_collisions(Node* a)
     std::copy_if(ENTIRE(ledge_cols), std::back_inserter(static_cols), [old_pos,a](Node* n){
         return old_pos.y <= n->position(Space::WORLD).y;
     });
+
     return static_cols;
 }
 
-void Game :: cb_to_static(Node* a, Node* b, Node* m)
-{
-    if(not m) m = a;
+void Game :: cb_to_static(Node* a, Node* b, Node* m) {
+    if (not m)
+        m = a;
     
     auto p = m->position(Space::PARENT);
     auto v = m->velocity();
@@ -512,7 +512,7 @@ void Game :: cb_to_static(Node* a, Node* b, Node* m)
     vec3 old_pos;
     try{
         old_pos = Matrix::translation(kit::safe_ptr(m->snapshot(0))->world_transform);
-    }catch(...){
+    } catch(...){
         return;
     }
     
@@ -540,10 +540,10 @@ void Game :: cb_to_static(Node* a, Node* b, Node* m)
     m->velocity(glm::vec3(0.0f));
 }
 
-void Game :: cb_to_ledge(Node* a, Node* b)
-{
+void Game :: cb_to_ledge(Node* a, Node* b) {
     auto m = a->parent();
     auto old_pos = Matrix::translation(kit::safe_ptr(m->snapshot(0))->world_transform);
+
     if(m->velocity().y >= K_EPSILON)
         if(old_pos.y <= b->position(Space::WORLD).y){
             //LOGf("static %s %s", old_pos.y % b->position(Space::WORLD).y);
@@ -551,13 +551,11 @@ void Game :: cb_to_ledge(Node* a, Node* b)
         }
 }
 
-void Game :: cb_to_tile(Node* a, Node* b)
-{
+void Game :: cb_to_tile(Node* a, Node* b) {
     cb_to_static(a, b, a->parent());
 }
 
-void Game :: cb_to_fatal(Node* a, Node* b)
-{
+void Game :: cb_to_fatal(Node* a, Node* b) {
     Sound::play(m_pCamera.get(), "die.wav", m_pResources);
     reset();
     m_pChar->velocity(glm::vec3(0.0f));
@@ -579,26 +577,27 @@ void Game :: cb_to_fatal(Node* a, Node* b)
 //    }
 //}
 
-void Game :: cb_bullet_to_static(Node* a, Node* b)
-{
+void Game :: cb_bullet_to_static(Node* a, Node* b) {
     Sound::play(a, "hit.wav", m_pResources);
     //a->on_tick.connect([a](Freq::Time){
         a->safe_detach();
     //});
 }
 
-void Game :: enter()
-{
+void Game :: enter() {
     m_pMusic->play();
     
     m_Shader = m_pPipeline->load_shaders({"detail2d"});
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
-    for(int i=0; i<2; ++i){
+
+    for (int i=0; i<2; ++i){
         m_pQor->pipeline()->shader(i)->use();
         int u = m_pQor->pipeline()->shader(i)->uniform("Ambient");
+
         if(u >= 0)
             m_pQor->pipeline()->shader(i)->uniform(u,0.1f);
     }
+
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
     
     m_pCamera->ortho();
@@ -607,26 +606,26 @@ void Game :: enter()
     m_pPipeline->bg_color(Color::black());
     m_pInput->relative_mouse(false);
 
-    for(auto&& player: m_Players)
+    for (auto&& player: m_Players)
         player->acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
 }
 
-void Game :: logic(Freq::Time t)
-{
+void Game :: logic(Freq::Time t) {
     Actuation::logic(t);
     
-    if(m_pInput->key(SDLK_ESCAPE))
+    if (m_pInput->key(SDLK_ESCAPE))
         m_pQor->quit();
 
-    for(auto&& player: m_Players)
-    {
+    for (auto&& player: m_Players) {
         auto feet_colliders = get_static_collisions(
             player->hook("feetmask").at(0)
         );
+
         auto wall_colliders = m_pPartitioner->get_collisions_for(
             player->hook("sidemask").at(0), STATIC
         );
-        if(not feet_colliders.empty() && wall_colliders.empty()){
+
+        if (not feet_colliders.empty() && wall_colliders.empty()){
             auto v = player->velocity();
             player->velocity(0.0f, v.y, v.z);
         }
@@ -634,18 +633,19 @@ void Game :: logic(Freq::Time t)
         auto vel = player->velocity();
         bool in_air = feet_colliders.empty();
         bool walljump = feet_colliders.empty() && not wall_colliders.empty();
-        if(walljump)
+
+        if (walljump)
             player->set_state("walljump");
-        else if(in_air)
+        else if (in_air)
             player->set_state("jump");
         
         glm::vec3 move(0.0f);
-        if(player->velocity().x > -K_EPSILON && player->velocity().x < K_EPSILON){
-            if(m_pController->button("left")){
+        if (player->velocity().x > -K_EPSILON && player->velocity().x < K_EPSILON) {
+            if (m_pController->button("left")) {
                 m_pCamera->track(m_pCharFocusLeft);
                 move += glm::vec3(-1.0f, 0.0f, 0.0f);
             }
-            if(m_pController->button("right")){
+            if (m_pController->button("right")) {
                 m_pCamera->track(m_pCharFocusRight);
                 move += glm::vec3(1.0f, 0.0f, 0.0f);
             }
@@ -661,16 +661,17 @@ void Game :: logic(Freq::Time t)
             if(walljump || not in_air || not m_JumpTimer.elapsed())
             {
                 float x = 0.0f;
-                if(walljump){
+                if (walljump) {
                     auto last_dir = m_LastWallJumpDir;
                     auto tile_loc = wall_colliders.at(0)->world_box().center().x;
-                    if(tile_loc < player->position(Space::WORLD).x + 4.0f){
+
+                    if (tile_loc < player->position(Space::WORLD).x + 4.0f) {
                         m_LastWallJumpDir = -1;
                     //    LOG("left");
                     //    player->set_state("left");
                     //    x += (move.x < -K_EPSILON) ? 100.0f : 0.0f;
                     //}
-                    }else{
+                    } else {
                         m_LastWallJumpDir = 1;
                     //    LOG("right");
                     //    player->set_state("right");
@@ -679,57 +680,59 @@ void Game :: logic(Freq::Time t)
 
                     // prevent "climbing" the wall by checking to make sure last wall jump was a diff direction (or floor)
                     // 0 means floors, -1 and 1 are directions
-                    if(m_LastWallJumpDir != 0 && last_dir != 0 && m_LastWallJumpDir == last_dir)
+                    if (m_LastWallJumpDir != 0 && last_dir != 0 && m_LastWallJumpDir == last_dir)
                         block_jump = true;
                     //move = vec3(0.0f);
                 }
             
                 // jumping from floor or from a different wall
-                if(not block_jump){
-                    if(not in_air || walljump || not m_JumpTimer.elapsed()){
+                if (not block_jump) {
+                    if (not in_air || walljump || not m_JumpTimer.elapsed()){
                         player->velocity(glm::vec3(x, -125.0f, 0.0f));
-                        if(not in_air || walljump){
+
+                        if (not in_air || walljump) {
                             auto sounds = m_pCamera->hook_type<Sound>();
                             if(sounds.empty())
                                 Sound::play(m_pCamera.get(), "jump.wav", m_pResources);
                             m_JumpTimer.set(Freq::Time::ms(200));
                         }
                     }
-                }else{
+                } else {
                     // jumping on same wall? only allow this if jump timer is still running
-                    if(not m_JumpTimer.elapsed())
+                    if (not m_JumpTimer.elapsed())
                         player->velocity(glm::vec3(x, -125.0f, 0.0f));
                 }
             }
-        }else{
+        } else {
             m_JumpTimer.set(Freq::Time::ms(0));
         }
 
-        if(not in_air && m_WasInAir)
+        if (not in_air && m_WasInAir)
             Sound::play(m_pCamera.get(), "touch.wav", m_pResources);
         m_WasInAir = in_air;
         //if(m_pController->button("down"))
         //    move += glm::vec3(0.0f, 1.0f, 0.0f);
         
-        if(not in_air)
+        if (not in_air)
             m_LastWallJumpDir = 0;
-        if(glm::length(move) > K_EPSILON)
-        {
-            if(not in_air)
+
+        if (glm::length(move) > K_EPSILON) {
+            if (not in_air)
                 player->set_state("walk");
+
             move = glm::normalize(move);
-            if(move.x < -K_EPSILON)
+            if (move.x < -K_EPSILON)
                 player->set_state("left");
-            else if(move.x > K_EPSILON)
+            else if (move.x > K_EPSILON)
                 player->set_state("right");
+
             move *= 100.0f * t.s();
             player->clear_snapshots();
             player->snapshot();
             player->move(move);
         }
-        else
-        {
-            if(not in_air)
+        else {
+            if (not in_air)
                 player->set_state("stand");
             player->clear_snapshots();
             player->snapshot();
@@ -743,8 +746,7 @@ void Game :: logic(Freq::Time t)
     m_pOrthoRoot->logic(t);
 }
 
-void Game :: shoot(Sprite* origin)
-{
+void Game :: shoot(Sprite* origin) {
     auto shot = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
         vector<shared_ptr<IMeshModifier>>{
@@ -807,11 +809,12 @@ void Game :: shoot(Sprite* origin)
     ));
 }
 
-void Game :: render() const
-{
+void Game :: render() const {
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
+
     unsigned idx = 0;
     auto pos = m_pCamera->position();
+
     for(auto&& layer: m_ParallaxLayers){
         layer.root->visible(true);
         m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 5.0f);
@@ -825,6 +828,4 @@ void Game :: render() const
     
     m_pPipeline->winding(true);
     m_pPipeline->render(m_pOrthoRoot.get(), m_pOrthoCamera.get(), nullptr, Pipeline::NO_CLEAR | Pipeline::NO_DEPTH);
-
 }
-

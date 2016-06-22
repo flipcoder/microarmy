@@ -14,9 +14,7 @@ class Qor;
 class Sound;
 class Canvas;
 
-class Intro:
-    public State
-{
+class Intro: public State {
     public:
         
         Intro(Qor* engine);
@@ -56,4 +54,3 @@ class Intro:
 };
 
 #endif
-

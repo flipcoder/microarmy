@@ -4,11 +4,9 @@
 #define PACKAGE "microarmy"
 #define PACKAGE_VERSION "test"
 
-namespace Info
-{
+namespace Info {
     const char* const Program = PACKAGE;
     const char* const Version = PACKAGE_VERSION;
 }
 
 #endif
-

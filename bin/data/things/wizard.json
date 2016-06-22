@@ -8,12 +8,12 @@
         "speed" : 10.0,
         "frames" : {
             "unhit":{
-                "left": [0],
-                "right": ["hflip",0]
+                "left": [ 0 ],
+                "right": [ "hflip", 0 ]
             },
             "hit":{
-                "left": [1],
-                "right": ["hflip",1]
+                "left": [ 1 ],
+                "right": [ "hflip", 1 ]
             }
         }
     },

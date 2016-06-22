@@ -8,16 +8,16 @@
         "speed" : 10.0,
         "frames" : {
             "left": {
-                "stand": ["hflip",0],
-                "walk": ["hflip",0,1,0,2],
-                "jump": ["hflip",3],
-                "walljump": ["hflip",4]
+                "stand": [ "hflip", 0 ],
+                "walk": [ "hflip", 0, 1, 0, 2 ],
+                "jump": [ "hflip", 3 ],
+                "walljump": [ "hflip", 4 ]
             },
             "right": {
-                "stand": [0],
-                "walk": [0,1,0,2],
-                "jump": [3],
-                "walljump": [4]
+                "stand": [ 0 ],
+                "walk": [ 0, 1, 0, 2 ],
+                "jump": [ 3 ],
+                "walljump": [ 4 ]
             }
         }
     },

@@ -6,9 +6,7 @@
 #include "Qor/Canvas.h"
 #include "Qor/Input.h"
 
-class HUD:
-    public Node
-{
+class HUD: public Node {
     public:
 
         HUD(
@@ -43,4 +41,3 @@ class HUD:
 };
 
 #endif
-

@@ -12,9 +12,7 @@
 
 class Qor;
 
-class Pregame:
-    public State
-{
+class Pregame: public State {
     public:
         
         Pregame(Qor* engine);
@@ -43,5 +41,3 @@ class Pregame:
 };
 
 #endif
-
-

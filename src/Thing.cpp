@@ -1,6 +1,7 @@
 #include "Thing.h"
 #include "Game.h"
 #include "Qor/Sprite.h"
+
 using namespace std;
 using namespace glm;
 
@@ -49,20 +50,19 @@ Thing :: Thing(
 {
 }
 
-std::shared_ptr<Thing> Thing :: find_thing(Node* n)
-{
+std::shared_ptr<Thing> Thing :: find_thing(Node* n) {
     shared_ptr<Thing> thing;
     thing = dynamic_pointer_cast<Thing>(n->as_node());
-    if(not thing){
+    
+    if (not thing) {
         thing = dynamic_pointer_cast<Thing>(n->parent()->as_node());
-        if(not thing)
+        if (not thing)
             thing = dynamic_pointer_cast<Thing>(n->parent()->parent()->as_node());
     }
     return thing;
 }
 
-void Thing :: init_thing()
-{
+void Thing :: init_thing() {
     assert(m_pPartitioner);
 
     m_Box = m_pPlaceholder->box();
@@ -72,7 +72,7 @@ void Thing :: init_thing()
     const float item_dist = 200.0f;
     const float glow = 1.0f;
 
-    if(is_monster()) {
+    if (is_monster()) {
         TRY(m_pConfig->merge(make_shared<Meta>(
             m_pResources->transform(m_Identity+".json")
         )));
@@ -114,7 +114,7 @@ void Thing :: init_thing()
         );
         add(m_pSprite);
         m_pSprite->set_states({"unhit", "left"});
-        if(m_pPlaceholder->tile_layer()->depth() || m_pConfig->has("depth"))
+        if (m_pPlaceholder->tile_layer()->depth() || m_pConfig->has("depth"))
             m_pSprite->mesh()->set_geometry(m_pMap->tilted_tile_geometry());
         collapse(); // detach from placeholder
         rescale(glm::vec3(1.0f));
@@ -140,7 +140,7 @@ void Thing :: init_thing()
         //    move(vec3(10.0f * t.s(), 0.0f, 0.0f));
         //});
         
-    } else if(m_ThingID == Thing::STAR) {
+    } else if (m_ThingID == Thing::STAR) {
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
         //if(type == "gold"){
@@ -161,7 +161,7 @@ void Thing :: init_thing()
         collapse();
         //stick(l);
     }
-    else if(m_ThingID == Thing::BATTERY) {
+    else if (m_ThingID == Thing::BATTERY) {
         auto l = make_shared<Light>();
         l->ambient(Color::green() * glow);
         l->diffuse(Color::green() * glow);
@@ -172,7 +172,7 @@ void Thing :: init_thing()
         collapse();
         //stick(l);
     }
-    else if(m_ThingID == Thing::HEART) {
+    else if (m_ThingID == Thing::HEART) {
         auto l = make_shared<Light>();
         l->ambient(Color::red() * glow);
         l->diffuse(Color::red() * glow);
@@ -182,7 +182,7 @@ void Thing :: init_thing()
         add(l);
         collapse();
         //stick(l);
-    } else if(m_ThingID == Thing::KEY) {
+    } else if (m_ThingID == Thing::KEY) {
         auto l = make_shared<Light>();
         string typ = config()->at<string>("type");
         auto col = typ == "red" ? Color::red() : Color::blue();
@@ -194,7 +194,7 @@ void Thing :: init_thing()
         add(l);
         collapse();
         //stick(l);
-    } else if(m_ThingID == Thing::DOOR) {
+    } else if (m_ThingID == Thing::DOOR) {
         //name("door");
         //m_pPlaceholder->name("door");
         //m_pPlaceholder->mesh()->name("door");
@@ -202,40 +202,31 @@ void Thing :: init_thing()
     }
 }
 
-void Thing :: sound(const std::string& fn)
-{
+void Thing :: sound(const std::string& fn) {
     Sound::play(this, fn, m_pResources);
 }
 
-void Thing :: setup_player(const std::shared_ptr<Sprite>& player)
-{
-}
+void Thing :: setup_player(const std::shared_ptr<Sprite>& player) {}
+void Thing :: setup_map(const std::shared_ptr<TileMap>& map) {}
+void Thing :: setup_other(const std::shared_ptr<Thing>& thing) {}
 
-void Thing :: setup_map(const std::shared_ptr<TileMap>& map)
-{
-}
-
-void Thing :: setup_other(const std::shared_ptr<Thing>& thing)
-{
-}
-
-unsigned Thing :: get_id(const std::shared_ptr<Meta>& config)
-{
-    string name = config->at<string>("name","");
+unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
+    string name = config->at<string>("name", "");
     
-    if(name.empty())
+    if (name.empty())
         return INVALID_THING;
+
     auto itr = std::find(ENTIRE(s_TypeNames),name);
-    if(itr == s_TypeNames.end())
+    if (itr == s_TypeNames.end())
         return INVALID_THING;
     
     return std::distance(s_TypeNames.begin(), itr);
 }
 
-void Thing :: cb_to_player(Node* player_node, Node* thing_node)
-{
+void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     auto thing = (Thing*)thing_node;
-    if(thing->id() == Thing::STAR){
+
+    if (thing->id() == Thing::STAR) {
         if(thing->placeholder()->visible()){
             thing->sound("pickup2.wav");
             thing->visible(false);
@@ -248,8 +239,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
             meta->set<string>("type", thing->config()->at<string>("type"));
             player_node->parent()->event("star", meta);
         }
-    }else if(thing->id() == Thing::HEART){
-        if(thing->placeholder()->visible()){
+    } else if (thing->id() == Thing::HEART) {
+        if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
             thing->visible(false);
             thing->placeholder()->visible(false);
@@ -258,8 +249,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
                 thing->placeholder()->visible(true);
             });
         }
-    }else if(thing->id() == Thing::BATTERY){
-        if(thing->placeholder()->visible()){
+    } else if(thing->id() == Thing::BATTERY) {
+        if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
             thing->visible(false);
             thing->placeholder()->visible(false);
@@ -269,17 +260,18 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
             });
             player_node->parent()->event("battery");
         }
-    }else if(thing->id() == Thing::SPRING){
-        if(thing->hook_type<Sound>().empty())
+    }else if (thing->id() == Thing::SPRING) {
+        if (thing->hook_type<Sound>().empty())
             thing->sound("spring.wav");
+
         auto player = player_node->parent();// mask -> mesh -> sprite
         auto vel = player->velocity();
         player->velocity(glm::vec3(0.0f,
             vel.y > 250.0f ? -vel.y : -250.0f,
             0.0f)
         );
-    }else if(thing->id() == Thing::KEY){
-        if(thing->placeholder()->visible()){
+    } else if (thing->id() == Thing::KEY) {
+        if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
             thing->placeholder()->visible(false);
             //thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
@@ -288,32 +280,32 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
             auto layer = thing->m_pPlaceholder->tile_layer();
             //LOGf("%s doors", doors.size());
             auto keycol = thing->config()->at<string>("type");
-            for(auto&& tile: thing->m_pPlaceholder->tile_layer()->tiles())
-            {
-                if(not tile)
+            for (auto&& tile: thing->m_pPlaceholder->tile_layer()->tiles()) {
+                if (not tile)
                     continue;
-                for(auto&& ch: *tile)
-                {
-                    if(ch->name() == "door"){
+
+                for (auto&& ch: *tile) {
+                    if (ch->name() == "door") {
                         auto col = ch->config()->at<string>("type","");
-                        if(col == keycol){
+
+                        if (col == keycol) {
                             ch->parent()->visible(false);
                         }
                     }
                 }
             }
         }
-    }else if(thing->id() == Thing::DOOR){
-        if(thing->placeholder()->visible())
-        {
+    } else if (thing->id() == Thing::DOOR) {
+        if (thing->placeholder()->visible()) {
             thing->m_pGame->cb_to_tile(player_node, thing_node);
             string typ = thing->config()->at<string>("type");
-            if(typ == "star"){
+
+            if (typ == "star") {
                 thing->m_pGame->event("stardoor");
             }
         }
-    }else if(thing->is_monster()){
-        if(thing->alive())
+    } else if (thing->is_monster()) {
+        if (thing->alive())
             thing->m_pGame->reset();
     }
 
@@ -326,21 +318,19 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node)
     //}
 }
 
-void Thing :: cb_to_static(Node* thing_node, Node* static_node)
-{
+void Thing :: cb_to_static(Node* thing_node, Node* static_node) {
     auto thing = thing_node->config()->at<Thing*>("thing",nullptr);
-    if(not thing)
+    if (not thing)
         return;
-    if(thing->is_monster())
-    {
-        if(thing->num_snapshots())
-        {
+
+    if (thing->is_monster()) {
+        if (thing->num_snapshots()) {
             //unsigned r = thing_node->world_box().classify(static_node->world_box());
             //if(r==0)
-            if(static_node->world_box().center().x > thing->world_box().center().x){
+            if (static_node->world_box().center().x > thing->world_box().center().x) {
                 thing->velocity(-abs(thing->velocity()));
                 thing->sprite()->set_state("left");
-            }else if(static_node->world_box().center().x < thing->world_box().center().x){
+            } else if (static_node->world_box().center().x < thing->world_box().center().x) {
                 thing->velocity(abs(thing->velocity()));
                 thing->sprite()->set_state("right");
             }
@@ -378,48 +368,57 @@ void Thing :: cb_to_static(Node* thing_node, Node* static_node)
     }
 }
 
-void Thing :: cb_to_bullet(Node* thing_node, Node* bullet)
-{
-    auto thing = thing_node->config()->at<Thing*>("thing",nullptr);
-    if(not thing)
+
+void Thing :: cb_to_bullet(Node* thing_node, Node* bullet) {
+    auto thing = thing_node->config()->at<Thing*>("thing", nullptr);
+
+    if (not thing)
         return;
-    if(thing->is_monster() && thing->alive() && not bullet->detaching())
-    {
+
+    if (thing->is_monster() && thing->alive() && not bullet->detaching()) {
         thing->sound("damage.wav");
-        if(thing->damage(bullet->config()->at("damage",1))){
-            auto gibs = thing->m_Dying?5:20;
-            for(int i=0;i<gibs;++i)
+
+        if (thing->damage(bullet->config()->at("damage", 1))) {
+
+            // Generate blood splatter when hit
+            auto gibs = thing->m_Dying ? 5 : 20;
+            for(int i = 0; i < gibs; ++i)
                 thing->gib(bullet);
+
+            // Knockback and stun
             auto vel = thing->velocity();
             thing->move(glm::vec3(-kit::sign(vel.x) * 5.0f, 0.0f, 0.0f));
-            
             thing->stun();
             
-            if(bullet->velocity().x > K_EPSILON){
+            // Change direction based on bullet velocity
+            if (bullet->velocity().x > K_EPSILON) {
                 thing->velocity(-abs(thing->velocity()));
                 thing->sprite()->set_state("left");
-            }else if(bullet->velocity().x < K_EPSILON){
+            } else if (bullet->velocity().x < -K_EPSILON) {
                 thing->velocity(abs(thing->velocity()));
                 thing->sprite()->set_state("right");
             }
             
+            // Schedule detachment and activate thing
             bullet->safe_detach();
             thing->activate();
         }
+
+        // Change color of thing based on health
         thing->m_pSprite->material()->ambient(kit::mix(
             Color::red(), Color::white(), thing->hp_fraction()
         ));
     }
 }
 
-void Thing :: stun()
-{
+
+void Thing :: stun() {
     m_pSprite->set_state("hit");
     m_StunTimer.set(Freq::Time::ms(200));
 }
 
-bool Thing :: damage(int dmg)
-{
+
+bool Thing :: damage(int dmg) {
     if(m_HP <= 0 || dmg < 0)
         return false;
     m_HP = std::max(m_HP-dmg, 0);
@@ -430,8 +429,8 @@ bool Thing :: damage(int dmg)
     return true;
 }
 
-void Thing :: logic_self(Freq::Time t)
-{
+
+void Thing :: logic_self(Freq::Time t) {
     clear_snapshots();
     snapshot();
     
@@ -462,15 +461,15 @@ void Thing :: logic_self(Freq::Time t)
         detach();
 }
 
-void Thing :: lazy_logic_self(Freq::Time t)
-{
+
+void Thing :: lazy_logic_self(Freq::Time t) {
     //LOG("lazy logic!")
     //Node::lazy_logic_self(t);
     //m_pPlaceholder->logic_self(t);
 }
 
-void Thing :: gib(Node* bullet)
-{
+
+void Thing :: gib(Node* bullet) {
     auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
     gib->set_state("animated");
     auto dir = Angle::degrees(1.0f * (std::rand() % 360)).vector();
@@ -488,8 +487,8 @@ void Thing :: gib(Node* bullet)
     });
 }
 
-void Thing :: shoot(Sprite* origin)
-{
+
+void Thing :: shoot(Sprite* origin) {
     auto shot = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
         vector<shared_ptr<IMeshModifier>>{
@@ -539,19 +538,17 @@ void Thing :: shoot(Sprite* origin)
     ));
 }
 
-void Thing :: activate()
-{
-    if(is_monster())
-    {
-        if(m_ThingID == MOUSE)
-        {
+
+void Thing :: activate() {
+    if (is_monster()) {
+        if (m_ThingID == MOUSE) {
             shoot(m_pSprite.get());
         }
     }
 }
 
-void Thing :: register_player(Sprite* p)
-{
+
+void Thing :: register_player(Sprite* p) {
     m_Players.push_back(p);
 }
 

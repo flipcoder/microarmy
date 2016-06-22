@@ -7,7 +7,7 @@
     "animation" : {
         "speed" : 10.0,
         "frames" : {
-            "animated": [0,1,2,3]
+            "animated": [ 0, 1, 2, 3 ]
         }
     }
 }

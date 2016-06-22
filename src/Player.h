@@ -18,9 +18,6 @@ class Player:
 
     private:
 
-        
-
 };
 
 #endif
-
