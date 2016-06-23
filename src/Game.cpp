@@ -635,6 +635,7 @@ void Game :: logic(Freq::Time t) {
 
         if (not in_air && m_WasInAir)
             Sound::play(m_pCamera.get(), "touch.wav", m_pResources);
+
         m_WasInAir = in_air;
         
         if (not in_air)
@@ -667,6 +668,7 @@ void Game :: logic(Freq::Time t) {
     m_pRoot->logic(t);
     m_pOrthoRoot->logic(t);
 }
+
 
 void Game :: shoot(Sprite* origin) {
     auto shot = make_shared<Mesh>(

@@ -30,7 +30,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
 });
 
 
-Thing :: Thing(
+Thing :: Thing( // Parameters
     const std::shared_ptr<Meta>& config,
     MapTile* placeholder,
     Game* game,
@@ -38,19 +38,18 @@ Thing :: Thing(
     BasicPartitioner* partitioner,
     Freq::Timeline* timeline,
     Cache<Resource, std::string>* resources
-):
+): // Initialize Variables
     Node(config),
     m_pPlaceholder(placeholder),
     m_pPartitioner(partitioner),
     m_pGame(game),
     m_pMap(map),
     m_pResources(resources),
-    m_Identity(config->at<string>("name","")),
+    m_Identity(config->at<string>("name", "")),
     m_ThingID(get_id(config)),
     m_StunTimer(timeline),
     m_pTimeline(timeline)
-{
-}
+{}
 
 
 std::shared_ptr<Thing> Thing :: find_thing(Node* n) {
@@ -78,7 +77,7 @@ void Thing :: init_thing() {
 
     if (is_monster()) {
         TRY(m_pConfig->merge(make_shared<Meta>(
-            m_pResources->transform(m_Identity+".json")
+            m_pResources->transform(m_Identity + ".json")
         )));
         
         auto mask = m_pConfig->meta("mask");
@@ -94,8 +93,6 @@ void Thing :: init_thing() {
         lbox.min().y += m_Box.size().y;
         lbox.max().y += m_Box.size().y;
         m_pLeft->set_box(lbox);
-        //LOG(box().string());
-        //LOG(m_pLeft->box().string());
         add(m_pLeft);
         
         m_pRight = make_shared<Mesh>();
@@ -107,13 +104,13 @@ void Thing :: init_thing() {
         m_pRight->set_box(rbox);
         add(m_pRight);
 
-        m_HP = m_pConfig->at<int>("hp",5);
-        m_MaxHP = m_pConfig->at<int>("hp",5);
-        m_StartSpeed = m_pConfig->at<double>("speed",10.0);
+        m_HP = m_pConfig->at<int>("hp", 5);
+        m_MaxHP = m_pConfig->at<int>("hp", 5);
+        m_StartSpeed = m_pConfig->at<double>("speed", 10.0);
         m_Speed = m_StartSpeed;
-        //LOGf("hp: %s", m_HP);
+
         m_pSprite = make_shared<Sprite>(
-            m_pResources->transform(m_Identity+".json"),
+            m_pResources->transform(m_Identity + ".json"),
             m_pResources
         );
 
@@ -262,7 +259,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
 
         auto player = player_node->parent();// mask -> mesh -> sprite
         auto vel = player->velocity();
-        
+
         player->velocity(glm::vec3(0.0f,
             vel.y > 250.0f ? -vel.y : -250.0f,
             0.0f)
@@ -374,13 +371,14 @@ void Thing :: stun() {
 }
 
 
+// Returns true if thing took damage. Applies damage if thing accepts damage.
 bool Thing :: damage(int dmg) {
     if(m_HP <= 0 || dmg < 0)
         return false;
 
-    m_HP = std::max(m_HP-dmg, 0);
+    m_HP = std::max(m_HP - dmg, 0);
     
-    if(m_HP <= 0){
+    if (m_HP <= 0) {
         m_Dying = true;
         velocity(glm::vec3(0.0f));
     }
@@ -409,16 +407,21 @@ void Thing :: lazy_logic_self(Freq::Time t) {}
 void Thing :: gib(Node* bullet) {
     auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
     gib->set_state("animated");
+    
     auto dir = Angle::degrees(1.0f * (std::rand() % 360)).vector();
     stick(gib);
+
     gib->move(glm::vec3(std::rand() % 16 - 8.0f, std::rand() % 32 - 16.0f, 2.0f));
     gib->velocity(glm::vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
     gib->scale(std::rand() % 100 / 100.0 * 0.5f);
+
     auto life = make_shared<float>(0.5f * (std::rand() % 4));
     auto gibptr = gib.get();
+
     gib->on_tick.connect([gibptr, life](Freq::Time t){
         *life -= t.s();
+
         if(*life < 0.0f)
             gibptr->detach();
     });
@@ -438,18 +441,7 @@ void Thing :: shoot(Sprite* origin) {
 
     auto par = origin->parent();
     par->add(shot);
-    //shot->reset_orientation();
-    //shot->position(glm::vec3(
-    //    origin->position().x +
-    //    -origin->origin().x*origin->size().x +
-    //        origin->mesh()->world_box().size().x / 2.0f,
-    //        //((origin->check_state("left")?-1.0f:1.0f) * 4.0f),
-    //    origin->position().y +
-    //        -origin->origin().y*origin->size().y +
-    //        origin->mesh()->world_box().size().y / 2.0f + 
-    //        -2.0f,
-    //    origin->position().z
-    //));
+
     shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
     shot->velocity(shot->orient_to_world(glm::vec3(
         (origin->check_state("left")?-1.0f:1.0f) * 256.0f,
@@ -463,7 +455,6 @@ void Thing :: shoot(Sprite* origin) {
             shotptr->detach();
     });
     
-    //m_pPartitioner->register_object(shot, BULLET);
     
     Sound::play(origin, "shoot.wav", m_pResources);
 
