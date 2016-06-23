@@ -7,8 +7,10 @@
 #include <cstdlib>
 #include <chrono>
 #include <thread>
+
 using namespace std;
 using namespace glm;
+
 
 Pregame :: Pregame(Qor* engine):
     m_pQor(engine),
@@ -19,6 +21,7 @@ Pregame :: Pregame(Qor* engine):
     m_pController(engine->session()->active_profile(0)->controller().get()),
     m_Transition(engine->timer()->timeline())
 {}
+
 
 void Pregame :: preload() {
     auto win = m_pQor->window();
@@ -39,6 +42,7 @@ void Pregame :: preload() {
         },
         make_shared<MeshMaterial>(mat)
     );
+
     bg->material()->ambient(Color::white() * 0.25f);
     mat->diffuse(Color(1.0f, 0.25f));
     bg->position(vec3(0.0f,0.0f,-1.0f));
@@ -47,9 +51,11 @@ void Pregame :: preload() {
     m_Transition.set(Freq::Time::seconds(11.0f));
 }
 
+
 Pregame :: ~Pregame() {
     m_pPipeline->partitioner()->clear();
 }
+
 
 void Pregame :: enter() {
     m_pMusic->play();
@@ -60,22 +66,22 @@ void Pregame :: enter() {
     m_pInput->relative_mouse(false);
 }
 
+
 void Pregame :: logic(Freq::Time t) {
     if (m_pInput->key(SDLK_ESCAPE))
         m_pQor->quit();
 
     if (m_pInput->key(SDLK_SPACE) ||
         m_pInput->key(SDLK_RETURN) ||
-        m_pController->button("select").pressed_now()
+        m_pController->button("select").pressed_now() ||
+        m_Transition.elapsed()
     ){
         m_pQor->change_state("game");
     }
     
-    if(m_Transition.elapsed())
-        m_pQor->change_state("game");
-    
     m_pRoot->logic(t);
 }
+
 
 void Pregame :: render() const {
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get());

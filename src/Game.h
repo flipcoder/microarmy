@@ -12,12 +12,12 @@
 #include "Qor/Sprite.h"
 #include "HUD.h"
 
+
 class Qor;
 class Thing;
 
 class Game: public State {
     public:
-
         enum ObjectTypes {
             STATIC,
             LEDGE,
@@ -37,9 +37,7 @@ class Game: public State {
         virtual void enter() override;
         virtual void logic(Freq::Time t) override;
         virtual void render() const override;
-        virtual bool needs_load() const override {
-            return true;
-        }
+        virtual bool needs_load() const override { return true; }
 
         void reset();
         
@@ -56,8 +54,7 @@ class Game: public State {
         void setup_player_to_map(std::shared_ptr<Sprite> player);
         std::vector<Node*> get_static_collisions(Node* a);
 
-        struct ParallaxLayer
-        {
+        struct ParallaxLayer {
             std::shared_ptr<Node> root;
             std::shared_ptr<Light> light;
             float scale = 1.0f;
@@ -68,7 +65,6 @@ class Game: public State {
         void shoot(Sprite* origin);
         
     private:
-        
         Qor* m_pQor = nullptr;
         Cache<Resource, std::string>* m_pResources = nullptr;
         Input* m_pInput = nullptr;

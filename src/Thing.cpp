@@ -5,6 +5,7 @@
 using namespace std;
 using namespace glm;
 
+
 const std::vector<std::string> Thing :: s_TypeNames({
     "",
     
@@ -28,6 +29,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     "light",
 });
 
+
 Thing :: Thing(
     const std::shared_ptr<Meta>& config,
     MapTile* placeholder,
@@ -50,6 +52,7 @@ Thing :: Thing(
 {
 }
 
+
 std::shared_ptr<Thing> Thing :: find_thing(Node* n) {
     shared_ptr<Thing> thing;
     thing = dynamic_pointer_cast<Thing>(n->as_node());
@@ -61,6 +64,7 @@ std::shared_ptr<Thing> Thing :: find_thing(Node* n) {
     }
     return thing;
 }
+
 
 void Thing :: init_thing() {
     assert(m_pPartitioner);
@@ -112,6 +116,7 @@ void Thing :: init_thing() {
             m_pResources->transform(m_Identity+".json"),
             m_pResources
         );
+
         add(m_pSprite);
         m_pSprite->set_states({"unhit", "left"});
         if (m_pPlaceholder->tile_layer()->depth() || m_pConfig->has("depth"))
@@ -126,40 +131,29 @@ void Thing :: init_thing() {
             m_pSprite->origin().y * m_pSprite->size().y,
             0.0f
         ));
+
         //m_pPlaceholder->detach(); // don't want to invalidate iterator
         m_pPlaceholder->mesh()->visible(false); // remove placeholder
         m_pSprite->mesh()->config()->set<string>("id", m_Identity);
         m_pSprite->mesh()->config()->set<Thing*>("thing", this);
         m_pSprite->mesh()->set_box(m_Box);
         m_pPartitioner->register_object(m_pSprite->mesh(), Game::THING);
-        //m_Solid = true;
 
         velocity(vec3(-m_Speed, 0.0f, 0.0f));
-
-        //on_lazy_tick.connect([t]{
-        //    move(vec3(10.0f * t.s(), 0.0f, 0.0f));
-        //});
         
     } else if (m_ThingID == Thing::STAR) {
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
-        //if(type == "gold"){
-            l->ambient(Color::white() * glow);
-            l->diffuse(Color::white() * glow);
-        //}else if(type == "silver"){
-        //    l->ambient(Color::gray());
-        //    l->diffuse(Color::gray());
-        //}else if(type == "bronze"){
-        //    l->ambient(Color("8c7853"));
-        //    l->diffuse(Color("8c7853"));
-        //}
-        //l->diffuse(Color::yellow());
+
+        l->ambient(Color::white() * glow);
+        l->diffuse(Color::white() * glow);
+
         l->specular(Color::white() * glow);
         l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
-        //stick(l);
+
     }
     else if (m_ThingID == Thing::BATTERY) {
         auto l = make_shared<Light>();
@@ -170,7 +164,7 @@ void Thing :: init_thing() {
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
-        //stick(l);
+
     }
     else if (m_ThingID == Thing::HEART) {
         auto l = make_shared<Light>();
@@ -181,11 +175,12 @@ void Thing :: init_thing() {
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
-        //stick(l);
+
     } else if (m_ThingID == Thing::KEY) {
         auto l = make_shared<Light>();
         string typ = config()->at<string>("type");
         auto col = typ == "red" ? Color::red() : Color::blue();
+
         l->ambient(col * glow);
         l->diffuse(col * glow);
         l->specular(Color::white() * glow);
@@ -193,22 +188,21 @@ void Thing :: init_thing() {
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
         add(l);
         collapse();
-        //stick(l);
     } else if (m_ThingID == Thing::DOOR) {
-        //name("door");
-        //m_pPlaceholder->name("door");
-        //m_pPlaceholder->mesh()->name("door");
         m_Solid = true;
     }
 }
+
 
 void Thing :: sound(const std::string& fn) {
     Sound::play(this, fn, m_pResources);
 }
 
+
 void Thing :: setup_player(const std::shared_ptr<Sprite>& player) {}
 void Thing :: setup_map(const std::shared_ptr<TileMap>& map) {}
 void Thing :: setup_other(const std::shared_ptr<Thing>& thing) {}
+
 
 unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
     string name = config->at<string>("name", "");
@@ -223,6 +217,7 @@ unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
     return std::distance(s_TypeNames.begin(), itr);
 }
 
+
 void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     auto thing = (Thing*)thing_node;
 
@@ -235,6 +230,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
                 thing->visible(true);
                 thing->placeholder()->visible(true);
             });
+
             auto meta = make_shared<Meta>();
             meta->set<string>("type", thing->config()->at<string>("type"));
             player_node->parent()->event("star", meta);
@@ -260,12 +256,13 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             });
             player_node->parent()->event("battery");
         }
-    }else if (thing->id() == Thing::SPRING) {
+    } else if (thing->id() == Thing::SPRING) {
         if (thing->hook_type<Sound>().empty())
             thing->sound("spring.wav");
 
         auto player = player_node->parent();// mask -> mesh -> sprite
         auto vel = player->velocity();
+        
         player->velocity(glm::vec3(0.0f,
             vel.y > 250.0f ? -vel.y : -250.0f,
             0.0f)
@@ -274,12 +271,10 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
         if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
             thing->placeholder()->visible(false);
-            //thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
-            //    thing->placeholder()->visible(true);
-            //});
+
             auto layer = thing->m_pPlaceholder->tile_layer();
-            //LOGf("%s doors", doors.size());
             auto keycol = thing->config()->at<string>("type");
+
             for (auto&& tile: thing->m_pPlaceholder->tile_layer()->tiles()) {
                 if (not tile)
                     continue;
@@ -298,9 +293,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     } else if (thing->id() == Thing::DOOR) {
         if (thing->placeholder()->visible()) {
             thing->m_pGame->cb_to_tile(player_node, thing_node);
-            string typ = thing->config()->at<string>("type");
 
-            if (typ == "star") {
+            if (thing->config()->at<string>("type") == "star") {
                 thing->m_pGame->event("stardoor");
             }
         }
@@ -308,25 +302,17 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
         if (thing->alive())
             thing->m_pGame->reset();
     }
-
-    //if(thing->m_Solid)
-    //    thing->m_pGame->cb_to_tile(player_node,thing_node);
-        
-    //else if(thing->id() == Thing::SNAIL){
-    //    auto player = player_node->parent();// mask -> mesh -> sprite
-    //    player->velocity(vec3(0.0f));
-    //}
 }
+
 
 void Thing :: cb_to_static(Node* thing_node, Node* static_node) {
     auto thing = thing_node->config()->at<Thing*>("thing",nullptr);
+
     if (not thing)
         return;
 
     if (thing->is_monster()) {
         if (thing->num_snapshots()) {
-            //unsigned r = thing_node->world_box().classify(static_node->world_box());
-            //if(r==0)
             if (static_node->world_box().center().x > thing->world_box().center().x) {
                 thing->velocity(-abs(thing->velocity()));
                 thing->sprite()->set_state("left");
@@ -334,37 +320,7 @@ void Thing :: cb_to_static(Node* thing_node, Node* static_node) {
                 thing->velocity(abs(thing->velocity()));
                 thing->sprite()->set_state("right");
             }
-            //auto vx = thing->velocity().x;
-            //if(vx > K_EPSILON)
-            //    thing->sprite()->set_state("right");
-            //else if(vx < K_EPSILON)
-            //    thing->sprite()->set_state("left");
-            //if(r & kit::bit(3) && (not(r&kit::bit(1)) || (not(r&kit::bit(4))))){
-            //    thing->restore_snapshot(0);
-            //    thing->velocity(vec3(-abs(thing->velocity().x), 0.0f, 0.0f));
-            //    thing->clear_snapshots();
-            //    thing->snapshot();
-            //}
-            //if(r & kit::bit(0) && (not(r&kit::bit(1)) || not(r&kit::bit(4)))){
-            //    thing->restore_snapshot(0);
-            //    thing->velocity(vec3(abs(thing->velocity().x), 0.0f, 0.0f));
-            //    thing->clear_snapshots();
-            //    thing->snapshot();
-            //}
-            ////}
-            ////else if(r & 2){
-            ////    thing->restore_snapshot(0);
-            ////    thing->velocity(vec3(-abs(thing->velocity().x), 0.0f, 0.0f));
-            ////}
-            //LOG(to_string(r));
         }
-        
-        //auto vel = thing->velocity();
-        //thing->velocity(-vel);
-        //if(vel.x < K_EPSILON)
-        //    thing->sprite()->set_state("right");
-        //else if(vel.x > K_EPSILON)
-        //    thing->sprite()->set_state("left");
     }
 }
 
@@ -421,11 +377,14 @@ void Thing :: stun() {
 bool Thing :: damage(int dmg) {
     if(m_HP <= 0 || dmg < 0)
         return false;
+
     m_HP = std::max(m_HP-dmg, 0);
+    
     if(m_HP <= 0){
         m_Dying = true;
         velocity(glm::vec3(0.0f));
     }
+    
     return true;
 }
 
@@ -434,39 +393,17 @@ void Thing :: logic_self(Freq::Time t) {
     clear_snapshots();
     snapshot();
     
-    if(m_StunTimer.elapsed()){
+    if (m_StunTimer.elapsed()) {
         m_pSprite->set_state("unhit");
         m_StunTimer.reset();
     }
 
-    //if(abs(m_Impulse.x) > K_EPSILON){
-        //move(m_Impulse);
-        //m_Impulse = glm::vec3();
-    //}
-
-    //if(is_monster()){
-    //    auto cols = m_pPartitioner->get_collisions_for(m_pLeft.get(), STATIC);
-    //    if(cols.empty()){
-    //        //LOG("left fall");
-    //        velocity(abs(velocity()));
-    //    }
-    //    cols = m_pPartitioner->get_collisions_for(m_pRight.get(), STATIC);
-    //    if(cols.empty()){
-    //        //LOG("right fall");
-    //        velocity(-abs(velocity()));
-    //    }
-    //}
-
-    if(not alive())
+    if (not alive())
         detach();
 }
 
 
-void Thing :: lazy_logic_self(Freq::Time t) {
-    //LOG("lazy logic!")
-    //Node::lazy_logic_self(t);
-    //m_pPlaceholder->logic_self(t);
-}
+void Thing :: lazy_logic_self(Freq::Time t) {}
 
 
 void Thing :: gib(Node* bullet) {
@@ -551,4 +488,3 @@ void Thing :: activate() {
 void Thing :: register_player(Sprite* p) {
     m_Players.push_back(p);
 }
-

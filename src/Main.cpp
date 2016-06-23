@@ -9,8 +9,7 @@
 using namespace std;
 using namespace kit;
 
-int main(int argc, const char** argv)
-{
+int main(int argc, const char** argv) {
     
     Args args(argc, argv);
     args.set("mod", PACKAGE);
@@ -19,20 +18,20 @@ int main(int argc, const char** argv)
     Texture::DEFAULT_FLAGS = Texture::TRANS | Texture::MIPMAP;
     
 #ifndef DEBUG
-    try{
+    try {
 #endif
         auto engine = kit::make_unique<Qor>(args);
         engine->states().register_class<Intro>("intro");
         engine->states().register_class<Pregame>("pregame");
         engine->states().register_class<Game>("game");
         engine->run("intro");
+
 #ifndef DEBUG
-    }catch(const Error&){
+    } catch (const Error&) {
         // already logged
-    }catch(const std::exception& e){
+    } catch (const std::exception& e) {
         LOGf("Uncaught exception: %s", e.what());
     }
 #endif
     return 0;
 }
-

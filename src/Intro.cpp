@@ -14,6 +14,7 @@
 using namespace std;
 using namespace glm;
 
+
 Intro :: Intro(Qor* engine):
     m_pQor(engine),
     m_pInput(engine->input()),
@@ -43,6 +44,7 @@ Intro :: Intro(Qor* engine):
     ))
 {}
 
+
 void Intro :: preload() {
     auto win = m_pQor->window();
     float sw = m_pQor->window()->size().x;
@@ -52,21 +54,6 @@ void Intro :: preload() {
     m_pRoot->add(m_pCamera);
 
     m_pRoot->add(m_pCanvas);
-
-    //auto logo = make_shared<Mesh>(
-    //    make_shared<MeshGeometry>(
-    //        Prefab::quad(
-    //            -vec2(win->size().y, win->size().y)/4.0f,
-    //            vec2(win->size().y, win->size().y)/4.0f
-    //        )
-    //    ));
-    //logo->add_modifier(make_shared<Wrap>(Prefab::quad_wrap(
-    //    glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
-    //)));
-    //auto tex = m_pResources->cache_cast<ITexture>("logo.png");
-    //logo->material(make_shared<MeshMaterial>(tex));
-    //logo->move(vec3(win->center().x, win->center().y, -1.0f));
-    //m_pRoot->add(logo);
 
     m_pMusic = m_pQor->make<Sound>("menu.ogg");
     m_pRoot->add(m_pMusic);
@@ -86,9 +73,11 @@ void Intro :: preload() {
     m_pRoot->add(bg);
 }
 
+
 Intro :: ~Intro() {
     m_pPipeline->partitioner()->clear();
 }
+
 
 void Intro :: enter() {
     auto qor = m_pQor;
@@ -202,19 +191,14 @@ void Intro :: enter() {
     m_pRoot->add(m_pMenuGUI);
 }
 
+
 void Intro :: logic(Freq::Time t) {
     if(m_pInput->key(SDLK_ESCAPE))
         m_pQor->quit();
-    
-    //if(m_pInput->key(SDLK_SPACE) ||
-    //   m_pInput->key(SDLK_RETURN) ||
-    //   m_pController->button("select").pressed_now()
-    //){
-    //    m_pQor->change_state("pregame");
-    //}
 
     m_pRoot->logic(t);
 }
+
 
 void Intro :: render() const {
     m_pPipeline->render(m_pRoot.get(), m_pCamera.get());

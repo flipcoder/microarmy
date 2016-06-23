@@ -8,7 +8,6 @@
 
 class HUD: public Node {
     public:
-
         HUD(
             Window* window,
             Input* input,
@@ -21,7 +20,6 @@ class HUD: public Node {
         void set(int star_lev, int stars, int max_stars);
         
     private:
-        
         void redraw();
 
         Window* m_pWindow = nullptr;

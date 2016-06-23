@@ -1,7 +1,9 @@
 #include "Qor/Mesh.h"
 #include "HUD.h"
+
 using namespace std;
 using namespace glm;
+
 
 const std::vector<int> HUD :: STAR_LEVELS = { 7, 6, 2 };
 
@@ -16,8 +18,9 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache):
     m_pCanvas = make_shared<Canvas>(sw, sh);
     add(m_pCanvas);
     
-    set(0,0,0);
+    set(0, 0, 0);
 }
+
 
 void HUD :: redraw() {
     auto sw = m_pWindow->size().x;
@@ -40,12 +43,14 @@ void HUD :: redraw() {
     m_pCanvas->dirty(true);
 }
 
+
 void HUD :: logic_self(Freq::Time) {
     if (m_bDirty) {
         redraw();
         m_bDirty = false;
     }
 }
+
 
 void HUD :: set(int star_lev, int stars, int max_stars) {
     if (star_lev != m_StarLev) {
