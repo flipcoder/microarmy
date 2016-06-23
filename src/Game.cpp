@@ -112,6 +112,7 @@ void Game :: preload() {
         for(auto&& layer: *layers) {
             layer->set_main_camera(m_pCamera.get());
             layer->bake_visible();
+
             auto camera = m_pCamera.get();
             m_pCamera->on_move.connect([layer, camera]{
                 layer->bake_visible();
@@ -160,19 +161,19 @@ void Game :: preload() {
                         m_Spawns.push_back(obj.get());
                         
                         continue;
-                    }
 
-                    else if (name=="altspawn") {
+                    } else if (name=="altspawn") {
                         obj->visible(false);
                         obj->mesh()->visible(false);
                         m_AltSpawns.push_back(obj.get());
 
                         continue;
-                    }
-                    else if (Thing::get_id(obj_cfg)) {
+
+                    } else if (Thing::get_id(obj_cfg)) {
                         if (name == "star") {
                             auto typ = obj_cfg->at<string>("type");
 
+                            // TODO: Make this a case statement
                             if (typ == "bronze")
                                 ++m_MaxStars[0];
                             else if (typ == "silver")
@@ -192,11 +193,12 @@ void Game :: preload() {
                         );
                         obj->add(thing);
                         setup_thing(thing);
+
                         continue;
                     }
 
-                    //bool collision = layer->has_prop("collision");
                     bool depth = layer->depth() || obj->config()->has("depth");
+
                     if (depth) {
                         m_pPartitioner->register_provider(STATIC, [layer](Box box){
                             vector<std::weak_ptr<Node>> r;
@@ -241,8 +243,7 @@ void Game :: preload() {
                                 vec3(mask->at<double>(0), mask->at<double>(1), -5.0f),
                                 vec3(mask->at<double>(2), mask->at<double>(3), 5.0f)
                             );
-                        }
-                        else {
+                        } else {
                             n->box() = Box(
                                 vec3(0.0f, 0.0f, -5.0f),
                                 vec3(1.0f, 1.0f, 5.0f)
@@ -253,12 +254,14 @@ void Game :: preload() {
                             n->box().min().x = 1.0f - n->box().min().x;
                             n->box().max().x = 1.0f - n->box().max().x;
                         }
+
                         if(vflip) {
                             n->box().min().y = 1.0f - n->box().min().y;
                             n->box().max().y = 1.0f - n->box().max().y;
                         }
 
                         obj->mesh()->add(n);
+
                         if (obj_cfg->has("fatal")) {
                             obj_cfg->set<string>("fatal", "");
                         }
@@ -303,7 +306,7 @@ void Game :: preload() {
                 max_stars = _this->m_MaxStars[_this->m_StarLevel];
 
                 if (stars == max_stars)
-                    _this->m_StarLevel = std::min<int>(this->m_StarLevel + 1, 2);
+                    _this->m_StarLevel = std::min<int>(_this->m_StarLevel + 1, 2);
 
             } while (stars == max_stars && _this->m_StarLevel <= 1);
             
@@ -322,6 +325,7 @@ void Game :: preload() {
 
         setup_player(player);
     }
+
     reset();
 
     m_pPartitioner->on_collision(
