@@ -12,6 +12,7 @@
 using namespace std;
 using namespace glm;
 
+
 namespace _ = std::placeholders;
 
 Game :: Game(Qor* engine):
@@ -107,166 +108,166 @@ void Game :: preload() {
         &m_pMap->object_layers()
     };
 
-    for(auto&& layers: layer_types)
-    for(auto&& layer: *layers) {
-        layer->set_main_camera(m_pCamera.get());
-        layer->bake_visible();
-        auto camera = m_pCamera.get();
-        m_pCamera->on_move.connect([layer, camera]{
+    for(auto&& layers: layer_types) {
+        for(auto&& layer: *layers) {
+            layer->set_main_camera(m_pCamera.get());
             layer->bake_visible();
-        });
-        
-        if (layer->config()->has("parallax")) {
-            float parallax = boost::lexical_cast<float>(
-                layer->config()->at<string>("parallax", "1.0")
-            );
-            Color color = Color(
-                layer->config()->at<string>("color", "ffffff")
-            );
-            auto pl = ParallaxLayer();
-            //pl.camera = make_shared<Camera>(m_pResources, m_pQor->window());
-            //pl.camera->ortho();
-            //pl.camera->mode(Tracker::PARALLAX);
-            //pl.camera->parallax_scale(parallax);
-            //pl.camera->track(m_pCamera);
-            pl.root = layer;
-            pl.scale = parallax;
-            //m_pRoot->add(pl.camera);
-            m_ParallaxLayers.push_back(pl);
-            auto l = make_shared<Light>();
-            l->ambient(color);
-            l->diffuse(color);
-            l->specular(color);
-            l->dist(10000.0f);
-            pl.root->add(l);
-            pl.light = l;
+            auto camera = m_pCamera.get();
+            m_pCamera->on_move.connect([layer, camera]{
+                layer->bake_visible();
+            });
+            
+            if (layer->config()->has("parallax")) {
+                float parallax = boost::lexical_cast<float>(
+                    layer->config()->at<string>("parallax", "1.0")
+                );
+                Color color = Color(
+                    layer->config()->at<string>("color", "ffffff")
+                );
+                auto pl = ParallaxLayer();
 
-            continue;
-        }
-        
-        for (auto&& tile_ptr: layer->all_descendants()) {
-            if (not tile_ptr)
+                pl.root = layer;
+                pl.scale = parallax;
+
+                m_ParallaxLayers.push_back(pl);
+                auto l = make_shared<Light>();
+                l->ambient(color);
+                l->diffuse(color);
+                l->specular(color);
+                l->dist(10000.0f);
+                pl.root->add(l);
+                pl.light = l;
+
                 continue;
-
-            auto tile = tile_ptr->as_node();
-            // read object properties and replace
-            auto obj = std::dynamic_pointer_cast<MapTile>(tile);
-
-            if(obj) {
-                auto obj_cfg = obj->config();
-                obj->box() = obj->mesh()->box();
-                auto name = obj_cfg->at<string>("name","");
-                if(name=="spawn") {
-                    obj->visible(false);
-                    obj->mesh()->visible(false);
-                    m_Spawns.push_back(obj.get());
-                    
+            }
+            
+            for (auto&& tile_ptr: layer->all_descendants()) {
+                if (not tile_ptr)
                     continue;
-                }
 
-                else if (name=="altspawn") {
-                    obj->visible(false);
-                    obj->mesh()->visible(false);
-                    m_AltSpawns.push_back(obj.get());
+                auto tile = tile_ptr->as_node();
+                // read object properties and replace
+                auto obj = std::dynamic_pointer_cast<MapTile>(tile);
 
-                    continue;
-                }
-                else if (Thing::get_id(obj_cfg)) {
-                    if (name == "star") {
-                        auto typ = obj_cfg->at<string>("type");
+                if(obj) {
+                    auto obj_cfg = obj->config();
+                    obj->box() = obj->mesh()->box();
+                    auto name = obj_cfg->at<string>("name", "");
 
-                        if (typ == "bronze")
-                            ++m_MaxStars[0];
-                        else if (typ == "silver")
-                            ++m_MaxStars[1];
-                        else if (typ == "gold")
-                            ++m_MaxStars[2];
+                    if(name=="spawn") {
+                        obj->visible(false);
+                        obj->mesh()->visible(false);
+                        m_Spawns.push_back(obj.get());
+                        
+                        continue;
                     }
-                    
-                    auto thing = make_shared<Thing>(
-                        obj_cfg,
-                        obj.get(),
-                        this,
-                        m_pMap.get(),
-                        m_pPartitioner,
-                        m_pQor->timer()->timeline(),
-                        m_pQor->resources()
-                    );
-                    obj->add(thing);
-                    setup_thing(thing);
-                    continue;
-                }
-                //bool collision = layer->has_prop("collision");
-                bool depth = layer->depth() || obj->config()->has("depth");
-                if (depth) {
-                    m_pPartitioner->register_provider(STATIC, [layer](Box box){
-                        vector<std::weak_ptr<Node>> r;
-                        auto nodes = layer->query(box, [](Node* n){
-                            return n->config()->has("static");
-                        });
-                        std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
-                            return std::weak_ptr<Node>(n->as_node());
-                        });
 
-                        return r;
-                    });
-                    m_pPartitioner->register_provider(LEDGE, [layer](Box box){
-                        vector<std::weak_ptr<Node>> r;
-                        auto nodes = layer->query(box, [](Node* n){
-                            return n->config()->has("ledge");
-                        });
-                        std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
-                            return std::weak_ptr<Node>(n->as_node());
-                        });
-                        return r;
-                    });
-                    m_pPartitioner->register_provider(FATAL, [layer](Box box){
-                        vector<std::weak_ptr<Node>> r;
-                        auto nodes = layer->query(box, [](Node* n){
-                            return n->config()->has("fatal");
-                        });
-                        std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
-                            return std::weak_ptr<Node>(n->as_node());
-                        });
-                        return r;
-                    });
-                    
-                    auto n = make_shared<Node>();
-                    n->name("mask");
-                    auto mask = obj_cfg->at<shared_ptr<Meta>>("mask", shared_ptr<Meta>());
-                    bool hflip = obj->orientation() & (unsigned)MapTile::Orientation::H;
-                    bool vflip = obj->orientation() & (unsigned)MapTile::Orientation::V;
-                    if (mask && mask->size() == 4) {
-                        n->box() = Box(
-                            vec3(mask->at<double>(0), mask->at<double>(1), -5.0f),
-                            vec3(mask->at<double>(2), mask->at<double>(3), 5.0f)
+                    else if (name=="altspawn") {
+                        obj->visible(false);
+                        obj->mesh()->visible(false);
+                        m_AltSpawns.push_back(obj.get());
+
+                        continue;
+                    }
+                    else if (Thing::get_id(obj_cfg)) {
+                        if (name == "star") {
+                            auto typ = obj_cfg->at<string>("type");
+
+                            if (typ == "bronze")
+                                ++m_MaxStars[0];
+                            else if (typ == "silver")
+                                ++m_MaxStars[1];
+                            else if (typ == "gold")
+                                ++m_MaxStars[2];
+                        }
+                        
+                        auto thing = make_shared<Thing>(
+                            obj_cfg,
+                            obj.get(),
+                            this,
+                            m_pMap.get(),
+                            m_pPartitioner,
+                            m_pQor->timer()->timeline(),
+                            m_pQor->resources()
                         );
-                    }
-                    else {
-                        n->box() = Box(
-                            vec3(0.0f, 0.0f, -5.0f),
-                            vec3(1.0f, 1.0f, 5.0f)
-                        );
+                        obj->add(thing);
+                        setup_thing(thing);
+                        continue;
                     }
 
-                    if(hflip) {
-                        n->box().min().x = 1.0f - n->box().min().x;
-                        n->box().max().x = 1.0f - n->box().max().x;
-                    }
-                    if(vflip) {
-                        n->box().min().y = 1.0f - n->box().min().y;
-                        n->box().max().y = 1.0f - n->box().max().y;
-                    }
+                    //bool collision = layer->has_prop("collision");
+                    bool depth = layer->depth() || obj->config()->has("depth");
+                    if (depth) {
+                        m_pPartitioner->register_provider(STATIC, [layer](Box box){
+                            vector<std::weak_ptr<Node>> r;
+                            auto nodes = layer->query(box, [](Node* n){
+                                return n->config()->has("static");
+                            });
+                            std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                                return std::weak_ptr<Node>(n->as_node());
+                            });
 
-                    obj->mesh()->add(n);
-                    if (obj_cfg->has("fatal")) {
-                        obj_cfg->set<string>("fatal", "");
-                    }
+                            return r;
+                        });
+                        m_pPartitioner->register_provider(LEDGE, [layer](Box box){
+                            vector<std::weak_ptr<Node>> r;
+                            auto nodes = layer->query(box, [](Node* n){
+                                return n->config()->has("ledge");
+                            });
+                            std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                                return std::weak_ptr<Node>(n->as_node());
+                            });
+                            return r;
+                        });
+                        m_pPartitioner->register_provider(FATAL, [layer](Box box){
+                            vector<std::weak_ptr<Node>> r;
+                            auto nodes = layer->query(box, [](Node* n){
+                                return n->config()->has("fatal");
+                            });
+                            std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                                return std::weak_ptr<Node>(n->as_node());
+                            });
+                            return r;
+                        });
+                        
+                        auto n = make_shared<Node>();
+                        n->name("mask");
+                        auto mask = obj_cfg->at<shared_ptr<Meta>>("mask", shared_ptr<Meta>());
+                        bool hflip = obj->orientation() & (unsigned)MapTile::Orientation::H;
+                        bool vflip = obj->orientation() & (unsigned)MapTile::Orientation::V;
 
-                    else if (obj_cfg->has("ledge"))
-                        obj_cfg->set<string>("ledge", "");
-                    else {
-                        obj_cfg->set<string>("static", "");
+                        if (mask && mask->size() == 4) {
+                            n->box() = Box(
+                                vec3(mask->at<double>(0), mask->at<double>(1), -5.0f),
+                                vec3(mask->at<double>(2), mask->at<double>(3), 5.0f)
+                            );
+                        }
+                        else {
+                            n->box() = Box(
+                                vec3(0.0f, 0.0f, -5.0f),
+                                vec3(1.0f, 1.0f, 5.0f)
+                            );
+                        }
+
+                        if(hflip) {
+                            n->box().min().x = 1.0f - n->box().min().x;
+                            n->box().max().x = 1.0f - n->box().max().x;
+                        }
+                        if(vflip) {
+                            n->box().min().y = 1.0f - n->box().min().y;
+                            n->box().max().y = 1.0f - n->box().max().y;
+                        }
+
+                        obj->mesh()->add(n);
+                        if (obj_cfg->has("fatal")) {
+                            obj_cfg->set<string>("fatal", "");
+                        }
+
+                        else if (obj_cfg->has("ledge"))
+                            obj_cfg->set<string>("ledge", "");
+                        else {
+                            obj_cfg->set<string>("static", "");
+                        }
                     }
                 }
             }
@@ -285,6 +286,7 @@ void Game :: preload() {
             auto typs = m->at<string>("type");
             int typ = 0;
 
+            // TODO: Make this a case statement
             if(typs == "bronze")
                 typ = 0;
             else if(typs == "silver")
@@ -299,17 +301,20 @@ void Game :: preload() {
             do {
                 stars = _this->m_Stars[_this->m_StarLevel];
                 max_stars = _this->m_MaxStars[_this->m_StarLevel];
-                if(stars == max_stars)
-                    _this->m_StarLevel = std::min<int>(_this->m_StarLevel+1,2);
-            } while(stars == max_stars && _this->m_StarLevel <= 1);
+
+                if (stars == max_stars)
+                    _this->m_StarLevel = std::min<int>(this->m_StarLevel + 1, 2);
+
+            } while (stars == max_stars && _this->m_StarLevel <= 1);
             
             _this->m_pHUD->set(_this->m_StarLevel, stars, max_stars);
         });
 
         event("stardoor", [_this](const shared_ptr<Meta>& m){
-            if(_this->m_Stars[0] == _this->m_MaxStars[0]){
+            if (_this->m_Stars[0] == _this->m_MaxStars[0]) {
                 auto mapname = _this->m_pQor->args().value_or("map","1");
                 auto nextmap = to_string(boost::lexical_cast<int>(mapname) + 1);
+
                 _this->m_pQor->args().set("map", nextmap);
                 _this->m_pQor->change_state("pregame");
             }
@@ -320,36 +325,28 @@ void Game :: preload() {
     reset();
 
     m_pPartitioner->on_collision(
-        CHARACTER, STATIC,
-        std::bind(&Game::cb_to_tile, this, _::_1, _::_2)
+        CHARACTER, STATIC, std::bind(&Game::cb_to_tile, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, LEDGE,
-        std::bind(&Game::cb_to_ledge, this, _::_1, _::_2)
+        CHARACTER, LEDGE, std::bind(&Game::cb_to_ledge, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, FATAL,
-        std::bind(&Game::cb_to_fatal, this, _::_1, _::_2)
+        CHARACTER, FATAL, std::bind(&Game::cb_to_fatal, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        THING, STATIC,
-        std::bind(&Thing::cb_to_static, _::_1, _::_2)
+        THING, STATIC, std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        THING, FATAL,
-        std::bind(&Thing::cb_to_static, _::_1, _::_2)
+        THING, FATAL, std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        BULLET, STATIC,
-        std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
+        BULLET, STATIC, std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        THING, BULLET,
-        std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
+        THING, BULLET, std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, THING,
-        std::bind(&Thing::cb_to_player, _::_1, _::_2)
+        CHARACTER, THING, std::bind(&Thing::cb_to_player, _::_1, _::_2)
     );
 
     m_JumpTimer.set(Freq::Time::ms(0));
@@ -390,8 +387,9 @@ void Game :: setup_player(std::shared_ptr<Sprite> player) {
     n->name("mask");
     n->box() = Box(
         vec3(-4.0f, -12.0f, -5.0f),
-        vec3(4.0f,2.0f, 5.0f)
+        vec3(4.0f, 2.0f, 5.0f)
     );
+
     player->add(n);
     m_pPartitioner->register_object(n, CHARACTER);
 
@@ -400,8 +398,9 @@ void Game :: setup_player(std::shared_ptr<Sprite> player) {
     n->name("feetmask");
     n->box() = Box(
         vec3(-4.0f, 0.0f, -5.0f),
-        vec3(4.0f,4.0f, 5.0f)
+        vec3(4.0f, 4.0f, 5.0f)
     );
+
     player->add(n);
     m_pPartitioner->register_object(n, CHARACTER_FEET);
 
@@ -409,8 +408,9 @@ void Game :: setup_player(std::shared_ptr<Sprite> player) {
     n->name("sidemask");
     n->box() = Box(
         vec3(-10.0f, -10.0f, -5.0f),
-        vec3(10.0f,-2.0f, 5.0f)
+        vec3(10.0f, -2.0f, 5.0f)
     );
+
     player->add(n);
     m_pPartitioner->register_object(n, CHARACTER_SIDES);
 
@@ -467,21 +467,21 @@ void Game :: cb_to_static(Node* a, Node* b, Node* m) {
     } catch(...) {
         return;
     }
-    
 
     auto np = vec3(p.x, old_pos.y, p.z);
     m->position(np);
+
     if(not col()){
-        m->velocity(glm::vec3(v.x,0.0f,v.z));
+        m->velocity(glm::vec3(v.x, 0.0f, v.z));
         return;
     }
 
     np = vec3(old_pos.x, p.y, p.z);
     m->position(np);
+
     if(not col())
         return;
 
-    
     m->position(vec3(old_pos.x, old_pos.y, p.z));
     m->velocity(glm::vec3(0.0f));
 }
@@ -491,11 +491,8 @@ void Game :: cb_to_ledge(Node* a, Node* b) {
     auto m = a->parent();
     auto old_pos = Matrix::translation(kit::safe_ptr(m->snapshot(0))->world_transform);
 
-    if (m->velocity().y >= K_EPSILON)
-        if (old_pos.y <= b->position(Space::WORLD).y) {
-            //LOGf("static %s %s", old_pos.y % b->position(Space::WORLD).y);
-            cb_to_static(a, b, a->parent());
-        }
+    if (m->velocity().y >= K_EPSILON and old_pos.y <= b->position(Space::WORLD).y)
+        cb_to_static(a, b, a->parent());
 }
 
 
@@ -574,6 +571,7 @@ void Game :: logic(Freq::Time t) {
             player->set_state("jump");
         
         glm::vec3 move(0.0f);
+
         if (player->velocity().x > -K_EPSILON && player->velocity().x < K_EPSILON) {
             if (m_pController->button("left")) {
                 m_pCamera->track(m_pCharFocusLeft);
@@ -585,16 +583,16 @@ void Game :: logic(Freq::Time t) {
             }
         }
 
-        if(m_pController->button("shoot") && m_ShootTimer.elapsed()){
+        if (m_pController->button("shoot") && m_ShootTimer.elapsed()) {
             shoot(player.get());
         }
             
         bool block_jump = false;
-        if(m_pController->button("up") || m_pController->button("jump")){
+        if (m_pController->button("up") || m_pController->button("jump")) {
             
-            if(walljump || not in_air || not m_JumpTimer.elapsed())
-            {
+            if (walljump || not in_air || not m_JumpTimer.elapsed()) {
                 float x = 0.0f;
+
                 if (walljump) {
                     auto last_dir = m_LastWallJumpDir;
                     auto tile_loc = wall_colliders.at(0)->world_box().center().x;
@@ -613,11 +611,12 @@ void Game :: logic(Freq::Time t) {
             
                 // jumping from floor or from a different wall
                 if (not block_jump) {
-                    if (not in_air || walljump || not m_JumpTimer.elapsed()){
+                    if (not in_air || walljump || not m_JumpTimer.elapsed()) {
                         player->velocity(glm::vec3(x, -125.0f, 0.0f));
 
                         if (not in_air || walljump) {
                             auto sounds = m_pCamera->hook_type<Sound>();
+
                             if(sounds.empty())
                                 Sound::play(m_pCamera.get(), "jump.wav", m_pResources);
                             m_JumpTimer.set(Freq::Time::ms(200));
@@ -646,6 +645,7 @@ void Game :: logic(Freq::Time t) {
                 player->set_state("walk");
 
             move = glm::normalize(move);
+
             if (move.x < -K_EPSILON)
                 player->set_state("left");
             else if (move.x > K_EPSILON)
@@ -680,6 +680,7 @@ void Game :: shoot(Sprite* origin) {
         },
         make_shared<MeshMaterial>("laser.png", m_pResources)
     );
+
     shot->material()->emissive(Color::white());
     m_pRoot->add(shot);
 
@@ -689,15 +690,13 @@ void Game :: shoot(Sprite* origin) {
             origin->mesh()->world_box().size().x / 2.0f,
         origin->position().y +
             -origin->origin().y*origin->size().y +
-            origin->mesh()->world_box().size().y / 2.0f + 
-            -2.0f,
+            origin->mesh()->world_box().size().y / 2.0f + -2.0f,
         origin->position().z
     ));
 
     shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
     shot->velocity(shot->orient_to_world(glm::vec3(
-        (origin->check_state("left")?-1.0f:1.0f) * 256.0f,
-        0.0f, 0.0f
+        (origin->check_state("left") ? -1.0f : 1.0f) * 256.0f, 0.0f, 0.0f
     )));
 
     auto timer = make_shared<Freq::Alarm>(m_pQor->timer()->timeline());
@@ -713,12 +712,11 @@ void Game :: shoot(Sprite* origin) {
     
     Sound::play(m_pCamera.get(), "shoot.wav", m_pResources);
 
-    m_ShootTimer.set(Freq::Time::ms(
-        m_Power==0 ? 200 : 100
-    ));
+    m_ShootTimer.set(Freq::Time::ms(m_Power == 0 ? 200 : 100));
     
     // increase box Z width
     auto shotbox = shot->box();
+
     shot->set_box(Box(
         vec3(shotbox.min().x, shotbox.min().y, -5.0),
         vec3(shotbox.max().x, shotbox.max().y, 5.0)
