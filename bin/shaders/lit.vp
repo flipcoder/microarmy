@@ -1,0 +1,45 @@
+#version 120
+#define MAX_LIGHTS 8
+
+uniform int NumLights;
+/*uniform Light light[MAX_LIGHTS];*/
+/*VaryingLight vlight[MAX_LIGHTS];*/
+
+uniform vec4 LightPos[MAX_LIGHTS];
+/*uniform float LightDist[MAX_LIGHTS];*/
+/*varying float LightDistV[MAX_LIGHTS];*/
+varying vec3 LightDir[MAX_LIGHTS];
+
+attribute vec3 VertexPosition;
+attribute vec2 VertexWrap;
+attribute vec3 VertexNormal;
+
+varying vec3 Position;
+varying vec2 Wrap;
+varying vec3 Normal;
+varying float Depth;
+/*varying vec4 LightPosEye;*/
+/*varying vec3 LightDir;*/
+
+uniform mat4 ModelViewProjection;
+uniform mat4 ModelView;
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat3 NormalMatrix;
+/*uniform vec4 LightPos;*/
+
+void main()
+{
+    Wrap = VertexWrap;
+    Normal = normalize(NormalMatrix * VertexNormal);
+    Position = (ModelView * vec4(VertexPosition,1.0)).xyz;
+    /*LightDir = vec3(View * LightPos) - Position;*/
+    for(int i=0; i<NumLights; i++)
+    {
+        LightDir[i] = vec3(View * LightPos[i]) - Position;
+        /*LightDistV[i] = LightDist[i];*/
+    }
+    gl_Position = ModelViewProjection * vec4(VertexPosition, 1.0);
+    Depth = gl_Position.z;
+}
+
