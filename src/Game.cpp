@@ -521,7 +521,11 @@ void Game :: cb_bullet_to_static(Node* a, Node* b) {
 void Game :: enter() {
     m_pMusic->play();
     
-    m_Shader = m_pPipeline->load_shaders({"detail2d"});
+    if(m_pQor->args().has("--low"))
+        m_Shader = m_pPipeline->load_shaders({"lit"});
+    else
+        m_Shader = m_pPipeline->load_shaders({"detail2d"});
+
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
 
     for (int i=0; i<2; ++i){
