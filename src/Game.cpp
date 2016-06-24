@@ -173,7 +173,6 @@ void Game :: preload() {
                         if (name == "star") {
                             auto typ = obj_cfg->at<string>("type");
 
-                            // TODO: Make this a case statement
                             if (typ == "bronze")
                                 ++m_MaxStars[0];
                             else if (typ == "silver")
