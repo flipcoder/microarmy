@@ -29,7 +29,7 @@ Vorbis, Boost, Jsoncpp, Pthread, Bullet, Sdl2, Raknet, Glew, Assimp, Freeimage, 
 
 ```
 premake4 gmake
-make config=release -j`nproc`
+make microarmy config=release -j`nproc`
 ```
 
 - [siege-tools](https://github.com/flipcoder/siege-tools) is recommended.
