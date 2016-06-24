@@ -7,8 +7,7 @@
 
 class Monster: public Node {
 	public:
-
-		enum MONSTER_TYPE {
+		enum Type {
 			NONE = 0,
 
 			DUCK,
@@ -34,7 +33,7 @@ class Monster: public Node {
         virtual ~Monster();
 
 
-        // Setters
+        // Setters (NOT CURRENTLY USED)
         void set_player(const std::shared_ptr<Sprite>& player);
         void set_map(const std::shared_ptr<TileMap>& map);
         void set_other(const std::shared_ptr<Thing>& thing);
@@ -43,14 +42,13 @@ class Monster: public Node {
         // Getters
         static unsigned get_type(const std::shared_ptr<Meta>& config);
 		Game* get_game() { return m_pGame; }
-		bool game() { return m_pGame; }
-		Sprite* sprite() { return m_pSprite.get(); }
+		Sprite* get_sprite() { return m_pSprite.get(); }
 		Maptile* get_placeholder() { return m_pPlaceholder; }
 
 
         // Methods
 		void activate();
-		void patrol();
+        void deactivate();
 		void damage(int dmg);
 		void shoot();
 		void stun();
@@ -64,6 +62,8 @@ class Monster: public Node {
         static void cb_to_player(Node* player_node, Node* thing_node);
 
 	private:
+        const static std::vector<std::string> s_TypeNames;
+        
 		unsigned m_ThingID = 0;
         int m_HP = 1;
         int m_MaxHP = 1;

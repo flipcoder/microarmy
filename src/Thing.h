@@ -59,7 +59,6 @@ class Thing: public Node {
         
         // Static Methods
         static unsigned get_id(const std::shared_ptr<Meta>& config);
-        const static std::vector<std::string> s_TypeNames;
         static bool is_thing(std::string name);
         static std::shared_ptr<Thing> find_thing(Node* n);
 
@@ -108,6 +107,8 @@ class Thing: public Node {
 
 
     private:
+        const static std::vector<std::string> s_TypeNames;
+        
         unsigned m_ThingID = 0;
         int m_HP = 1;
         int m_MaxHP = 1;
