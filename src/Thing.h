@@ -70,7 +70,7 @@ class Thing: public Node {
 
 
         // Setters
-        void init_thing();
+        void init_thing(); // TODO: Put this in the constructor?
         void setup_player(const std::shared_ptr<Sprite>& player);
         void setup_map(const std::shared_ptr<TileMap>& map);
         void setup_other(const std::shared_ptr<Thing>& thing);

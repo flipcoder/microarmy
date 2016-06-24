@@ -221,9 +221,14 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     if (thing->id() == Thing::STAR) {
         if(thing->placeholder()->visible()){
             thing->sound("pickup2.wav");
-            thing->visible(false);
-            thing->placeholder()->visible(false);
+
+            // TODO: Replace with animation
+            // thing->visible(false);
+
+            // thing->placeholder()->visible(false);
+            
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+                // TODO: Replace with outlined or shadow picture
                 thing->visible(true);
                 thing->placeholder()->visible(true);
             });

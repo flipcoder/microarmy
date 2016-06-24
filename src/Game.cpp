@@ -420,7 +420,7 @@ void Game :: setup_player(std::shared_ptr<Sprite> player) {
     setup_player_to_map(player);
 
     for (auto&& thing: m_Things)
-        setup_player_to_thing(player,thing);
+        setup_player_to_thing(player, thing);
 }
 
 
