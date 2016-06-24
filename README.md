@@ -32,9 +32,18 @@ premake4 gmake
 make microarmy config=release -j`nproc`
 ```
 
-- [siege-tools](https://github.com/flipcoder/siege-tools) is recommended.
-
 - Run microarmy_dist from the bin folder
+
+## Credits
+
+### [Grady O'Connell](https://github.com/flipcoder)
+Programming, Graphics, Music
+
+### [Kevin Nelson](https://github.com/mrgirlyman)
+Programming
+
+### [Mark McDaniel](https://github.com/AlfredAnonymous)
+Graphics
 
 =====
 
