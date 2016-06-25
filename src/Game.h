@@ -12,9 +12,9 @@
 #include "Qor/Sprite.h"
 #include "HUD.h"
 
-
 class Qor;
 class Thing;
+class Player;
 
 class Game: public State {
     public:
@@ -48,11 +48,11 @@ class Game: public State {
         void cb_to_fatal(Node* a, Node* b);
         void cb_thing(Node* a, Node* b);
         void cb_bullet_to_static(Node* a, Node* b);
-        void setup_player(std::shared_ptr<Sprite> player);
-        void setup_player_to_thing(std::shared_ptr<Sprite> player);
+        void setup_player(std::shared_ptr<Player> player);
+        //void setup_player_to_thing(std::shared_ptr<Player> player);
         void setup_thing(std::shared_ptr<Thing> thing);
-        void setup_player_to_thing(std::shared_ptr<Sprite> player, std::shared_ptr<Thing> thing);
-        void setup_player_to_map(std::shared_ptr<Sprite> player);
+        void setup_player_to_thing(std::shared_ptr<Player> player, std::shared_ptr<Thing> thing);
+        //void setup_player_to_map(std::shared_ptr<Plyaer> player);
         std::vector<Node*> get_static_collisions(Node* a);
 
         struct ParallaxLayer {
@@ -78,9 +78,8 @@ class Game: public State {
         std::shared_ptr<Camera> m_pCamera;
         std::shared_ptr<TileMap> m_pMap;
         std::shared_ptr<Controller> m_pController;
-        std::shared_ptr<Sprite> m_pChar;
-        std::shared_ptr<Node> m_pCharFocusLeft;
-        std::shared_ptr<Node> m_pCharFocusRight;
+        Freq::Timeline* m_pTimeline;
+        std::shared_ptr<Player> m_pChar;
         std::shared_ptr<Light> m_pViewLight;
         std::shared_ptr<Sound> m_pMusic;
         std::vector<MapTile*> m_Spawns;
@@ -89,18 +88,22 @@ class Game: public State {
 
         std::vector<std::shared_ptr<Thing>> m_Things;
 
-        int m_LastWallJumpDir = 0;
-        Freq::Alarm m_JumpTimer;
-        Freq::Alarm m_ShootTimer;
-        bool m_WasInAir = false;
-        unsigned m_Power = 0;
+        //std::shared_ptr<Node> m_pCharFocusLeft;
+        //std::shared_ptr<Node> m_pCharFocusRight;
+
+        //Freq::Alarm m_JumpTimer;
+        //Freq::Alarm m_ShootTimer;
+        //int m_LastWallJumpDir = 0;
+        //bool m_WasInAir = false;
+        //unsigned m_Power = 0;
+        
         std::vector<int> m_Stars;
         std::vector<int> m_MaxStars;
         int m_StarLevel = 0;
         
         unsigned m_Shader = 0;
 
-        std::vector<std::shared_ptr<Sprite>> m_Players;
+        std::vector<std::shared_ptr<Player>> m_Players;
         std::vector<ParallaxLayer> m_ParallaxLayers;
 };
 
