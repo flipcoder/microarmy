@@ -1,4 +1,5 @@
 #include "Monster.h"
+#include "Game.h"
 #include "Qor/TileMap.h" 
 #include "Qor/Sprite.h"
 
@@ -270,7 +271,11 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
     if (monster->is_alive() and not bullet->detaching()) {
         monster->sound("damage.wav");
 
-        if (monster->damage(bullet->config()->at("damage", 1))) {
+        auto hp_before = monster->m_HP;
+        monster->damage(bullet->config()->at("damage", 1));
+        auto hp_after = monster->m_HP;
+
+        if (hp_before > hp_after) {
 
             // Generate blood splatter when hit
             auto gibs = monster->m_Dying ? 5 : 20;

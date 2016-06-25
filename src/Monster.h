@@ -6,6 +6,7 @@
 #include "Qor/TileMap.h" 
 #include "Qor/BasicPartitioner.h"
 
+
 class Game;
 class Sprite;
 
@@ -34,7 +35,7 @@ class Monster: public Node {
 
 
         // Destructor
-        virtual ~Monster();
+        virtual ~Monster() {}
 
 
         // Abstract Methods
@@ -55,7 +56,7 @@ class Monster: public Node {
         int get_max_hp() { return m_MaxHP; }
         Game* get_game() { return m_pGame; }
         Sprite* get_sprite() { return m_pSprite.get(); }
-        Maptile* get_placeholder() { return m_pPlaceholder; }
+        MapTile* get_placeholder() { return m_pPlaceholder; }
 
 
         // Methods
