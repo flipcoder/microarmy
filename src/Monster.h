@@ -39,7 +39,7 @@ class Monster: public Node {
 
 
         // Abstract Methods
-        virtual void lazy_logic_self(Freq::Time t) override;
+        // virtual void lazy_logic_self(Freq::Time t) override;
         virtual void logic_self(Freq::Time t) override;
 
 
