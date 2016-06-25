@@ -1,9 +1,13 @@
-#ifndef THING_CPP_USLBKY9A
-#define THING_CPP_USLBKY9A
+// Add definitions
+// #ifndef THING_CPP_USLBKY9A
+// #define THING_CPP_USLBKY9A
 
 #include <memory>
 #include "Qor/TileMap.h" 
 #include "Qor/BasicPartitioner.h"
+
+class Game;
+class Sprite;
 
 class Monster: public Node {
     public:
@@ -15,7 +19,7 @@ class Monster: public Node {
             ROBOT,
             SNAIL,
             WIZARD,
-        }
+        };
 
         // Constructor
         Monster(
@@ -33,42 +37,53 @@ class Monster: public Node {
         virtual ~Monster();
 
 
+        // Abstract Methods
+        virtual void lazy_logic_self(Freq::Time t) override;
+        virtual void logic_self(Freq::Time t) override;
+
+
         // Setters (NOT CURRENTLY USED)
         void set_player(const std::shared_ptr<Sprite>& player);
         void set_map(const std::shared_ptr<TileMap>& map);
-        void set_other(const std::shared_ptr<Thing>& thing);
+        void set_other(const std::shared_ptr<Monster>& thing);
 
 
         // Getters
         static unsigned get_type(const std::shared_ptr<Meta>& config);
+        bool is_alive() const { return not m_Dead and not m_Dying; }
+        int get_hp() { return m_HP; }
+        int get_max_hp() { return m_MaxHP; }
         Game* get_game() { return m_pGame; }
         Sprite* get_sprite() { return m_pSprite.get(); }
         Maptile* get_placeholder() { return m_pPlaceholder; }
 
 
         // Methods
+        void initialize();
         void activate();
         void deactivate();
         void damage(int dmg);
-        void shoot();
-        void stun();
-        void gib(Node* bullet);
-        void sound();
+        void shoot(Sprite* origin, float m_BulletSpeed);
+        void stun(int m_StunTime);
+        void gib();
+        void sound(const std::string& fn);
 
 
         // Callbacks
-        static void cb_to_bullet(Node* thing_node, Node* bullet);
-        static void cb_to_static(Node* thing_node, Node* static_node);
-        static void cb_to_player(Node* player_node, Node* thing_node);
+        static void cb_to_bullet(Node* monster_node, Node* bullet);
+        static void cb_to_static(Node* monster_node, Node* static_node);
+        static void cb_to_player(Node* player_node, Node* monster_node);
 
     private:
         const static std::vector<std::string> s_TypeNames;
         
-        unsigned m_ThingID = 0;
+        unsigned m_MonsterID = 0;
         int m_HP = 1;
         int m_MaxHP = 1;
+        int m_StunTime = 0;
         float m_StartSpeed = 0.0f;
         float m_Speed = 0.0f;
+        float m_BulletSpeed = 0;
         bool m_Dying = false;
         bool m_Dead = false;
         bool m_Solid = false;
@@ -88,12 +103,13 @@ class Monster: public Node {
         TileMap* m_pMap = nullptr;
         Freq::Timeline* m_pTimeline;
 
+        // sprite is optional for thing type, not attached
+        std::shared_ptr<Sprite> m_pSprite;
 
         // ground detection for monsters
         std::shared_ptr<Mesh> m_pLeft;
         std::shared_ptr<Mesh> m_pRight;
 
-
-        // List of players thing knows about
+        // List of players Monster knows about
         std::vector<Sprite*> m_Players;
-}
+};

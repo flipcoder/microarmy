@@ -26,7 +26,8 @@ class Game: public State {
             CHARACTER_FEET,
             CHARACTER_SIDES,
             BULLET,
-            THING
+            THING,
+            MONSTER
         };
 
         
