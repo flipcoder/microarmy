@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Thing.h"
+#include "Monster.h"
 #include "Player.h"
 #include "Qor/BasicPartitioner.h"
 #include "Qor/Input.h"
@@ -170,6 +171,19 @@ void Game :: preload() {
 
                         continue;
 
+                    } else if (Monster::get_type(obj_cfg)) {
+                        auto monster = make_shared<Monster>(
+                            obj_cfg,
+                            obj.get(),
+                            this,
+                            m_pMap.get(),
+                            m_pPartitioner,
+                            m_pQor->timer()->timeline(),
+                            m_pQor->resources()
+                        );
+                        obj->add(monster);
+                        setup_monster(monster);
+                        continue;
                     } else if (Thing::get_id(obj_cfg)) {
                         if (name == "star") {
                             auto typ = obj_cfg->at<string>("type");
@@ -337,17 +351,29 @@ void Game :: preload() {
         CHARACTER, FATAL, std::bind(&Game::cb_to_fatal, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
+        BULLET, STATIC, std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
+    );
+    
+    m_pPartitioner->on_collision(
         THING, STATIC, std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
         THING, FATAL, std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        BULLET, STATIC, std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
-    );
-    m_pPartitioner->on_collision(
         THING, BULLET, std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
     );
+    
+    m_pPartitioner->on_collision(
+        MONSTER, STATIC, std::bind(&Monster::cb_to_static, _::_1, _::_2)
+    );
+    m_pPartitioner->on_collision(
+        MONSTER, FATAL, std::bind(&Monster::cb_to_static, _::_1, _::_2)
+    );
+    m_pPartitioner->on_collision(
+        MONSTER, BULLET, std::bind(&Monster::cb_to_bullet, _::_1, _::_2)
+    );
+    
     m_pPartitioner->on_collision(
         CHARACTER, THING, std::bind(&Thing::cb_to_player, _::_1, _::_2)
     );
@@ -381,6 +407,14 @@ void Game :: setup_thing(std::shared_ptr<Thing> thing) {
 
     for(auto&& player: m_Players)
         setup_player_to_thing(player,thing);
+}
+
+void Game :: setup_monster(std::shared_ptr<Monster> monster) {
+    monster->initialize();
+    m_Monsters.push_back(monster);
+
+    for(auto&& player: m_Players)
+        setup_player_to_monster(player,monster);
 }
 
 
@@ -431,7 +465,7 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
 
 
 void Game :: setup_player_to_thing(std::shared_ptr<Player> player, std::shared_ptr<Thing> thing) {}
-
+void Game :: setup_player_to_monster(std::shared_ptr<Player> player, std::shared_ptr<Monster> monster) {}
 
 std::vector<Node*> Game :: get_static_collisions(Node* a) {
     auto static_cols = m_pPartitioner->get_collisions_for(a, STATIC);

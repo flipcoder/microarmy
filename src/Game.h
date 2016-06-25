@@ -14,6 +14,7 @@
 
 class Qor;
 class Thing;
+class Monster;
 class Player;
 
 class Game: public State {
@@ -51,7 +52,9 @@ class Game: public State {
         void setup_player(std::shared_ptr<Player> player);
         //void setup_player_to_thing(std::shared_ptr<Player> player);
         void setup_thing(std::shared_ptr<Thing> thing);
+        void setup_monster(std::shared_ptr<Monster> monster);
         void setup_player_to_thing(std::shared_ptr<Player> player, std::shared_ptr<Thing> thing);
+        void setup_player_to_monster(std::shared_ptr<Player> player, std::shared_ptr<Monster> monster);
         //void setup_player_to_map(std::shared_ptr<Plyaer> player);
         std::vector<Node*> get_static_collisions(Node* a);
 
@@ -87,6 +90,7 @@ class Game: public State {
         std::shared_ptr<HUD> m_pHUD;
 
         std::vector<std::shared_ptr<Thing>> m_Things;
+        std::vector<std::shared_ptr<Monster>> m_Monsters;
 
         //std::shared_ptr<Node> m_pCharFocusLeft;
         //std::shared_ptr<Node> m_pCharFocusRight;

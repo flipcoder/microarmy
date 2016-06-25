@@ -309,5 +309,24 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
 }
 
 
-void Monster :: cb_to_static(Node* monster_node, Node* static_node) {}
-void Monster :: cb_to_player(Node* player_node, Node* monster_node) {}
+void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
+    auto monster = monster_node->config()->at<Monster*>("monster",nullptr);
+
+    if (not monster)
+        return;
+
+    if (monster->num_snapshots()) {
+        if (static_node->world_box().center().x > monster->world_box().center().x) {
+            monster->velocity(-abs(monster->velocity()));
+            monster->get_sprite()->set_state("left");
+        } else if (static_node->world_box().center().x < monster->world_box().center().x) {
+            monster->velocity(abs(monster->velocity()));
+            monster->get_sprite()->set_state("right");
+        }
+    }
+}
+void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
+    auto monster = (Monster*)monster_node;
+    if (monster->is_alive())
+        monster->m_pGame->reset();
+}
