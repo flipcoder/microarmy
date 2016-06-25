@@ -402,7 +402,7 @@ Game :: ~Game() {
 
 
 void Game :: setup_thing(std::shared_ptr<Thing> thing) {
-    thing->init_thing();
+    thing->initialize();
     m_Things.push_back(thing);
 
     for(auto&& player: m_Players)

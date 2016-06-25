@@ -15,15 +15,7 @@ class Thing: public Node {
         enum Type {
             INVALID_THING = 0,
 
-            MONSTERS,
-                MOUSE = MONSTERS,
-                SNAIL,
-                WIZARD,
-                ROBOT,
-                DUCK,
-            MONSTERS_END,
-
-            ITEMS = MONSTERS_END,
+            ITEMS,
                 BATTERY = ITEMS,
                 HEART,
                 STAR,
@@ -64,12 +56,12 @@ class Thing: public Node {
 
 
         // Abstract Methods
-        virtual void lazy_logic_self(Freq::Time t) override;
-        virtual void logic_self(Freq::Time t) override;
+        //virtual void lazy_logic_self(Freq::Time t) override;
+        //virtual void logic_self(Freq::Time t) override;
 
 
         // Setters
-        void init_thing(); // TODO: Put this in the constructor?
+        void initialize(); // TODO: Put this in the constructor? -- has to happen after object add()ed
         void setup_player(const std::shared_ptr<Sprite>& player);
         void setup_map(const std::shared_ptr<TileMap>& map);
         void setup_other(const std::shared_ptr<Thing>& thing);
@@ -77,13 +69,10 @@ class Thing: public Node {
 
         // Getters
         unsigned id() const { return m_ThingID; }
-        bool is_monster() const { return m_ThingID >= MONSTERS && m_ThingID < MONSTERS_END; }
         bool is_item() const { return m_ThingID >= ITEMS && m_ThingID < ITEMS_END; }
         bool is_object() const { return m_ThingID >= OBJECTS && m_ThingID < OBJECTS_END; }
         bool is_marker() const { return m_ThingID >= MARKERS && m_ThingID < MARKERS_END; }
         bool solid() const { return m_Solid; }
-        bool alive() const { return not m_Dead and not m_Dying; }
-        float hp_fraction() { return m_HP * 1.0f / m_MaxHP; }
         Game* game() { return m_pGame; }
         Sprite* sprite() { return m_pSprite.get(); }
         MapTile* placeholder() { return m_pPlaceholder; }
@@ -93,12 +82,7 @@ class Thing: public Node {
         bool damage(int dmg);
         void gib(Node* bullet);
         void sound(const std::string& fn);
-        void stun();
         void origin();
-        void shoot(Sprite* origin);
-        void activate();
-        void register_player(Sprite* p);
-
         
         // Callbacks
         static void cb_to_bullet(Node* thing_node, Node* bullet);
@@ -110,10 +94,6 @@ class Thing: public Node {
         const static std::vector<std::string> s_TypeNames;
         
         unsigned m_ThingID = 0;
-        int m_HP = 1;
-        int m_MaxHP = 1;
-        float m_StartSpeed = 0.0f;
-        float m_Speed = 0.0f;
         bool m_Dying = false;
         bool m_Dead = false;
         bool m_Solid = false;
@@ -124,7 +104,6 @@ class Thing: public Node {
         Freq::Alarm m_StunTimer;
         boost::signals2::scoped_connection m_ResetCon;
         
-
         Cache<Resource, std::string>* m_pResources = nullptr;
         MapTile* m_pPlaceholder = nullptr;
         BasicPartitioner* m_pPartitioner = nullptr;
@@ -134,13 +113,6 @@ class Thing: public Node {
         
         // sprite is optional for thing type, not attached
         std::shared_ptr<Sprite> m_pSprite;
-
-        // ground detection for monsters
-        std::shared_ptr<Mesh> m_pLeft;
-        std::shared_ptr<Mesh> m_pRight;
-
-        // List of players thing knows about
-        std::vector<Sprite*> m_Players;
 };
 
 #endif

@@ -9,13 +9,6 @@ using namespace glm;
 const std::vector<std::string> Thing :: s_TypeNames({
     "",
     
-    // monsters
-    "mouse",
-    "snail",
-    "wizard",
-    "robot",
-    "duck",
-    
     // items
     "battery",
     "heart",
@@ -65,7 +58,7 @@ std::shared_ptr<Thing> Thing :: find_thing(Node* n) {
 }
 
 
-void Thing :: init_thing() {
+void Thing :: initialize() {
     assert(m_pPartitioner);
 
     m_Box = m_pPlaceholder->box();
@@ -75,70 +68,7 @@ void Thing :: init_thing() {
     const float item_dist = 200.0f;
     const float glow = 1.0f;
 
-    if (is_monster()) {
-        TRY(m_pConfig->merge(make_shared<Meta>(
-            m_pResources->transform(m_Identity + ".json")
-        )));
-        
-        auto mask = m_pConfig->meta("mask");
-        m_Box = Box(
-            vec3(mask->at<double>(0), mask->at<double>(1), -0.5f),
-            vec3(mask->at<double>(2), mask->at<double>(3), 0.5f)
-        );
-        
-        m_pLeft = make_shared<Mesh>();
-        auto lbox = m_Box;
-        lbox.min().x -= m_Box.size().x;
-        lbox.max().x -= m_Box.size().x;
-        lbox.min().y += m_Box.size().y;
-        lbox.max().y += m_Box.size().y;
-        m_pLeft->set_box(lbox);
-        add(m_pLeft);
-        
-        m_pRight = make_shared<Mesh>();
-        auto rbox = m_Box;
-        rbox.min().x += m_Box.size().x;
-        rbox.max().x += m_Box.size().x;
-        rbox.min().y += m_Box.size().y;
-        rbox.max().y += m_Box.size().y;
-        m_pRight->set_box(rbox);
-        add(m_pRight);
-
-        m_HP = m_pConfig->at<int>("hp", 5);
-        m_MaxHP = m_pConfig->at<int>("hp", 5);
-        m_StartSpeed = m_pConfig->at<double>("speed", 10.0);
-        m_Speed = m_StartSpeed;
-
-        m_pSprite = make_shared<Sprite>(
-            m_pResources->transform(m_Identity + ".json"),
-            m_pResources
-        );
-
-        add(m_pSprite);
-        m_pSprite->set_states({"unhit", "left"});
-        if (m_pPlaceholder->tile_layer()->depth() || m_pConfig->has("depth"))
-            m_pSprite->mesh()->set_geometry(m_pMap->tilted_tile_geometry());
-        collapse(); // detach from placeholder
-        rescale(glm::vec3(1.0f));
-        position(m_pPlaceholder->position(Space::WORLD)); // inherit placeholder pos
-        // adding a sprite will spawn its center on 0,0...
-        // so we offset
-        move(glm::vec3(
-            m_pSprite->origin().x * m_pSprite->size().x,
-            m_pSprite->origin().y * m_pSprite->size().y,
-            0.0f
-        ));
-
-        //m_pPlaceholder->detach(); // don't want to invalidate iterator
-        m_pPlaceholder->mesh()->visible(false); // remove placeholder
-        m_pSprite->mesh()->config()->set<string>("id", m_Identity);
-        m_pSprite->mesh()->config()->set<Thing*>("thing", this);
-        m_pSprite->mesh()->set_box(m_Box);
-        m_pPartitioner->register_object(m_pSprite->mesh(), Game::THING);
-
-        velocity(vec3(-m_Speed, 0.0f, 0.0f));
-        
-    } else if (m_ThingID == Thing::STAR) {
+    if (m_ThingID == Thing::STAR) {
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
 
@@ -300,9 +230,6 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
                 thing->m_pGame->event("stardoor");
             }
         }
-    } else if (thing->is_monster()) {
-        if (thing->alive())
-            thing->m_pGame->reset();
     }
 }
 
@@ -312,18 +239,6 @@ void Thing :: cb_to_static(Node* thing_node, Node* static_node) {
 
     if (not thing)
         return;
-
-    if (thing->is_monster()) {
-        if (thing->num_snapshots()) {
-            if (static_node->world_box().center().x > thing->world_box().center().x) {
-                thing->velocity(-abs(thing->velocity()));
-                thing->sprite()->set_state("left");
-            } else if (static_node->world_box().center().x < thing->world_box().center().x) {
-                thing->velocity(abs(thing->velocity()));
-                thing->sprite()->set_state("right");
-            }
-        }
-    }
 }
 
 
@@ -332,81 +247,11 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet) {
 
     if (not thing)
         return;
-
-    if (thing->is_monster() && thing->alive() && not bullet->detaching()) {
-        thing->sound("damage.wav");
-
-        if (thing->damage(bullet->config()->at("damage", 1))) {
-
-            // Generate blood splatter when hit
-            auto gibs = thing->m_Dying ? 5 : 20;
-            for(int i = 0; i < gibs; ++i)
-                thing->gib(bullet);
-
-            // Knockback and stun
-            auto vel = thing->velocity();
-            thing->move(glm::vec3(-kit::sign(vel.x) * 5.0f, 0.0f, 0.0f));
-            thing->stun();
-            
-            // Change direction based on bullet velocity
-            if (bullet->velocity().x > K_EPSILON) {
-                thing->velocity(-abs(thing->velocity()));
-                thing->sprite()->set_state("left");
-            } else if (bullet->velocity().x < -K_EPSILON) {
-                thing->velocity(abs(thing->velocity()));
-                thing->sprite()->set_state("right");
-            }
-            
-            // Schedule detachment and activate thing
-            bullet->safe_detach();
-            thing->activate();
-        }
-
-        // Change color of thing based on health
-        thing->m_pSprite->material()->ambient(kit::mix(
-            Color::red(), Color::white(), thing->hp_fraction()
-        ));
-    }
 }
 
 
-void Thing :: stun() {
-    m_pSprite->set_state("hit");
-    m_StunTimer.set(Freq::Time::ms(200));
-}
-
-
-// Returns true if thing took damage. Applies damage if thing accepts damage.
-bool Thing :: damage(int dmg) {
-    if(m_HP <= 0 || dmg < 0)
-        return false;
-
-    m_HP = std::max(m_HP - dmg, 0);
-    
-    if (m_HP <= 0) {
-        m_Dying = true;
-        velocity(glm::vec3(0.0f));
-    }
-    
-    return true;
-}
-
-
-void Thing :: logic_self(Freq::Time t) {
-    clear_snapshots();
-    snapshot();
-    
-    if (m_StunTimer.elapsed()) {
-        m_pSprite->set_state("unhit");
-        m_StunTimer.reset();
-    }
-
-    if (not alive())
-        detach();
-}
-
-
-void Thing :: lazy_logic_self(Freq::Time t) {}
+//void Thing :: logic_self(Freq::Time t) {}
+//void Thing :: lazy_logic_self(Freq::Time t) {}
 
 
 void Thing :: gib(Node* bullet) {
@@ -432,55 +277,3 @@ void Thing :: gib(Node* bullet) {
     });
 }
 
-
-void Thing :: shoot(Sprite* origin) {
-    auto shot = make_shared<Mesh>(
-        make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
-        vector<shared_ptr<IMeshModifier>>{
-            make_shared<Wrap>(Prefab::quad_wrap(
-                glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
-            ))
-        },
-        make_shared<MeshMaterial>("laser.png", m_pResources)
-    );
-
-    auto par = origin->parent();
-    par->add(shot);
-
-    shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-    shot->velocity(shot->orient_to_world(glm::vec3(
-        (origin->check_state("left")?-1.0f:1.0f) * 256.0f,
-        0.0f, 0.0f
-    )));
-    auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-    timer->set(Freq::Time::seconds(0.5f));
-    auto shotptr = shot.get();
-    shot->on_tick.connect([timer,shotptr](Freq::Time t){
-        if(timer->elapsed())
-            shotptr->detach();
-    });
-    
-    
-    Sound::play(origin, "shoot.wav", m_pResources);
-
-    // increase box Z width
-    auto shotbox = shot->box();
-    shot->set_box(Box(
-        vec3(shotbox.min().x, shotbox.min().y, -5.0),
-        vec3(shotbox.max().x, shotbox.max().y, 5.0)
-    ));
-}
-
-
-void Thing :: activate() {
-    if (is_monster()) {
-        if (m_ThingID == MOUSE) {
-            shoot(m_pSprite.get());
-        }
-    }
-}
-
-
-void Thing :: register_player(Sprite* p) {
-    m_Players.push_back(p);
-}
