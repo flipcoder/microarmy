@@ -80,7 +80,6 @@ class Thing: public Node {
 
         // Methods
         bool damage(int dmg);
-        void gib(Node* bullet);
         void sound(const std::string& fn);
         void origin();
         

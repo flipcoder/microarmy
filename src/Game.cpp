@@ -214,37 +214,26 @@ void Game :: preload() {
                     bool depth = layer->depth() || obj->config()->has("depth");
 
                     if (depth) {
-                        m_pPartitioner->register_provider(STATIC, [layer](Box box){
-                            vector<std::weak_ptr<Node>> r;
-                            auto nodes = layer->query(box, [](Node* n){
-                                return n->config()->has("static");
-                            });
-                            std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
-                                return std::weak_ptr<Node>(n->as_node());
-                            });
 
-                            return r;
-                        });
-                        m_pPartitioner->register_provider(LEDGE, [layer](Box box){
-                            vector<std::weak_ptr<Node>> r;
-                            auto nodes = layer->query(box, [](Node* n){
-                                return n->config()->has("ledge");
-                            });
-                            std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
-                                return std::weak_ptr<Node>(n->as_node());
-                            });
-                            return r;
-                        });
-                        m_pPartitioner->register_provider(FATAL, [layer](Box box){
-                            vector<std::weak_ptr<Node>> r;
-                            auto nodes = layer->query(box, [](Node* n){
-                                return n->config()->has("fatal");
-                            });
-                            std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
-                                return std::weak_ptr<Node>(n->as_node());
-                            });
-                            return r;
-                        });
+                        // make a provider function that queries the map layer
+                        // for currently visible objects identifiable by a string
+                        // in their config
+                        auto provider_for = [layer](string s){
+                            return [s,layer](Box box){
+                                vector<std::weak_ptr<Node>> r;
+                                auto nodes = layer->query(box, [s](Node* n){
+                                    return n->config()->has(s);
+                                });
+                                std::transform(ENTIRE(nodes), back_inserter(r), [](Node* n){
+                                    return std::weak_ptr<Node>(n->as_node());
+                                });
+
+                                return r;
+                            };
+                        };
+                        m_pPartitioner->register_provider(STATIC, provider_for("static"));
+                        m_pPartitioner->register_provider(LEDGE, provider_for("ledge"));
+                        m_pPartitioner->register_provider(FATAL, provider_for("fatal"));
                         
                         auto n = make_shared<Node>();
                         n->name("mask");
@@ -444,8 +433,8 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     n = make_shared<Node>();
     n->name("sidemask");
     n->box() = Box(
-        vec3(-10.0f, -10.0f, -5.0f),
-        vec3(10.0f, -2.0f, 5.0f)
+        vec3(-8.0f, -10.0f, -5.0f),
+        vec3(8.0f, -2.0f, 5.0f)
     );
 
     player->add(n);

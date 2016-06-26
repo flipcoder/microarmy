@@ -62,7 +62,6 @@ unsigned Monster :: get_type(const shared_ptr<Meta>& config) {
 
 
 void Monster :: logic_self(Freq::Time t) {
-    // ???
     clear_snapshots();
     snapshot();
     
@@ -240,7 +239,7 @@ void Monster :: gib() {
     gib->move(vec3(rand() % 16 - 8.0f, rand() % 32 - 16.0f, 2.0f));
     gib->velocity(vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(vec3(0.0f, 500.0f, 0.0f));
-    gib->scale(rand() % 100 / 50.0f);
+    gib->scale(rand() % 100 / 100.0f * 0.5f);
 
     // Creates random gib lifetime
     auto lifetime = make_shared<float>(0.5f * (rand() % 4));
@@ -290,10 +289,10 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
             // Change direction based on bullet velocity
             if (bullet->velocity().x > K_EPSILON) {
                 monster->velocity(-abs(monster->velocity()));
-                monster->get_sprite()->set_state("left");
+                monster->sprite()->set_state("left");
             } else if (bullet->velocity().x < -K_EPSILON) {
                 monster->velocity(abs(monster->velocity()));
-                monster->get_sprite()->set_state("right");
+                monster->sprite()->set_state("right");
             }
             
             // Schedule detachment and activate monster
@@ -303,7 +302,7 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
 
         // Change color of monster based on health
         monster->m_pSprite->material()->ambient(kit::mix(
-            Color::red(), Color::white(), float(monster->get_hp()) / float(monster->get_max_hp())
+            Color::red(), Color::white(), float(monster->hp()) / float(monster->max_hp())
         ));
     }
 }
@@ -318,10 +317,10 @@ void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
     if (monster->num_snapshots()) {
         if (static_node->world_box().center().x > monster->world_box().center().x) {
             monster->velocity(-abs(monster->velocity()));
-            monster->get_sprite()->set_state("left");
+            monster->sprite()->set_state("left");
         } else if (static_node->world_box().center().x < monster->world_box().center().x) {
             monster->velocity(abs(monster->velocity()));
-            monster->get_sprite()->set_state("right");
+            monster->sprite()->set_state("right");
         }
     }
 }
