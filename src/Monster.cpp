@@ -26,7 +26,7 @@ Monster :: Monster(
     m_pGame(game),                                  // Set Monster Game
     m_pMap(map),                                    // Set Monster Map
     m_pResources(resources),                        // Set Monster Resources
-    m_MonsterID(type(config)),                  // Set Monster Type (int)
+    m_MonsterID(get_type(config)),                  // Set Monster Type (int)
     m_Identity(config->at<string>("name", "")),     // Set Monster Type (String)
     m_StunTimer(timeline),                          // Set Monster Stun Time (Alarm)
     m_pTimeline(timeline)                           // Set Timeline
