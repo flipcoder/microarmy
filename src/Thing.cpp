@@ -153,9 +153,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             thing->sound("pickup2.wav");
 
             // TODO: Replace with animation
-            // thing->visible(false);
-
-            // thing->placeholder()->visible(false);
+            thing->visible(false);
+            thing->placeholder()->visible(false);
             
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 // TODO: Replace with outlined or shadow picture
@@ -252,28 +251,4 @@ void Thing :: cb_to_bullet(Node* thing_node, Node* bullet) {
 
 //void Thing :: logic_self(Freq::Time t) {}
 //void Thing :: lazy_logic_self(Freq::Time t) {}
-
-
-void Thing :: gib(Node* bullet) {
-    auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
-    gib->set_state("animated");
-    
-    auto dir = Angle::degrees(1.0f * (std::rand() % 360)).vector();
-    stick(gib);
-
-    gib->move(glm::vec3(std::rand() % 16 - 8.0f, std::rand() % 32 - 16.0f, 2.0f));
-    gib->velocity(glm::vec3(dir, 0.0f) * 100.0f);
-    gib->acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
-    gib->scale(std::rand() % 100 / 100.0 * 0.5f);
-
-    auto life = make_shared<float>(0.5f * (std::rand() % 4));
-    auto gibptr = gib.get();
-
-    gib->on_tick.connect([gibptr, life](Freq::Time t){
-        *life -= t.s();
-
-        if(*life < 0.0f)
-            gibptr->detach();
-    });
-}
 

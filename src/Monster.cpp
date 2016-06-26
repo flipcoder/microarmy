@@ -62,7 +62,6 @@ unsigned Monster :: get_type(const shared_ptr<Meta>& config) {
 
 
 void Monster :: logic_self(Freq::Time t) {
-    // ???
     clear_snapshots();
     snapshot();
     
@@ -240,7 +239,7 @@ void Monster :: gib() {
     gib->move(vec3(rand() % 16 - 8.0f, rand() % 32 - 16.0f, 2.0f));
     gib->velocity(vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(vec3(0.0f, 500.0f, 0.0f));
-    gib->scale(rand() % 100 / 50.0f);
+    gib->scale(rand() % 100 / 100.0f * 0.5f);
 
     // Creates random gib lifetime
     auto lifetime = make_shared<float>(0.5f * (rand() % 4));
