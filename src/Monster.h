@@ -44,19 +44,18 @@ class Monster: public Node {
 
 
         // Setters (NOT CURRENTLY USED)
-        void set_player(const std::shared_ptr<Sprite>& player);
-        void set_map(const std::shared_ptr<TileMap>& map);
-        void set_other(const std::shared_ptr<Monster>& thing);
-
+        void player(const std::shared_ptr<Sprite>& player);
+        void map(const std::shared_ptr<TileMap>& map);
+        void other(const std::shared_ptr<Monster>& thing);
 
         // Getters
         static unsigned get_type(const std::shared_ptr<Meta>& config);
         bool is_alive() const { return not m_Dead and not m_Dying; }
-        int get_hp() { return m_HP; }
-        int get_max_hp() { return m_MaxHP; }
-        Game* get_game() { return m_pGame; }
-        Sprite* get_sprite() { return m_pSprite.get(); }
-        MapTile* get_placeholder() { return m_pPlaceholder; }
+        int hp() { return m_HP; }
+        int max_hp() { return m_MaxHP; }
+        Game* game() { return m_pGame; }
+        Sprite* sprite() { return m_pSprite.get(); }
+        MapTile* placeholder() { return m_pPlaceholder; }
 
 
         // Methods

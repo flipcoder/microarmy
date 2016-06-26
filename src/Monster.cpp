@@ -26,7 +26,7 @@ Monster :: Monster(
     m_pGame(game),                                  // Set Monster Game
     m_pMap(map),                                    // Set Monster Map
     m_pResources(resources),                        // Set Monster Resources
-    m_MonsterID(get_type(config)),                  // Set Monster Type (int)
+    m_MonsterID(type(config)),                  // Set Monster Type (int)
     m_Identity(config->at<string>("name", "")),     // Set Monster Type (String)
     m_StunTimer(timeline),                          // Set Monster Stun Time (Alarm)
     m_pTimeline(timeline)                           // Set Timeline
@@ -290,10 +290,10 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
             // Change direction based on bullet velocity
             if (bullet->velocity().x > K_EPSILON) {
                 monster->velocity(-abs(monster->velocity()));
-                monster->get_sprite()->set_state("left");
+                monster->sprite()->set_state("left");
             } else if (bullet->velocity().x < -K_EPSILON) {
                 monster->velocity(abs(monster->velocity()));
-                monster->get_sprite()->set_state("right");
+                monster->sprite()->set_state("right");
             }
             
             // Schedule detachment and activate monster
@@ -303,7 +303,7 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
 
         // Change color of monster based on health
         monster->m_pSprite->material()->ambient(kit::mix(
-            Color::red(), Color::white(), float(monster->get_hp()) / float(monster->get_max_hp())
+            Color::red(), Color::white(), float(monster->hp()) / float(monster->max_hp())
         ));
     }
 }
@@ -318,10 +318,10 @@ void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
     if (monster->num_snapshots()) {
         if (static_node->world_box().center().x > monster->world_box().center().x) {
             monster->velocity(-abs(monster->velocity()));
-            monster->get_sprite()->set_state("left");
+            monster->sprite()->set_state("left");
         } else if (static_node->world_box().center().x < monster->world_box().center().x) {
             monster->velocity(abs(monster->velocity()));
-            monster->get_sprite()->set_state("right");
+            monster->sprite()->set_state("right");
         }
     }
 }
