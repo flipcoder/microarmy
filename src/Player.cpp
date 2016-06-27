@@ -218,10 +218,9 @@ void Player :: shoot() {
     if(check_state("down") || check_state("downward"))
         aimdir += vec3(0.0f, 1.0f, 0.0f);
     aimdir = normalize(aimdir);
-    shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-    //shot->velocity(shot->orient_to_world(glm::vec3(
-    //    (check_state("left") ? -1.0f : 1.0f) * 256.0f, 0.0f, 0.0f
-    //)));
+    
+    auto ang = atan2(aimdir.y, aimdir.x) / K_TAU;
+    shot->rotate(ang, glm::vec3(0.0f, 0.0f, 1.0f));
     shot->velocity(aimdir * 256.0f);
 
     auto timer = make_shared<Freq::Alarm>(m_pTimeline);

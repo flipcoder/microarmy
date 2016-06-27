@@ -114,6 +114,11 @@ void Monster :: initialize() {
     
     add(m_pLeft);
     add(m_pRight);
+    
+    m_pLeft->config()->at<Monster*>("monster", this);
+    m_pRight->config()->at<Monster*>("monster", this);
+    m_pPartitioner->register_object(m_pLeft, Game::SENSOR);
+    m_pPartitioner->register_object(m_pRight, Game::SENSOR);
 
     m_HP = m_pConfig->at<int>("hp", 5);
     m_MaxHP = m_pConfig->at<int>("hp", 5);
@@ -331,3 +336,16 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
     if (monster->is_alive())
         monster->m_pGame->reset();
 }
+
+void Monster :: cb_sensor_to_no_static(Node* sensor_node, Node* static_node) {
+    //LOG("sensor to no static!")
+    auto monster = sensor_node->config()->at<Monster*>("monster",nullptr);
+    if (not monster)
+        return;
+    //monster->velocity(
+    //    -monster->velocity().x,
+    //    monster->velocity().y,
+    //    monster->velocity().z
+    //);
+}
+

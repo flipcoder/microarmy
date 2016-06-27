@@ -28,7 +28,8 @@ class Game: public State {
             CHARACTER_SIDES,
             BULLET,
             THING,
-            MONSTER
+            MONSTER,
+            SENSOR
         };
 
         

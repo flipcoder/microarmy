@@ -73,6 +73,7 @@ class Monster: public Node {
         static void cb_to_bullet(Node* monster_node, Node* bullet);
         static void cb_to_static(Node* monster_node, Node* static_node);
         static void cb_to_player(Node* player_node, Node* monster_node);
+        static void cb_sensor_to_no_static(Node* sensor_node, Node* static_node);
 
     private:
         const static std::vector<std::string> s_TypeNames;
