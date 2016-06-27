@@ -160,22 +160,24 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
 
             thing->m_Collidable = false;
 
-            // Move Spirally
+            // Move Spirally prepwork
             auto timer = make_shared<Freq::Alarm>(thing->timeline());
-            timer->set(Freq::Time::seconds(1.0f));
+            timer->set(Freq::Time::seconds(0.75f));
 
             auto n = make_shared<Node>();
+            thing->parent()->add(n);
+            n->position(thing->position());
+            thing->position(vec3(0.0f));
             n->add(thing->as_node());
 
             auto thingptr = thing;
             thing->on_tick.connect([timer, thingptr](Freq::Time t){
-                LOGf("Timer: %s", timer->fraction_left());
-                
-                thingptr->parent()->rotate(.1 * t.s(), glm::vec3(0.0f, 0.0f, 1.0f));
-                thingptr->velocity(glm::vec3(256.0f, 0.0f, 0.0f));
+                thingptr->parent()->rotate(t.s(), glm::vec3(0.0f, 0.0f, 1.0f));
+                thingptr->velocity(glm::vec3(150.0f, 0.0f, 0.0f));
 
                 if (timer->elapsed())
                     thingptr->visible(false);
+                    thingptr->safe_detach();
             });
             
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
