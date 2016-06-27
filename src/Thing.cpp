@@ -177,7 +177,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
 
                 if (timer->elapsed()){
                     thingptr->visible(false);
-                    thingptr->safe_detach();
+                    thingptr->parent()->safe_detach();
                 }
             });
             
