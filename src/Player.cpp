@@ -246,5 +246,3 @@ void Player :: shoot() {
         vec3(shotbox.max().x, shotbox.max().y, 5.0)
     ));
 }
-
-

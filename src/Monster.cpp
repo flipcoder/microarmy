@@ -157,10 +157,36 @@ void Monster :: initialize() {
     m_pPartitioner->register_object(m_pSprite->mesh(), Game::MONSTER);
 
     velocity(vec3(-m_Speed, 0.0f, 0.0f));
+
+
+    /* Wizard Logic (Move this to a better place)
+        Every 2 seconds, wizards shoot a fireball
+
+    */
+
+    if (m_MonsterID == Monster::WIZARD) {
+        LOG("Wizard Logic");
+
+        // Sets timer for bullets before disappearing
+        auto timer = make_shared<Freq::Alarm>(m_pTimeline);
+        timer->set(Freq::Time::seconds(2.0f));
+
+        auto spriteptr = m_pSprite.get();
+
+        // Connect wizard to timer
+        this->on_tick.connect([timer, spriteptr](Freq::Time t){
+            if (timer->elapsed()) {
+                shoot(spriteptr);
+                timer->reset();
+            }
+        });
+    }
 }
 
 
 void Monster :: activate() {
+    // Triggered bro
+
     // Trigger Monster activated behavior
 
     // Activated behavior can be modeled with Qor states for Nodes
@@ -187,42 +213,49 @@ void Monster :: damage(int dmg) {
 
 
 void Monster :: shoot(Sprite* origin, float bullet_speed=DEFAULT_BULLET_SPEED) {
-    // Create a bullet mesh
-    auto shot = make_shared<Mesh>(
-        make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
-        vector<shared_ptr<IMeshModifier>>{make_shared<Wrap>(Prefab::quad_wrap(vec2(0.0f, 1.0f), vec2(1.0f, 0.0f)))},
-        make_shared<MeshMaterial>("laser.png", m_pResources)
-    );
 
-    // Creates a box around the bullet (With increased z width)
-    auto shotbox = shot->box();
-    shot->set_box(Box(
-        vec3(shotbox.min().x, shotbox.min().y, -5.0),
-        vec3(shotbox.max().x, shotbox.max().y, 5.0)
-    ));
+    if (m_MonsterID == Monster::WIZARD) {
+        LOG("Wizard Shoot");
+    }
 
-    // Adding the bullet to the origin sprite
-    auto par = origin->parent();
-    par->add(shot);
+    else {
+        // Create a bullet mesh
+        auto shot = make_shared<Mesh>(
+            make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
+            vector<shared_ptr<IMeshModifier>>{make_shared<Wrap>(Prefab::quad_wrap(vec2(0.0f, 1.0f), vec2(1.0f, 0.0f)))},
+            make_shared<MeshMaterial>("laser.png", m_pResources)
+        );
 
-    // Add a random angle to the bullet
-    shot->rotate(((rand() % 10) - 5) / 360.0f, vec3(0.0f, 0.0f, 1.0f));
-    shot->velocity(shot->orient_to_world(
-        vec3((origin->check_state("left") ? -1.0f : 1.0f) * bullet_speed, 0.0f, 0.0f)
-    ));
+        // Creates a box around the bullet (With increased z width)
+        auto shotbox = shot->box();
+        shot->set_box(Box(
+            vec3(shotbox.min().x, shotbox.min().y, -5.0),
+            vec3(shotbox.max().x, shotbox.max().y, 5.0)
+        ));
 
-    // Sets timer for bullets before disappearing
-    auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-    timer->set(Freq::Time::seconds(0.5f));
+        // Adding the bullet to the origin sprite
+        auto par = origin->parent();
+        par->add(shot);
 
-    Sound::play(origin, "shoot.wav", m_pResources);
+        // Add a random angle to the bullet
+        shot->rotate(((rand() % 10) - 5) / 360.0f, vec3(0.0f, 0.0f, 1.0f));
+        shot->velocity(shot->orient_to_world(
+            vec3((origin->check_state("left") ? -1.0f : 1.0f) * bullet_speed, 0.0f, 0.0f)
+        ));
 
-    // Connects shot to a game tick signal
-    auto shotptr = shot.get();
-    shot->on_tick.connect([timer, shotptr](Freq::Time t){
-        if (timer->elapsed())
-            shotptr->detach();
-    });
+        // Sets timer for bullets before disappearing
+        auto timer = make_shared<Freq::Alarm>(m_pTimeline);
+        timer->set(Freq::Time::seconds(0.5f));
+
+        Sound::play(origin, "shoot.wav", m_pResources);
+
+        // Connects shot to a game tick signal
+        auto shotptr = shot.get();
+        shot->on_tick.connect([timer, shotptr](Freq::Time t){
+            if (timer->elapsed())
+                shotptr->detach();
+        });
+    }
 }
 
 
@@ -329,17 +362,23 @@ void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
         }
     }
 }
+
+
 void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
-    auto monster = monster_node->config()->at<Monster*>("monster",nullptr);
+    auto monster = monster_node->config()->at<Monster*>("monster", nullptr);
+
     if (not monster)
         return;
+
     if (monster->is_alive())
         monster->m_pGame->reset();
 }
 
+
 void Monster :: cb_sensor_to_no_static(Node* sensor_node, Node* static_node) {
     //LOG("sensor to no static!")
-    auto monster = sensor_node->config()->at<Monster*>("monster",nullptr);
+    auto monster = sensor_node->config()->at<Monster*>("monster", nullptr);
+
     if (not monster)
         return;
     //monster->velocity(

@@ -43,6 +43,7 @@ void Game :: preload() {
         m_pQor->input(),
         m_pQor->resources()
     );
+
     m_pOrthoCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pOrthoRoot = make_shared<Node>();
     m_pOrthoCamera->ortho(false);
@@ -50,20 +51,17 @@ void Game :: preload() {
 
     string lev = m_pQor->args().value("map");
     
-    if(lev.empty())
+    if (lev.empty())
         lev = "1";
     
-    m_pMap = m_pQor->make<TileMap>(lev+".tmx");
+    m_pMap = m_pQor->make<TileMap>(lev + ".tmx");
     m_pRoot->add(m_pMap);
     
-    m_pMusic = m_pQor->make<Sound>(lev+".ogg");
+    m_pMusic = m_pQor->make<Sound>(lev + ".ogg");
     m_pRoot->add(m_pMusic);
     
-    auto scale = 250.0f / std::max<float>(sw * 1.0f,1.0f);
-    m_pCamera->rescale(glm::vec3(
-        scale, scale,
-        1.0f
-    ));
+    auto scale = 250.0f / std::max<float>(sw* 1.0f, 1.0f);
+    m_pCamera->rescale(glm::vec3(scale, scale, 1.0f));
 
     m_pChar = make_shared<Player>(
         m_pQor->resource_path("guy.json"),
