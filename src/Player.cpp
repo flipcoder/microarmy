@@ -23,7 +23,7 @@ Player :: Player(
     m_pPartitioner(part),
     m_pGame(game)
 {
-    set_states({"stand","right"});
+    set_states({"stand","right","forward"});
     //m_pCamera->position(glm::vec3(-64.0f, -64.0f, 0.0f));
     position(glm::vec3(0.0f, 0.0f, 1.0f));
 
