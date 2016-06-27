@@ -7,17 +7,78 @@
     "animation" : {
         "speed" : 10.0,
         "frames" : {
-            "left": {
-                "stand": [ "hflip", 0 ],
-                "walk": [ "hflip", 0, 1, 0, 2 ],
-                "jump": [ "hflip", 3 ],
-                "walljump": [ "hflip", 4 ]
+            "forward": {
+                "left": {
+                    "stand": [ "hflip", 0 ],
+                    "walk": [ "hflip", 0, 1, 0, 2 ],
+                    "jump": [ "hflip", 3 ],
+                    "walljump": [ "hflip", 4 ]
+                },
+                "right": {
+                    "stand": [ 0 ],
+                    "walk": [ 0, 1, 0, 2 ],
+                    "jump": [ 3 ],
+                    "walljump": [ 4 ]
+                }
             },
-            "right": {
-                "stand": [ 0 ],
-                "walk": [ 0, 1, 0, 2 ],
-                "jump": [ 3 ],
-                "walljump": [ 4 ]
+            "upward": {
+                "left": {
+                    "stand": [ "hflip", 5 ],
+                    "walk": [ "hflip", 5, 6, 5, 7 ],
+                    "jump": [ "hflip", 8 ],
+                    "walljump": [ "hflip", 9 ]
+                },
+                "right": {
+                    "stand": [ 5 ],
+                    "walk": [ 5, 6, 5, 7 ],
+                    "jump": [ 8 ],
+                    "walljump": [ 9 ]
+
+                }
+            },
+            "up": {
+                "left": {
+                    "stand": [ "hflip", 10 ],
+                    "walk": [ "hflip", 10, 11, 10, 12 ],
+                    "jump": [ "hflip", 13 ],
+                    "walljump": [ "hflip", 14 ]
+                },
+                "right": {
+                    "stand": [ 10 ],
+                    "walk": [ 10, 11, 10, 12 ],
+                    "jump": [ 13 ],
+                    "walljump": [ 14 ]
+                }
+            },
+            "downward": {
+                "left": {
+                    "stand": [ "hflip", 15 ],
+                    "walk": [ "hflip", 15, 16, 15, 17 ],
+                    "jump": [ "hflip", 18 ],
+                    "walljump": [ "hflip", 19 ]
+                },
+                "right": {
+                    "stand": [ 15 ],
+                    "walk": [ 15, 16, 15, 17 ],
+                    "jump": [ 18 ],
+                    "walljump": [ 19 ]
+
+                }
+            },
+            "down": {
+                "left": {
+                    "stand": [ "hflip", 20 ],
+                    "walk": [ "hflip", 20, 21, 20, 22 ],
+                    "jump": [ "hflip", 23 ],
+                    "walljump": [ "hflip", 24 ]
+                },
+                "right": {
+                    "stand": [ 20 ],
+                    "walk": [ 20, 21, 20, 22 ],
+                    "jump": [ 23 ],
+                    "walljump": [ 24 ]
+
+                }
             }
         }
     },
