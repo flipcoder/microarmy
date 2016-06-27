@@ -163,18 +163,18 @@ void Monster :: initialize() {
     if (m_MonsterID == Monster::WIZARD) {
         LOG("Wizard Logic");
 
-        // Sets timer for bullets before disappearing
+        // Sets timer for wizards to shoot
         auto timer = make_shared<Freq::Alarm>(m_pTimeline);
         timer->set(Freq::Time::seconds(2.0f));
 
         auto spriteptr = m_pSprite.get();
 
         // Connect wizard to timer
-        auto _this=this;
+        auto _this = this;
         this->on_tick.connect([_this, timer, spriteptr](Freq::Time t){
             if (timer->elapsed()) {
                 _this->shoot(spriteptr);
-                timer->reset();
+                timer->set(Freq::Time::seconds(2.0f));
             }
         });
     }
@@ -213,6 +213,33 @@ void Monster :: shoot(Sprite* origin, float bullet_speed) {
 
     if (m_MonsterID == Monster::WIZARD) {
         LOG("Wizard Shoot");
+
+        // Load fire sprite
+        auto fire = make_shared<Sprite>(m_pResources->transform("fire.json"), m_pResources);
+        fire->set_state("animated");
+
+        // m_pSprite->mesh()->config()->set<string>("id", m_Identity);
+        // m_pSprite->mesh()->config()->set<Monster*>("monster", this);
+        // m_pPartitioner->register_object(m_pSprite->mesh(), Game::MONSTER);
+
+
+        auto firebox = fire->box();
+        fire->mesh()->set_box(Box(
+            vec3(firebox.min().x, firebox.min().y, -5.0),
+            vec3(firebox.max().x, firebox.max().y, 5.0)
+        ));
+
+        origin->add(fire);
+        fire->collapse();
+
+        // Get size of fire
+
+
+        // Get tile coordinate monster is at
+
+        // Divide by map tile size
+
+        // Subtract 1 and multiply
     }
 
     else {
@@ -230,7 +257,7 @@ void Monster :: shoot(Sprite* origin, float bullet_speed) {
             vec3(shotbox.max().x, shotbox.max().y, 5.0)
         ));
 
-        // Adding the bullet to the origin sprite
+        // Adding the bullet to the origin's parent
         auto par = origin->parent();
         par->add(shot);
 
