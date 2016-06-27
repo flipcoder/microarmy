@@ -91,7 +91,7 @@ void Player :: logic_self(Freq::Time t) {
         shoot();
         
     bool block_jump = false;
-    if (m_pController->button("up") || m_pController->button("jump")) {
+    if (m_pController->button("jump")) {
         
         if (walljump || not in_air || not m_JumpTimer.elapsed()) {
             float x = 0.0f;
@@ -149,10 +149,12 @@ void Player :: logic_self(Freq::Time t) {
 
         move = glm::normalize(move);
 
-        if (move.x < -K_EPSILON)
+        if (move.x < -K_EPSILON){
             set_state("left");
-        else if (move.x > K_EPSILON)
+        }
+        else if (move.x > K_EPSILON){
             set_state("right");
+        }
 
         move *= 100.0f * t.s();
         clear_snapshots();
@@ -165,6 +167,22 @@ void Player :: logic_self(Freq::Time t) {
 
         clear_snapshots();
         snapshot();
+    }
+
+    if(m_pController->button("left") || m_pController->button("right")) {
+        if(m_pController->button("up"))
+            set_state("upward");
+        else if(m_pController->button("down"))
+            set_state("downward");
+        else
+            set_state("forward");
+    }else{
+        if(m_pController->button("up"))
+            set_state("up");
+        else if(m_pController->button("down"))
+            set_state("down");
+        else
+            set_state("forward");
     }
 }
 
@@ -192,10 +210,19 @@ void Player :: shoot() {
         position().z
     ));
 
+    vec3 aimdir = vec3(0.0f, 0.0f, 0.0f);
+    if(not check_state("up") && not check_state("down"))
+        aimdir += check_state("left") ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f);
+    if(check_state("up") || check_state("upward"))
+        aimdir += vec3(0.0f, -1.0f, 0.0f);
+    if(check_state("down") || check_state("downward"))
+        aimdir += vec3(0.0f, 1.0f, 0.0f);
+    aimdir = normalize(aimdir);
     shot->rotate(((std::rand() % 10)-5) / 360.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-    shot->velocity(shot->orient_to_world(glm::vec3(
-        (check_state("left") ? -1.0f : 1.0f) * 256.0f, 0.0f, 0.0f
-    )));
+    //shot->velocity(shot->orient_to_world(glm::vec3(
+    //    (check_state("left") ? -1.0f : 1.0f) * 256.0f, 0.0f, 0.0f
+    //)));
+    shot->velocity(aimdir * 256.0f);
 
     auto timer = make_shared<Freq::Alarm>(m_pTimeline);
     timer->set(Freq::Time::seconds(0.5f));
