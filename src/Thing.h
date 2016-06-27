@@ -73,6 +73,7 @@ class Thing: public Node {
         bool is_object() const { return m_ThingID >= OBJECTS && m_ThingID < OBJECTS_END; }
         bool is_marker() const { return m_ThingID >= MARKERS && m_ThingID < MARKERS_END; }
         bool solid() const { return m_Solid; }
+        Freq::Timeline* timeline() const { return m_pTimeline; }
         Game* game() { return m_pGame; }
         Sprite* sprite() { return m_pSprite.get(); }
         MapTile* placeholder() { return m_pPlaceholder; }
@@ -93,10 +94,11 @@ class Thing: public Node {
         const static std::vector<std::string> s_TypeNames;
         
         unsigned m_ThingID = 0;
+        bool m_Collidable = true;
         bool m_Dying = false;
         bool m_Dead = false;
         bool m_Solid = false;
-        bool m_bActive = false;
+        bool m_Active = false;
 
         std::string m_Identity;
         glm::vec3 m_Impulse;

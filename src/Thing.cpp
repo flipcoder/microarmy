@@ -62,6 +62,7 @@ void Thing :: initialize() {
     assert(m_pPartitioner);
 
     m_Box = m_pPlaceholder->box();
+    // this->placeholder()->visible(false);
 
     m_pPartitioner->register_object(shared_from_this(), Game::THING);
     
@@ -146,15 +147,36 @@ unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
 
 
 void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
-    auto thing = (Thing*)thing_node;
+    auto thing = (Thing*) thing_node;
 
-    if (thing->id() == Thing::STAR) {
-        if(thing->placeholder()->visible()){
+    // Copy mesh from maptile to thing
+    if (thing->m_Collidable) {
+        thing->add(thing->placeholder()->mesh()->instance());
+    }
+
+    if (thing->id() == Thing::STAR and thing->m_Collidable) {
+        if (thing->visible()){
             thing->sound("pickup2.wav");
 
-            // TODO: Replace with animation
-            thing->visible(false);
-            thing->placeholder()->visible(false);
+            thing->m_Collidable = false;
+
+            // Move Spirally
+            auto timer = make_shared<Freq::Alarm>(thing->timeline());
+            timer->set(Freq::Time::seconds(1.0f));
+
+            auto n = make_shared<Node>();
+            n->add(thing->as_node());
+
+            auto thingptr = thing;
+            thing->on_tick.connect([timer, thingptr](Freq::Time t){
+                LOGf("Timer: %s", timer->fraction_left());
+                
+                thingptr->parent()->rotate(.1 * t.s(), glm::vec3(0.0f, 0.0f, 1.0f));
+                thingptr->velocity(glm::vec3(256.0f, 0.0f, 0.0f));
+
+                if (timer->elapsed())
+                    thingptr->visible(false);
+            });
             
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 // TODO: Replace with outlined or shadow picture
@@ -171,6 +193,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             thing->sound("pickup.wav");
             thing->visible(false);
             thing->placeholder()->visible(false);
+
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 thing->visible(true);
                 thing->placeholder()->visible(true);
@@ -181,6 +204,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             thing->sound("pickup.wav");
             thing->visible(false);
             thing->placeholder()->visible(false);
+
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 thing->visible(true);
                 thing->placeholder()->visible(true);
