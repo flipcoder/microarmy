@@ -82,7 +82,7 @@ void Monster :: initialize() {
 
     m_Box = m_pPlaceholder->box();
 
-    m_pPartitioner->register_object(shared_from_this(), Game::MONSTER);
+    //m_pPartitioner->register_object(shared_from_this(), Game::MONSTER);
 
     TRY(m_pConfig->merge(make_shared<Meta>(
         m_pResources->transform(m_Identity + ".json")
@@ -325,7 +325,9 @@ void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
     }
 }
 void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
-    auto monster = (Monster*)monster_node;
+    auto monster = monster_node->config()->at<Monster*>("monster",nullptr);
+    if (not monster)
+        return;
     if (monster->is_alive())
         monster->m_pGame->reset();
 }

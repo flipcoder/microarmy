@@ -352,6 +352,9 @@ void Game :: preload() {
     m_pPartitioner->on_collision(
         THING, BULLET, std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
     );
+    m_pPartitioner->on_collision(
+        CHARACTER, THING, std::bind(&Thing::cb_to_player, _::_1, _::_2)
+    );
     
     m_pPartitioner->on_collision(
         MONSTER, STATIC, std::bind(&Monster::cb_to_static, _::_1, _::_2)
@@ -362,11 +365,10 @@ void Game :: preload() {
     m_pPartitioner->on_collision(
         MONSTER, BULLET, std::bind(&Monster::cb_to_bullet, _::_1, _::_2)
     );
-    
     m_pPartitioner->on_collision(
-        CHARACTER, THING, std::bind(&Thing::cb_to_player, _::_1, _::_2)
+        CHARACTER, MONSTER, std::bind(&Monster::cb_to_player, _::_1, _::_2)
     );
-
+    
     //m_JumpTimer.set(Freq::Time::ms(0));
     //m_ShootTimer.set(Freq::Time::ms(0));
 }
