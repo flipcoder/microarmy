@@ -65,7 +65,7 @@ class Monster: public Node {
         void activate();
         void deactivate();
         void damage(int dmg);
-        void shoot(Sprite* origin, float bullet_speed=DEFAULT_BULLET_SPEED);
+        void shoot(float bullet_speed=DEFAULT_BULLET_SPEED, glm::vec3 offset = glm::vec3(0.0f), int life = 0);
         void stun(int m_StunTime);
         void gib();
         void sound(const std::string& fn);
