@@ -68,6 +68,8 @@ class Game: public State {
         boost::signals2::signal<void()> on_reset;
 
         void shoot(Sprite* origin);
+
+        std::vector<std::shared_ptr<Player>>& players() { return m_Players; }
         
     private:
         Qor* m_pQor = nullptr;

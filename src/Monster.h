@@ -115,4 +115,7 @@ class Monster: public Node {
 
         // List of players Monster knows about
         std::vector<Sprite*> m_Players;
+
+        Freq::Timeline m_LazyTimeline;
+        Freq::Alarm m_ShootTimer;
 };

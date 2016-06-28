@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Qor/TileMap.h" 
 #include "Qor/Sprite.h"
+#include "Player.h"
 #include "kit/math/vectorops.h"
 
 using namespace std;
@@ -26,7 +27,8 @@ Monster :: Monster(
     m_MonsterID(get_type(config)),                  // Set Monster Type (int)
     m_Identity(config->at<string>("name", "")),     // Set Monster Type (String)
     m_StunTimer(timeline),                          // Set Monster Stun Time (Alarm)
-    m_pTimeline(timeline)                           // Set Timeline
+    m_pTimeline(timeline),                          // Set Timeline
+    m_ShootTimer(&m_LazyTimeline)
 {}
 
 
@@ -66,6 +68,32 @@ void Monster :: logic_self(Freq::Time t) {
     if (m_StunTimer.elapsed()) {
         m_pSprite->set_state("unhit");
         m_StunTimer.reset();
+    }
+
+    // if a player is within range of monster, set active
+    auto players = m_pGame->players();
+    float min_dist = 10000.0f;
+    for(auto&& player: players)
+    {
+        auto dist = glm::length(
+            player->position(Space::WORLD) - position(Space::WORLD)
+        );
+        if(dist < min_dist)
+            min_dist = dist;
+    }
+
+    m_bActive = (min_dist < 100.0f);
+
+    if(m_bActive) {
+        m_LazyTimeline.logic(t);
+        
+        //LOG("active");
+        if (m_MonsterID == Monster::WIZARD) {
+            if(m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
+                shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f,0.0f,0.0f), 10);
+                m_ShootTimer.set(Freq::Time::seconds(2.0f));
+            }
+        }
     }
 
     // Why not in damage?
@@ -157,31 +185,6 @@ void Monster :: initialize() {
     m_pPartitioner->register_object(m_pSprite->mesh(), Game::MONSTER);
 
     velocity(vec3(-m_Speed, 0.0f, 0.0f));
-
-
-    /* Wizard Logic (Move this to a better place)
-        Every 2 seconds, wizards shoot a fireball
-
-    */
-
-    if (m_MonsterID == Monster::WIZARD) {
-        LOG("Wizard Init");
-
-        // Sets timer for wizards to shoot
-        auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-        timer->set(Freq::Time::seconds(2.0f));
-
-        auto spriteptr = m_pSprite.get();
-
-        // Connect wizard to timer
-        auto _this = this;
-        this->on_tick.connect([_this, timer, spriteptr](Freq::Time t){
-            if (timer->elapsed()) {
-                _this->shoot(DEFAULT_BULLET_SPEED, vec3(0.0f), 10);
-                timer->set(Freq::Time::seconds(2.0f));
-            }
-        });
-    }
 }
 
 
@@ -228,6 +231,7 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         ));
         
         add(fire);
+        fire->collapse();
         fire->collapse();
 
         m_pPartitioner->register_object(fire->mesh(), Game::FATAL);
