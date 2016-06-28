@@ -12,6 +12,16 @@ Copyright &copy; 2016 Grady O'Connell
 
 ## Instructions
 
+### Releases
+
+No binary releases yet!
+
+### Build Scripts
+
+[ArchLinux, Antergos, Manjaro, etc.](https://gist.github.com/flipcoder/041e534a1aa482ff1fd5cece57052f92)
+
+### Manual Installation
+
 - Initialize the submodules and checkout the master branches:
 
 ```
