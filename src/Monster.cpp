@@ -239,7 +239,7 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         fire->position(fire->position() + offset);
         
         auto spawn_timer = make_shared<Freq::Alarm>(m_pTimeline);
-        spawn_timer->set(Freq::Time::seconds(0.2f));
+        spawn_timer->set(Freq::Time::seconds(0.1f));
         auto death_timer = make_shared<Freq::Alarm>(m_pTimeline);
         death_timer->set(Freq::Time::seconds(1.0f));
 
