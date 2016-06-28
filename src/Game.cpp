@@ -324,6 +324,32 @@ void Game :: preload() {
         });
 
         setup_player(player);
+
+    // TESTING
+    auto square = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(vec2(-50.0,-50.0),vec2(50.0,50.0))),
+        vector<shared_ptr<IMeshModifier>>{
+            make_shared<Wrap>(Prefab::quad_wrap(
+                glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
+            ))
+        },
+        make_shared<MeshMaterial>("duck.png", m_pResources)
+    );
+
+    square->position(vec3(250.0f, 250.0f, 0.0f));
+
+    m_pCamera->add(square);
+
+    auto line = Mesh::line(
+        vec3(0.0f, 0.0f, 0.0f), // start
+        vec3(100.0f, 100.0f, 0.0f), // end
+        m_pResources->cache_as<Texture>("white.png"), // tex
+        2.0f // width
+    );
+
+    m_pCamera->add(line);
+    line->material()->emissive(Color::white());
+    // END TESTING
     }
 
     reset();

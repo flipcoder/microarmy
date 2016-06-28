@@ -50,6 +50,7 @@ class Monster: public Node {
         void map(const std::shared_ptr<TileMap>& map);
         void other(const std::shared_ptr<Monster>& thing);
 
+
         // Getters
         static unsigned get_type(const std::shared_ptr<Meta>& config);
         bool is_alive() const { return not m_Dead and not m_Dying; }

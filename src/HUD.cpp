@@ -36,7 +36,7 @@ void HUD :: redraw() {
     m_FontDesc = Pango::FontDescription("Press Start 2P " + to_string(sw / 36));
     m_pCanvas->layout()->set_font_description(m_FontDesc);
     
-    layout->set_text("  "+to_string(m_Stars)+"/"+to_string(m_MaxStars));
+    layout->set_text("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
     ctext->set_source_rgba(1.0, 1.0, 1.0, 0.75);
     layout->show_in_cairo_context(ctext);
 
@@ -64,7 +64,7 @@ void HUD :: set(int star_lev, int stars, int max_stars) {
             m_pMesh->detach();
 
         m_pMesh = make_shared<Mesh>(
-            make_shared<MeshGeometry>(Prefab::quad(vec2(sw/24, sw/24))),
+            make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
             vector<shared_ptr<IMeshModifier>>{
                 make_shared<Wrap>(Prefab::tile_wrap(
                     // Y Y (height is tile size for both dims)

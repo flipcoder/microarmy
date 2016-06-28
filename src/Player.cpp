@@ -23,7 +23,7 @@ Player :: Player(
     m_pPartitioner(part),
     m_pGame(game)
 {
-    set_states({"stand","right","forward"});
+    set_states({"stand", "right", "forward"});
     //m_pCamera->position(glm::vec3(-64.0f, -64.0f, 0.0f));
     position(glm::vec3(0.0f, 0.0f, 1.0f));
 
@@ -37,13 +37,16 @@ Player :: Player(
     m_ShootTimer.set(Freq::Time::ms(0));
 }
 
+
 Player :: ~Player() {
     
 }
 
+
 void Player :: enter() {
     acceleration(glm::vec3(0.0f, 500.0f, 0.0f));
 }
+
 
 void Player :: logic_self(Freq::Time t) {
     Sprite::logic_self(t);
@@ -185,6 +188,7 @@ void Player :: logic_self(Freq::Time t) {
             set_state("forward");
     }
 }
+
 
 void Player :: shoot() {
     auto shot = make_shared<Mesh>(

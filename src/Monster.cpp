@@ -73,6 +73,7 @@ void Monster :: logic_self(Freq::Time t) {
     // if a player is within range of monster, set active
     auto players = m_pGame->players();
     float min_dist = 10000.0f;
+
     for(auto&& player: players)
     {
         auto dist = glm::length(
@@ -90,7 +91,7 @@ void Monster :: logic_self(Freq::Time t) {
         //LOG("active");
         if (m_MonsterID == Monster::WIZARD) {
             if(m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
-                shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f,0.0f,0.0f), 10);
+                shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f), 10);
                 m_ShootTimer.set(Freq::Time::seconds(2.0f));
             }
         }
