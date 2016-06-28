@@ -91,12 +91,15 @@ void Monster :: initialize() {
         vec3(mask->at<double>(2), mask->at<double>(3), 0.5f)
     );
     
+    // make sensor boxes for detecting ground to the left and right of the monster
     auto rbox = m_Box;
     auto lbox = m_Box;
     
     m_pLeft = make_shared<Mesh>();
     m_pRight = make_shared<Mesh>();
 
+    // shift left box diagonal left, down
+    // and right box diagonal to the right, down
     lbox.min().x -= m_Box.size().x;
     lbox.max().x -= m_Box.size().x;
     lbox.min().y += m_Box.size().y;
