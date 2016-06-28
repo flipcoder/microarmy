@@ -6,10 +6,6 @@
 using namespace std;
 using namespace glm;
 
-const int DEFAULT_STUN_TIME = 200;
-const float DEFAULT_BULLET_SPEED = 256.0f;
-
-
 // Monster Constructor
 Monster :: Monster(
     const shared_ptr<Meta>& config,                // Parameters
@@ -174,9 +170,10 @@ void Monster :: initialize() {
         auto spriteptr = m_pSprite.get();
 
         // Connect wizard to timer
-        this->on_tick.connect([timer, spriteptr](Freq::Time t){
+        auto _this=this;
+        this->on_tick.connect([_this, timer, spriteptr](Freq::Time t){
             if (timer->elapsed()) {
-                shoot(spriteptr);
+                _this->shoot(spriteptr);
                 timer->reset();
             }
         });
@@ -212,7 +209,7 @@ void Monster :: damage(int dmg) {
 }
 
 
-void Monster :: shoot(Sprite* origin, float bullet_speed=DEFAULT_BULLET_SPEED) {
+void Monster :: shoot(Sprite* origin, float bullet_speed) {
 
     if (m_MonsterID == Monster::WIZARD) {
         LOG("Wizard Shoot");

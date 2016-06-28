@@ -21,6 +21,8 @@ class Monster: public Node {
             SNAIL,
             WIZARD,
         };
+        static constexpr float DEFAULT_BULLET_SPEED = 256.0f;
+        static const int DEFAULT_STUN_TIME = 200;
 
         // Constructor
         Monster(
@@ -63,7 +65,7 @@ class Monster: public Node {
         void activate();
         void deactivate();
         void damage(int dmg);
-        void shoot(Sprite* origin, float m_BulletSpeed);
+        void shoot(Sprite* origin, float bullet_speed=DEFAULT_BULLET_SPEED);
         void stun(int m_StunTime);
         void gib();
         void sound(const std::string& fn);
