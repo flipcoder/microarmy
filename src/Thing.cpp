@@ -62,7 +62,6 @@ void Thing :: initialize() {
     assert(m_pPartitioner);
 
     m_Box = m_pPlaceholder->box();
-    // this->placeholder()->visible(false);
 
     m_pPartitioner->register_object(shared_from_this(), Game::THING);
     
@@ -70,6 +69,8 @@ void Thing :: initialize() {
     const float glow = 1.0f;
 
     if (m_ThingID == Thing::STAR) {
+        m_pPlaceholder->visible(false);
+    
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
 

@@ -18,7 +18,7 @@ No binary releases yet!
 
 ### Build Scripts
 
-[ArchLinux, Antergos, Manjaro, etc.](https://gist.github.com/flipcoder/041e534a1aa482ff1fd5cece57052f92)
+[ArchLinux, Antergos, Manjaro, etc.](https://gist.githubusercontent.com/flipcoder/041e534a1aa482ff1fd5cece57052f92/raw/df3d01d3ca58019b865f1700748fa684c9b0a3fd/microarmy_setup_archlinux.sh)
 
 ### Manual Installation
 

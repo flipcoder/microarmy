@@ -174,7 +174,7 @@ void Monster :: initialize() {
         auto _this = this;
         this->on_tick.connect([_this, timer, spriteptr](Freq::Time t){
             if (timer->elapsed()) {
-                _this->shoot(DEFAULT_BULLET_SPEED, vec3(0.0f), 5);
+                _this->shoot(DEFAULT_BULLET_SPEED, vec3(0.0f), 10);
                 timer->set(Freq::Time::seconds(2.0f));
             }
         });
@@ -213,41 +213,37 @@ void Monster :: damage(int dmg) {
 void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
 
     if (m_MonsterID == Monster::WIZARD) {
-        LOG("Wizard Shoot");
 
         // Load fire sprite
         auto fire = make_shared<Sprite>(m_pResources->transform("fire.json"), m_pResources);
         fire->set_state("animated");
 
-        // m_pSprite->mesh()->config()->set<string>("id", m_Identity);
-        m_pSprite->mesh()->config()->set<Monster*>("monster", this);
-        // m_pPartitioner->register_object(m_pSprite->mesh(), Game::MONSTER);
-
-        //auto firebox = fire->mesh()->box();
-        //fire->mesh()->set_box(Box(
-        //    vec3(firebox.min().x, firebox.min().y, -5.0),
-        //    vec3(firebox.max().x, firebox.max().y, 5.0)
-        //));
-
+        auto firebox = fire->mesh()->box();
+        fire->mesh()->set_box(Box(
+            vec3(firebox.min().x, firebox.min().y, -5.0),
+            vec3(firebox.max().x, firebox.max().y, 5.0)
+        ));
+        
         add(fire);
-        //fire->collapse();
+        fire->collapse();
+
+        m_pPartitioner->register_object(fire->mesh(), Game::FATAL);
         
-        
-        LOG(Vector::to_string(velocity()));
-        offset.x += kit::sign(velocity().x) * fire->size().x;
-        //LOG(Vector::to_string(offset));
+        offset.x += kit::sign(velocity().x) * float(fire->size().x);
         fire->position(fire->position() + offset);
         
         auto spawn_timer = make_shared<Freq::Alarm>(m_pTimeline);
-        spawn_timer->set(Freq::Time::seconds(0.1f));
+        spawn_timer->set(Freq::Time::seconds(0.05f));
         auto death_timer = make_shared<Freq::Alarm>(m_pTimeline);
-        death_timer->set(Freq::Time::seconds(1.0f));
+        death_timer->set(Freq::Time::seconds(0.5f));
+        
+        Sound::play(m_pSprite.get(), "fire.wav", m_pResources);
 
         auto _this = this;
-        auto fireptr = fire.get();
+        //auto fireptr = fire.get();
         auto origin = m_pSprite.get();
         on_tick.connect([
-            _this, spawn_timer, death_timer, bullet_speed, offset, fireptr,
+            _this, spawn_timer, death_timer, bullet_speed, offset, fire,
             origin, life
         ](Freq::Time t){
             if(spawn_timer->elapsed()){
@@ -255,8 +251,9 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
                     _this->shoot(bullet_speed, offset, life-1);
                 spawn_timer->reset();
             }
-            //if(death_timer->elapsed())
-            //    fireptr->safe_detach();
+            if(death_timer->elapsed()){
+                fire->safe_detach();
+            }
         });
     }
 
