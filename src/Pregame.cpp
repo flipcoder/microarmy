@@ -63,17 +63,41 @@ void Pregame :: preload() {
     
     // TEMP: just for jam
     auto mapname = m_pQor->args().value("map");
-    if(mapname == "1")
-        mapname = "House";
-    else if(mapname == "2")
-        mapname = "Backyard";
-    
-    m_pCanvas->text(
-        string("Now entering: ") + mapname,
-        Color::white(),
-        vec2(sw/2.0f, sh/2.0f),
-        Canvas::Align::CENTER
-    );
+    if(mapname != "3"){
+        if(mapname == "1")
+            mapname = "House";
+        else if(mapname == "2")
+            mapname = "Backyard";
+        
+        m_pCanvas->text(
+            string("Now entering: ") + mapname,
+            Color::white(),
+            vec2(sw/2.0f, sh/2.0f),
+            Canvas::Align::CENTER
+        );
+    }else{
+        m_pCanvas->text(
+            "Thanks for playing!",
+            Color::white(),
+            vec2(sw/2.0f, sh/4.0f),
+            Canvas::Align::CENTER
+        );
+        m_pCanvas->text(
+            "To be continued...",
+            Color::white(),
+            vec2(sw/2.0f, sh/2.0f),
+            Canvas::Align::CENTER
+        );
+        m_pCanvas->text(
+            "Created by Grady O'Connell, Kevin Nelson, Mark McDaniel",
+            Color::white(),
+            vec2(sw/2.0f, 3.0f*sh/4.0f),
+            Canvas::Align::CENTER
+        );
+
+        
+        m_Win = true;
+    }
     m_pRoot->add(m_pCanvas);
 }
 
@@ -102,7 +126,7 @@ void Pregame :: logic(Freq::Time t) {
         m_pController->button("select").pressed_now() ||
         m_Transition.elapsed()
     ){
-        m_pQor->change_state("game");
+        m_pQor->change_state(m_Win ? "intro" : "game");
     }
     
     m_pRoot->logic(t);

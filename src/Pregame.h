@@ -43,6 +43,8 @@ class Pregame: public State {
         Freq::Alarm m_Transition;
 
         std::shared_ptr<Canvas> m_pCanvas;
+
+        bool m_Win = false;
 };
 
 #endif
