@@ -3,6 +3,7 @@
 using namespace std;
 using namespace glm;
 #include "Game.h"
+#include "Monster.h"
 
 Player :: Player(
     std::string fn,
@@ -200,6 +201,7 @@ void Player :: shoot() {
         },
         make_shared<MeshMaterial>("laser.png", m_pResources)
     );
+    shot->config()->set<Player*>("player",this);
 
     shot->material()->emissive(Color::white());
     root()->add(shot);
@@ -250,3 +252,23 @@ void Player :: shoot() {
         vec3(shotbox.max().x, shotbox.max().y, 5.0)
     ));
 }
+
+void Player :: cb_to_bullet(Node* player_node, Node* bullet)
+{
+    auto player = player_node->config()->at<Player*>("player", nullptr);
+
+    if (not player)
+        return;
+
+    // bullet owner is a player, ignore
+    if(bullet->config()->has("player"))
+        return;
+
+    player->reset();
+}
+
+void Player :: reset()
+{
+    m_pGame->reset();
+}
+

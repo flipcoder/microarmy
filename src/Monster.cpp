@@ -74,16 +74,27 @@ void Monster :: logic_self(Freq::Time t) {
     auto players = m_pGame->players();
     float min_dist = 10000.0f;
 
+    Player* closest_player = nullptr;
     for(auto&& player: players)
     {
         auto dist = glm::length(
             player->position(Space::WORLD) - position(Space::WORLD)
         );
-        if(dist < min_dist)
+        if(dist < min_dist){
             min_dist = dist;
+            closest_player = player.get();
+        }
     }
 
+    bool old_active = m_bActive;
     m_bActive = (min_dist < 100.0f);
+    if(old_active != m_bActive)
+    {
+        if(m_bActive)
+            activate(closest_player);
+        else
+            deactivate(closest_player);
+    }
 
     if(m_bActive) {
         m_LazyTimeline.logic(t);
@@ -95,6 +106,13 @@ void Monster :: logic_self(Freq::Time t) {
                 m_ShootTimer.set(Freq::Time::seconds(2.0f));
             }
         }
+        if (m_MonsterID == Monster::MOUSE) {
+            if(m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
+                shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f));
+                m_ShootTimer.set(Freq::Time::seconds(0.5f));
+            }
+        }
+
     }
 
     // Why not in damage?
@@ -189,19 +207,32 @@ void Monster :: initialize() {
 }
 
 
-void Monster :: activate() {
+void Monster :: activate(Player* closest_player) {
     // Triggered bro
 
     // Trigger Monster activated behavior
 
-    // Activated behavior can be modeled with Qor states for Nodes
+    // face towards player
+    auto vel = velocity();
+    velocity(
+        kit::sign((
+            closest_player->position(Space::WORLD) -
+            position(Space::WORLD)
+        ).x) *
+        abs(vel.x),
+        vel.y,
+        vel.z
+    );
+    if(velocity().x < -K_EPSILON)
+        sprite()->set_state("left");
+    else if(velocity().x > K_EPSILON)
+        sprite()->set_state("right");
 }
 
 
-void Monster :: deactivate() {
+void Monster :: deactivate(Player* closest_player) {
     // Trigger Monster deactivated behavior
 
-    // Activated behavior can be modeled with Qor states for Nodes
 }
 
 
@@ -289,6 +320,9 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
             make_shared<MeshMaterial>("laser.png", m_pResources)
         );
 
+        m_pPartitioner->register_object(shot, Game::BULLET);
+        shot->config()->set<Monster*>("monster",this);
+
         // Creates a box around the bullet (With increased z width)
         auto shotbox = shot->box();
         shot->set_box(Box(
@@ -297,8 +331,10 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         ));
 
         // Adding the bullet to the origin's parent
-        auto par = m_pSprite->parent();
-        par->add(shot);
+        //auto par = m_pSprite->parent();
+        //par->add(shot);
+        stick(shot);
+        shot->
 
         // Add a random angle to the bullet
         shot->rotate(((rand() % 10) - 5) / 360.0f, vec3(0.0f, 0.0f, 1.0f));
@@ -368,6 +404,10 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
     if (not monster)
         return;
 
+    // bullet owner is a monster, ignore
+    if(bullet->config()->has("monster"))
+        return;
+
     if (monster->is_alive() and not bullet->detaching()) {
         monster->sound("damage.wav");
 
@@ -398,7 +438,7 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
             
             // Schedule detachment and activate monster
             bullet->safe_detach();
-            monster->activate();
+            //monster->activate();
         }
 
         // Change color of monster based on health

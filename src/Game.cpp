@@ -392,7 +392,10 @@ void Game :: preload() {
     m_pPartitioner->on_collision(
         CHARACTER, MONSTER, std::bind(&Monster::cb_to_player, _::_1, _::_2)
     );
-    
+    m_pPartitioner->on_collision(
+        CHARACTER, BULLET, std::bind(&Player::cb_to_bullet, _::_1, _::_2)
+    );
+
     m_pPartitioner->on_collision(
         SENSOR, STATIC,
             std::function<void(Node*,Node*)>(), // col
@@ -449,6 +452,7 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     );
 
     player->add(n);
+    n->config()->set<Player*>("player", player.get());
     m_pPartitioner->register_object(n, CHARACTER);
 
     // create masks

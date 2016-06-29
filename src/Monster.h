@@ -6,7 +6,7 @@
 #include "Qor/TileMap.h" 
 #include "Qor/BasicPartitioner.h"
 
-
+class Player;
 class Game;
 class Sprite;
 
@@ -63,8 +63,8 @@ class Monster: public Node {
 
         // Methods
         void initialize();
-        void activate();
-        void deactivate();
+        void activate(Player* closest_player);
+        void deactivate(Player* closest_player);
         void damage(int dmg);
         void shoot(float bullet_speed=DEFAULT_BULLET_SPEED, glm::vec3 offset = glm::vec3(0.0f), int life = 0);
         void stun(int m_StunTime);
@@ -113,9 +113,6 @@ class Monster: public Node {
         // ground detection for monsters
         std::shared_ptr<Mesh> m_pLeft;
         std::shared_ptr<Mesh> m_pRight;
-
-        // List of players Monster knows about
-        std::vector<Sprite*> m_Players;
 
         Freq::Timeline m_LazyTimeline;
         Freq::Alarm m_ShootTimer;

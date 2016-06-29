@@ -32,6 +32,9 @@ class Player: public Sprite {
         
         void shoot();
         void battery(int b) { m_Power += b; }
+        void reset();
+        
+        static void cb_to_bullet(Node* player_node, Node* bullet);
         
     private:
         
