@@ -19,7 +19,10 @@ Pregame :: Pregame(Qor* engine):
     m_pResources(engine->resources()),
     m_pPipeline(engine->pipeline()),
     m_pController(engine->session()->active_profile(0)->controller().get()),
-    m_Transition(engine->timer()->timeline())
+    m_Transition(engine->timer()->timeline()),
+    m_pCanvas(make_shared<Canvas>(
+        engine->window()->size().x, engine->window()->size().y
+    ))
 {}
 
 
@@ -49,6 +52,29 @@ void Pregame :: preload() {
     m_pRoot->add(bg);
 
     m_Transition.set(Freq::Time::seconds(11.0f));
+
+    auto cairo = m_pCanvas->context();
+    cairo->select_font_face(
+        "Press Start 2P",
+        Cairo::FONT_SLANT_NORMAL,
+        Cairo::FONT_WEIGHT_NORMAL
+    );
+    cairo->set_font_size(sw / 64.0f);
+    
+    // TEMP: just for jam
+    auto mapname = m_pQor->args().value("map");
+    if(mapname == "1")
+        mapname = "House";
+    else if(mapname == "2")
+        mapname = "Backyard";
+    
+    m_pCanvas->text(
+        string("Now entering: ") + mapname,
+        Color::white(),
+        vec2(sw/2.0f, sh/2.0f),
+        Canvas::Align::CENTER
+    );
+    m_pRoot->add(m_pCanvas);
 }
 
 

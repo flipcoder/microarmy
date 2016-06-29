@@ -1,5 +1,6 @@
 #include "Thing.h"
 #include "Game.h"
+#include "Player.h"
 #include "Qor/Sprite.h"
 
 using namespace std;
@@ -151,12 +152,11 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     auto thing = (Thing*) thing_node;
 
     // Copy mesh from maptile to thing
-    if (thing->m_Collidable) {
-        thing->add(thing->placeholder()->mesh()->instance());
-    }
 
     if (thing->id() == Thing::STAR and thing->m_Collidable) {
         if (thing->visible()){
+            thing->add(thing->placeholder()->mesh()->instance());
+            
             thing->sound("pickup2.wav");
 
             thing->m_Collidable = false;
@@ -219,13 +219,16 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
         if (thing->hook_type<Sound>().empty())
             thing->sound("spring.wav");
 
-        auto player = player_node->parent();// mask -> mesh -> sprite
+        //auto player = player_node->parent();// mask -> mesh -> sprite
+        auto player = player_node->config()->at<Player*>("player");
         auto vel = player->velocity();
 
         player->velocity(glm::vec3(0.0f,
             vel.y > 250.0f ? -vel.y : -250.0f,
             0.0f)
         );
+        player->reset_walljump();
+        
     } else if (thing->id() == Thing::KEY) {
         if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
