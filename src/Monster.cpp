@@ -233,7 +233,6 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         
         add(fire);
         fire->collapse();
-        fire->collapse();
 
         m_pPartitioner->register_object(fire->mesh(), Game::FATAL);
         
@@ -248,21 +247,38 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         Sound::play(m_pSprite.get(), "fire.wav", m_pResources);
 
         auto _this = this;
-        //auto fireptr = fire.get();
+        auto fireptr = fire.get();
         auto origin = m_pSprite.get();
-        on_tick.connect_extended([
-            _this, spawn_timer, death_timer, bullet_speed, offset, fire,
-            origin, life
-        ](boost::signals2::connection con, Freq::Time t){
+        //fireptr->on_tick.connect_extended([
+        auto part = m_pPartitioner;
+        fireptr->on_tick.connect([
+            _this, spawn_timer, death_timer, bullet_speed, offset, fireptr,
+            origin, life, part
+        //](boost::signals2::connection con, Freq::Time t){
+        ](Freq::Time t){
+            //auto fire = firew.lock();
+            //if(not fire){
+            //    con.disconnect();
+            //    return;
+            //}
+        
             if(spawn_timer->elapsed()){
                 if(life > 0)
                     _this->shoot(bullet_speed, offset, life-1);
                 spawn_timer->reset();
             }
             if(death_timer->elapsed()){
-                con.disconnect();
+                fireptr->safe_detach();
+                //part->after([fireptr]{
+                //});
+                //con.disconnect();
             }
         });
+        //fire->on_tick.connect([fireptr, death_timer](Freq::Time){
+        //    if(death_timer->elapsed()){
+        //        fireptr->safe_detach();
+        //    }
+        //});
     }
 
     else {
