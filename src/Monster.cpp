@@ -334,7 +334,6 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         //auto par = m_pSprite->parent();
         //par->add(shot);
         stick(shot);
-        shot->
 
         // Add a random angle to the bullet
         shot->rotate(((rand() % 10) - 5) / 360.0f, vec3(0.0f, 0.0f, 1.0f));
