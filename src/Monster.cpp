@@ -249,17 +249,17 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         auto _this = this;
         //auto fireptr = fire.get();
         auto origin = m_pSprite.get();
-        on_tick.connect([
+        on_tick.connect_extended([
             _this, spawn_timer, death_timer, bullet_speed, offset, fire,
             origin, life
-        ](Freq::Time t){
+        ](boost::signals2::connection con, Freq::Time t){
             if(spawn_timer->elapsed()){
                 if(life > 0)
                     _this->shoot(bullet_speed, offset, life-1);
                 spawn_timer->reset();
             }
             if(death_timer->elapsed()){
-                fire->safe_detach();
+                con.disconnect();
             }
         });
     }
