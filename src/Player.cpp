@@ -272,3 +272,8 @@ void Player :: reset()
     m_pGame->reset();
 }
 
+void Player :: reset_walljump()
+{
+    m_LastWallJumpDir = 0;
+}
+

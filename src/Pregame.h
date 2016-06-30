@@ -9,6 +9,7 @@
 #include "Qor/Pipeline.h"
 #include "Qor/Mesh.h"
 #include "Qor/Sound.h"
+#include "Qor/Canvas.h"
 
 class Qor;
 
@@ -40,6 +41,10 @@ class Pregame: public State {
         Controller* m_pController = nullptr;
 
         Freq::Alarm m_Transition;
+
+        std::shared_ptr<Canvas> m_pCanvas;
+
+        bool m_Win = false;
 };
 
 #endif

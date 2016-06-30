@@ -330,10 +330,11 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
             vec3(shotbox.max().x, shotbox.max().y, 5.0)
         ));
 
-        // Adding the bullet to the origin's parent
+        // Add the bullet to the parent
         //auto par = m_pSprite->parent();
         //par->add(shot);
         stick(shot);
+        shot->move(vec3(0.0f, -m_pSprite->mesh()->world_box().size().y / 2.0f, 0.0f));
 
         // Add a random angle to the bullet
         shot->rotate(((rand() % 10) - 5) / 360.0f, vec3(0.0f, 0.0f, 1.0f));
@@ -483,6 +484,8 @@ void Monster :: cb_sensor_to_no_static(Node* sensor_node, Node* static_node) {
 
     if (not monster)
         return;
+    
+    //LOG("sensor to no static");
     //monster->velocity(
     //    -monster->velocity().x,
     //    monster->velocity().y,

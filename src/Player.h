@@ -36,6 +36,8 @@ class Player: public Sprite {
         
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
+        void reset_walljump();
+        
     private:
         
         Freq::Timeline* m_pTimeline;
