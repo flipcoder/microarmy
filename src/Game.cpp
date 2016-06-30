@@ -443,6 +443,7 @@ void Game :: setup_monster(std::shared_ptr<Monster> monster) {
 
 
 void Game :: setup_player(std::shared_ptr<Player> player) {
+
     // create masks
     auto n = make_shared<Node>();
     n->name("mask");
@@ -477,6 +478,61 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     m_pPartitioner->register_object(n, CHARACTER_SIDES);
 
     //setup_player_to_map(player);
+
+    // TESTING - ADD BOX AROUND PLAYER
+
+    // Draw a white wireframe box around the player
+    auto position = player->position() ; // returns vec3
+    auto size = player->size();// returns vec3
+    auto min = -vec3(size, 0.0f) * vec3(player->origin(), 0.0f);
+    auto max = vec3(size, 0.0f) * vec3(player->origin(), 0.0f);
+
+    // LOGf("Player origin: ", )
+
+    // Getting corners
+    std::vector<glm::vec2> coordinate_list;
+
+    // Starting at top left clockwise
+    coordinate_list.push_back(vec2(min.x, min.y));
+    coordinate_list.push_back(vec2(max.x, min.y));
+    coordinate_list.push_back(vec2(max.x, max.y));
+    coordinate_list.push_back(vec2(min.x, max.y));
+
+
+    LOGf("Min: (%s, %s)", min.x % min.y);
+    LOGf("Max: (%s, %s)", max.x % max.y);
+
+    LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
+    LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
+    LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
+    LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
+
+    for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
+        
+        // if not the last coordinate
+        if (coord + 1 != coordinate_list.end()) {
+
+            // Drawing Lines
+            auto line = Mesh::line(
+                vec3(coord->x, coord->y, 0.0f), // start
+                vec3((coord + 1)->x, (coord + 1)->y, 0.0f), // end
+                m_pResources->cache_as<Texture>("white.png"), // tex
+                1.0f // width
+            );
+            player->add(line);
+        }
+        else {
+            auto line = Mesh::line(
+                vec3(coord->x, coord->y, 0.0f), // start
+                vec3(coordinate_list[0].x, coordinate_list[0].y, 0.0f), // end
+                m_pResources->cache_as<Texture>("white.png"), // tex
+                1.0f // width
+            );
+            player->add(line);
+        }
+    }
+
+    // END TESTING
 
     for (auto&& thing: m_Things)
         setup_player_to_thing(player, thing);
