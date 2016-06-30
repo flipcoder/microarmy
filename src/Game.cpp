@@ -325,31 +325,31 @@ void Game :: preload() {
 
         setup_player(player);
 
-    // TESTING
-    auto square = make_shared<Mesh>(
-        make_shared<MeshGeometry>(Prefab::quad(vec2(-50.0,-50.0),vec2(50.0,50.0))),
-        vector<shared_ptr<IMeshModifier>>{
-            make_shared<Wrap>(Prefab::quad_wrap(
-                glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
-            ))
-        },
-        make_shared<MeshMaterial>("duck.png", m_pResources)
-    );
+    //// TESTING
+    //auto square = make_shared<Mesh>(
+    //    make_shared<MeshGeometry>(Prefab::quad(vec2(-50.0,-50.0),vec2(50.0,50.0))),
+    //    vector<shared_ptr<IMeshModifier>>{
+    //        make_shared<Wrap>(Prefab::quad_wrap(
+    //            glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
+    //        ))
+    //    },
+    //    make_shared<MeshMaterial>("duck.png", m_pResources)
+    //);
 
-    square->position(vec3(250.0f, 250.0f, 0.0f));
+    //square->position(vec3(250.0f, 250.0f, 0.0f));
 
-    m_pCamera->add(square);
+    //m_pCamera->add(square);
 
-    auto line = Mesh::line(
-        vec3(0.0f, 0.0f, 0.0f), // start
-        vec3(100.0f, 100.0f, 0.0f), // end
-        m_pResources->cache_as<Texture>("white.png"), // tex
-        2.0f // width
-    );
+    //auto line = Mesh::line(
+    //    vec3(0.0f, 0.0f, 0.0f), // start
+    //    vec3(100.0f, 100.0f, 0.0f), // end
+    //    m_pResources->cache_as<Texture>("white.png"), // tex
+    //    2.0f // width
+    //);
 
-    m_pCamera->add(line);
-    line->material()->emissive(Color::white());
-    // END TESTING
+    //m_pCamera->add(line);
+    //line->material()->emissive(Color::white());
+    //// END TESTING
     }
 
     reset();
@@ -479,61 +479,61 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
 
     //setup_player_to_map(player);
 
-    // TESTING - ADD BOX AROUND PLAYER
+    //// TESTING - ADD BOX AROUND PLAYER
 
-    // Draw a white wireframe box around the player
-    auto position = player->position() ; // returns vec3
-    auto size = player->size();// returns vec3
-    auto min = -vec3(size, 0.0f) * vec3(player->origin(),0.0f);
-    auto max = vec3(size, 0.0f) * vec3(1.0f - player->origin().x, 1.0f - player->origin().y,0.0f);
+    //// Draw a white wireframe box around the player
+    //auto position = player->position() ; // returns vec3
+    //auto size = player->size();// returns vec3
+    //auto min = -vec3(size, 0.0f) * vec3(player->origin(),0.0f);
+    //auto max = vec3(size, 0.0f) * vec3(1.0f - player->origin().x, 1.0f - player->origin().y,0.0f);
 
-    LOGf("Player origin: %s", Vector::to_string(vec3(player->origin(), 0.0f)));
-    LOGf("Player size: %s", Vector::to_string(vec3(size, 0.0f)));
+    //LOGf("Player origin: %s", Vector::to_string(vec3(player->origin(), 0.0f)));
+    //LOGf("Player size: %s", Vector::to_string(vec3(size, 0.0f)));
 
-    // Getting corners
-    std::vector<glm::vec2> coordinate_list;
+    //// Getting corners
+    //std::vector<glm::vec2> coordinate_list;
 
-    // Starting at top left clockwise
-    coordinate_list.push_back(vec2(min.x, min.y));
-    coordinate_list.push_back(vec2(max.x, min.y));
-    coordinate_list.push_back(vec2(max.x, max.y));
-    coordinate_list.push_back(vec2(min.x, max.y));
+    //// Starting at top left clockwise
+    //coordinate_list.push_back(vec2(min.x, min.y));
+    //coordinate_list.push_back(vec2(max.x, min.y));
+    //coordinate_list.push_back(vec2(max.x, max.y));
+    //coordinate_list.push_back(vec2(min.x, max.y));
 
 
-    LOGf("Min: (%s, %s)", min.x % min.y);
-    LOGf("Max: (%s, %s)", max.x % max.y);
+    //LOGf("Min: (%s, %s)", min.x % min.y);
+    //LOGf("Max: (%s, %s)", max.x % max.y);
 
-    LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
-    LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
-    LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
-    LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
+    //LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
+    //LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
+    //LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
+    //LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
 
-    for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
+    //for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
         
-        // if not the last coordinate
-        if (coord + 1 != coordinate_list.end()) {
+    //    // if not the last coordinate
+    //    if (coord + 1 != coordinate_list.end()) {
 
-            // Drawing Lines
-            auto line = Mesh::line(
-                vec3(coord->x, coord->y, 0.0f), // start
-                vec3((coord + 1)->x, (coord + 1)->y, 0.0f), // end
-                m_pResources->cache_as<Texture>("white.png"), // tex
-                1.0f // width
-            );
-            player->add(line);
-        }
-        else {
-            auto line = Mesh::line(
-                vec3(coord->x, coord->y, 0.0f), // start
-                vec3(coordinate_list[0].x, coordinate_list[0].y, 0.0f), // end
-                m_pResources->cache_as<Texture>("white.png"), // tex
-                1.0f // width
-            );
-            player->add(line);
-        }
-    }
+    //        // Drawing Lines
+    //        auto line = Mesh::line(
+    //            vec3(coord->x, coord->y, 0.0f), // start
+    //            vec3((coord + 1)->x, (coord + 1)->y, 0.0f), // end
+    //            m_pResources->cache_as<Texture>("white.png"), // tex
+    //            1.0f // width
+    //        );
+    //        player->add(line);
+    //    }
+    //    else {
+    //        auto line = Mesh::line(
+    //            vec3(coord->x, coord->y, 0.0f), // start
+    //            vec3(coordinate_list[0].x, coordinate_list[0].y, 0.0f), // end
+    //            m_pResources->cache_as<Texture>("white.png"), // tex
+    //            1.0f // width
+    //        );
+    //        player->add(line);
+    //    }
+    //}
 
-    // END TESTING
+    //// END TESTING
 
     for (auto&& thing: m_Things)
         setup_player_to_thing(player, thing);
