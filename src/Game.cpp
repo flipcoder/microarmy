@@ -484,8 +484,8 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     // Draw a white wireframe box around the player
     auto position = player->position() ; // returns vec3
     auto size = player->size();// returns vec3
-    auto min = -vec3(size, 0.0f) * vec3(0.5f, 0.5f, 0.0f);
-    auto max = vec3(size, 0.0f) * vec3(0.5f, 0.5f, 0.0f);
+    auto min = -vec3(size, 0.0f) * vec3(player->origin(),0.0f);
+    auto max = vec3(size, 0.0f) * vec3(1.0f - player->origin().x, 1.0f - player->origin().y,0.0f);
 
     LOGf("Player origin: %s", Vector::to_string(vec3(player->origin(), 0.0f)));
     LOGf("Player size: %s", Vector::to_string(vec3(size, 0.0f)));
