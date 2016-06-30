@@ -115,6 +115,22 @@ void Monster :: logic_self(Freq::Time t) {
 
     }
 
+    auto layer = (TileLayer*)parent();
+    auto vel = velocity();
+    if(vel.x < -K_EPSILON && layer->tile(
+        (position().x / layer->size().x - 1), // -
+        (position().y / layer->size().y + 1)
+    )) {
+        velocity(-vel.x, vel.y, vel.z);
+    }
+    else if(vel.x > K_EPSILON && layer->tile(
+        position().x / layer->size().x + 1, // +
+        position().y / layer->size().y + 1
+    )) {
+        velocity(-vel.x, vel.y, vel.z);
+    }
+
+
     // Why not in damage?
     if (not is_alive())
         detach();
@@ -138,34 +154,49 @@ void Monster :: initialize() {
         vec3(mask->at<double>(2), mask->at<double>(3), 0.5f)
     );
     
+    //m_Box = Box(
+    //    vec3(
+    //        m_pPlaceholder->world_box().min().x * mask->at<double>(0),
+    //        m_pPlaceholder->box().min().y * mask->at<double>(1),
+    //        -0.5f
+    //    ),
+    //    vec3(
+    //        m_pPlaceholder->box().max().x * mask->at<double>(2),
+    //        m_pPlaceholder->box().max().y * mask->at<double>(3),
+    //        0.5f
+    //    )
+    //);
+    //LOG(m_Box.string());
+    
     // make sensor boxes for detecting ground to the left and right of the monster
-    auto rbox = m_Box;
-    auto lbox = m_Box;
+    //m_pLeft = make_shared<Mesh>();
+    //m_pRight = make_shared<Mesh>();
     
-    m_pLeft = make_shared<Mesh>();
-    m_pRight = make_shared<Mesh>();
+    //auto lbox = Box();
+    //auto rbox = Box();
+    //lbox = Box(
+    //    vec3(-4.0f, 0.0f, -0.5f),
+    //    vec3(0.0f, 8.0f, 0.5f)
+    //);
+    //rbox = Box(
+    //    vec3(0.0f, 0.0f, -0.5f),
+    //    vec3(4.0f, 8.0f, 0.5f)
+    //);
+    //m_pLeft->set_box(lbox);
+    //m_pRight->set_box(rbox);
+    
+    //add(m_pLeft);
+    //add(Mesh::line(vec3(-8.0f, 0.0f, 1.0f), vec3(8.0f, 0.0f, 1.0f),
+    //    m_pResources->cache_as<Texture>("white.png")
+    //));
+    //add(m_pRight);
 
-    // shift left box diagonal left, down
-    // and right box diagonal to the right, down
-    lbox.min().x -= m_Box.size().x;
-    lbox.max().x -= m_Box.size().x;
-    lbox.min().y += m_Box.size().y;
-    lbox.max().y += m_Box.size().y;
-    rbox.min().x += m_Box.size().x;
-    rbox.max().x += m_Box.size().x;
-    rbox.min().y += m_Box.size().y;
-    rbox.max().y += m_Box.size().y;
-
-    m_pLeft->set_box(lbox);
-    m_pRight->set_box(rbox);
+    //LOG(m_pLeft->world_box().string());
     
-    add(m_pLeft);
-    add(m_pRight);
-    
-    m_pLeft->config()->at<Monster*>("monster", this);
-    m_pRight->config()->at<Monster*>("monster", this);
-    m_pPartitioner->register_object(m_pLeft, Game::SENSOR);
-    m_pPartitioner->register_object(m_pRight, Game::SENSOR);
+    //m_pLeft->config()->set<Monster*>("monster", this);
+    //m_pRight->config()->set<Monster*>("monster", this);
+    //m_pPartitioner->register_object(m_pLeft, Game::SENSOR);
+    //m_pPartitioner->register_object(m_pRight, Game::SENSOR);
 
     m_HP = m_pConfig->at<int>("hp", 5);
     m_MaxHP = m_pConfig->at<int>("hp", 5);
@@ -478,18 +509,18 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
 }
 
 
-void Monster :: cb_sensor_to_no_static(Node* sensor_node, Node* static_node) {
-    //LOG("sensor to no static!")
-    auto monster = sensor_node->config()->at<Monster*>("monster", nullptr);
+//void Monster :: cb_sensor_to_no_static(Node* sensor_node, Node* static_node) {
+//    auto monster = sensor_node->config()->at<Monster*>("monster", nullptr);
+//    LOG("???")
 
-    if (not monster)
-        return;
+//    if (not monster)
+//        return;
     
-    //LOG("sensor to no static");
-    //monster->velocity(
-    //    -monster->velocity().x,
-    //    monster->velocity().y,
-    //    monster->velocity().z
-    //);
-}
+//    LOG("sensor to no static");
+//    monster->velocity(
+//        -monster->velocity().x,
+//        monster->velocity().y,
+//        monster->velocity().z
+//    );
+//}
 

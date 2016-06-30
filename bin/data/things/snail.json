@@ -9,7 +9,7 @@
         "frames" : {
             "unhit":{
                 "left": [ 0, 1 ],
-                "right": [ "hflip", 1 ]
+                "right": [ "hflip", 0, 1 ]
             },
             "hit":{
                 "left": [ 1 ],

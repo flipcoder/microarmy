@@ -396,11 +396,11 @@ void Game :: preload() {
         CHARACTER, BULLET, std::bind(&Player::cb_to_bullet, _::_1, _::_2)
     );
 
-    m_pPartitioner->on_collision(
-        SENSOR, STATIC,
-            std::function<void(Node*,Node*)>(), // col
-            std::bind(&Monster::cb_sensor_to_no_static, _::_1, _::_2) // no col
-    );
+    //m_pPartitioner->on_collision(
+    //    SENSOR, STATIC,
+    //        std::function<void(Node*,Node*)>(), // col
+    //        std::bind(&Monster::cb_sensor_to_no_static, _::_1, _::_2) // no col
+    //);
 
     //m_JumpTimer.set(Freq::Time::ms(0));
     //m_ShootTimer.set(Freq::Time::ms(0));
