@@ -70,7 +70,7 @@ void Thing :: initialize() {
     const float glow = 1.0f;
 
     if (m_ThingID == Thing::STAR) {
-        m_pPlaceholder->visible(false);
+        //m_pPlaceholder->visible(false);
     
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
@@ -155,6 +155,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
 
     if (thing->id() == Thing::STAR and thing->m_Collidable) {
         if (thing->visible()){
+            thing->m_pPlaceholder->visible(false);
             thing->add(thing->placeholder()->mesh()->instance());
             
             thing->sound("pickup2.wav");
@@ -182,11 +183,11 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
                 }
             });
             
-            thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
-                // TODO: Replace with outlined or shadow picture
-                thing->visible(true);
-                thing->placeholder()->visible(true);
-            });
+            //thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+            //    // TODO: Replace with outlined or shadow picture
+            //    thing->visible(true);
+            //    thing->placeholder()->visible(true);
+            //});
 
             auto meta = make_shared<Meta>();
             meta->set<string>("type", thing->config()->at<string>("type"));
