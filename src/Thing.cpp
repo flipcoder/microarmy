@@ -77,7 +77,6 @@ void Thing :: initialize() {
 
         l->ambient(Color::white() * glow);
         l->diffuse(Color::white() * glow);
-
         l->specular(Color::white() * glow);
         l->dist(item_dist);
         l->move(glm::vec3(glm::vec3(0.5f, 0.5f, 0.0f)));
@@ -217,7 +216,7 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             player_node->parent()->event("battery");
         }
     } else if (thing->id() == Thing::SPRING) {
-        if (thing->hook_type<Sound>().empty())
+        if (thing->find_type<Sound>().empty())
             thing->sound("spring.wav");
 
         //auto player = player_node->parent();// mask -> mesh -> sprite

@@ -53,15 +53,15 @@ void Player :: logic_self(Freq::Time t) {
     Sprite::logic_self(t);
 
     auto feet_colliders = m_pGame->get_static_collisions(
-        hook("feetmask").at(0)
+        Node::find("feetmask").at(0)
     );
 
     //auto wall_colliders = m_pPartitioner->get_collisions_for(
-    //    hook("sidemask").at(0), STATIC
+    //    Node::find("sidemask").at(0), STATIC
     //);
 
     auto wall_colliders = m_pGame->get_static_collisions(
-        hook("sidemask").at(0)
+        Node::find("sidemask").at(0)
     );
 
     if (not feet_colliders.empty() && wall_colliders.empty()) {
@@ -122,7 +122,7 @@ void Player :: logic_self(Freq::Time t) {
                     velocity(glm::vec3(x, -125.0f, 0.0f));
 
                     if (not in_air || walljump) {
-                        auto sounds = m_pCamera->hook_type<Sound>();
+                        auto sounds = m_pCamera->find_type<Sound>();
 
                         if(sounds.empty())
                             Sound::play(m_pCamera, "jump.wav", m_pResources);
