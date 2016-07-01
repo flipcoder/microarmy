@@ -14,7 +14,7 @@ Copyright &copy; 2016 Grady O'Connell
 
 ### Releases
 
-No binary releases yet!
+No binary releases yet!  Check back soon!
 
 ### Build Scripts
 

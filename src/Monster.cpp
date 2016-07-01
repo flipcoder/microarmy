@@ -1,9 +1,11 @@
+#include <cmath>
 #include "Monster.h"
 #include "Game.h"
 #include "Qor/TileMap.h" 
 #include "Qor/Sprite.h"
 #include "Player.h"
 #include "kit/math/vectorops.h"
+#include "kit/kit.h"
 
 using namespace std;
 using namespace glm;
@@ -117,16 +119,18 @@ void Monster :: logic_self(Freq::Time t) {
 
     auto layer = (TileLayer*)parent();
     auto vel = velocity();
-    if(vel.x < -K_EPSILON && layer->tile(
-        (position().x / layer->size().x - 1), // -
-        (position().y / layer->size().y + 1)
+    if(vel.x < -K_EPSILON && not layer->tile(
+        (int)std::round(position().x / layer->map()->tile_size().x - 0.5), // -
+        position().y / layer->map()->tile_size().y + 1
     )) {
+        m_pSprite->set_state("right");
         velocity(-vel.x, vel.y, vel.z);
     }
-    else if(vel.x > K_EPSILON && layer->tile(
-        position().x / layer->size().x + 1, // +
-        position().y / layer->size().y + 1
+    else if(vel.x > K_EPSILON && not layer->tile(
+        (int)std::round(position().x / layer->map()->tile_size().x + 0.5), // +
+        position().y / layer->map()->tile_size().y + 1
     )) {
+        m_pSprite->set_state("left");
         velocity(-vel.x, vel.y, vel.z);
     }
 
