@@ -36,11 +36,13 @@ class Game: public State {
         Game(Qor* engine);
         virtual ~Game();
 
+        
         virtual void preload() override;
         virtual void enter() override;
         virtual void logic(Freq::Time t) override;
         virtual void render() const override;
         virtual bool needs_load() const override { return true; }
+        virtual std::shared_ptr<Node> root() override { return m_pRoot; }
 
         void reset();
         

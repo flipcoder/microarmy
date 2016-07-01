@@ -3,6 +3,7 @@
     "size" : [ 8, 16 ],
     "tile-size" : [ 8, 16 ],
     "origin" : [ 0.5, 0.8 ],
+    "vision-origin" : [ 0.5, 0.2 ],
     "mask" : [ 0.25, 0.0, 0.75, 0.8 ],
     "animation" : {
         "speed" : 10.0,
