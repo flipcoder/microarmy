@@ -218,6 +218,15 @@ void Player :: logic_self(Freq::Time t) {
        m_pResources->cache_as<Texture>("white.png"), // tex
        1.0f // width
     );
+
+    auto lineptr = line.get();
+    auto timer = make_shared<Freq::Alarm>(m_pTimeline);
+    timer->set(Freq::Time::seconds(0.5f));
+
+    line->on_tick.connect([lineptr](Freq::Time t){
+        lineptr->detach();
+    });
+
     m_pGame->root()->add(line);
 }
 
