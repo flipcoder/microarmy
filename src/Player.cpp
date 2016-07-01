@@ -199,7 +199,7 @@ void Player :: logic_self(Freq::Time t) {
     auto vorig = this->vorigin();
     auto s = vec2(this->size());
 
-    auto vorig_object = (orig - vorig) * s;
+    auto vorig_object = (vorig - orig) * s;
     auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
 
     LOGf("Player Origin: %s", Vector::to_string(orig));
