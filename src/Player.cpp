@@ -220,13 +220,9 @@ void Player :: logic_self(Freq::Time t) {
     );
 
     auto lineptr = line.get();
-    auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-    timer->set(Freq::Time::seconds(0.5f));
-
-    line->on_tick.connect([lineptr](Freq::Time t){
+    line->when(Freq::Time::seconds(0.5f), m_pTimeline, [lineptr]{
         lineptr->detach();
     });
-
     m_pGame->root()->add(line);
 }
 
