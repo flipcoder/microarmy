@@ -377,18 +377,9 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
             vec3((m_pSprite->check_state("left") ? -1.0f : 1.0f) * bullet_speed, 0.0f, 0.0f)
         ));
 
-        // Sets timer for bullets before disappearing
-        auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-        timer->set(Freq::Time::seconds(0.5f));
-
         Sound::play(m_pSprite.get(), "shoot.wav", m_pResources);
 
-        // Connects shot to a game tick signal
-        auto shotptr = shot.get();
-        shot->on_tick.connect([timer, shotptr](Freq::Time t){
-            if (timer->elapsed())
-                shotptr->detach();
-        });
+        shot->detach_after(Freq::Time::seconds(0.5f), m_pTimeline);
     }
 }
 
