@@ -313,38 +313,19 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         Sound::play(m_pSprite.get(), "fire.wav", m_pResources);
 
         auto _this = this;
-        auto fireptr = fire.get();
-        auto origin = m_pSprite.get();
-        //fireptr->on_tick.connect_extended([
         auto part = m_pPartitioner;
-        fireptr->on_tick.connect([
-            _this, spawn_timer, death_timer, bullet_speed, offset, fireptr,
-            origin, life, part
-        //](boost::signals2::connection con, Freq::Time t){
-        ](Freq::Time t){
-            //auto fire = firew.lock();
-            //if(not fire){
-            //    con.disconnect();
-            //    return;
-            //}
-        
+        fire->on_tick_with([
+            _this, spawn_timer, death_timer, bullet_speed, offset, life
+        ](Node* fire, Freq::Time t){
             if(spawn_timer->elapsed()){
                 if(life > 0)
                     _this->shoot(bullet_speed, offset, life-1);
                 spawn_timer->reset();
             }
             if(death_timer->elapsed()){
-                fireptr->safe_detach();
-                //part->after([fireptr]{
-                //});
-                //con.disconnect();
+                fire->safe_detach();
             }
         });
-        //fire->on_tick.connect([fireptr, death_timer](Freq::Time){
-        //    if(death_timer->elapsed()){
-        //        fireptr->safe_detach();
-        //    }
-        //});
     }
 
     else {
