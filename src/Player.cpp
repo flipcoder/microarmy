@@ -265,13 +265,8 @@ void Player :: shoot() {
     shot->rotate(ang, glm::vec3(0.0f, 0.0f, 1.0f));
     shot->velocity(aimdir * 256.0f);
 
-    auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-    timer->set(Freq::Time::seconds(0.5f));
-
-    auto shotptr = shot.get();
-    shot->on_tick.connect([timer, shotptr](Freq::Time t){
-        if (timer->elapsed())
-            shotptr->detach();
+    shot->when_with(Freq::Time::seconds(0.5f), m_pTimeline, [](Node* shot){
+        shot->detach();
     });
     
     m_pPartitioner->register_object(shot, Game::BULLET);
