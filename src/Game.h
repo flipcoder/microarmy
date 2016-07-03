@@ -114,6 +114,8 @@ class Game: public State {
 
         std::vector<std::shared_ptr<Player>> m_Players;
         std::vector<ParallaxLayer> m_ParallaxLayers;
+
+        TileLayer* m_pMainLayer = nullptr;
 };
 
 #endif
