@@ -213,6 +213,8 @@ void Game :: preload() {
 
                     if (depth) {
 
+                        m_pMainLayer = layer.get();
+
                         // make a provider function that queries the map layer
                         // for currently visible objects identifiable by a string
                         // in their config
