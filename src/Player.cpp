@@ -199,16 +199,16 @@ void Player :: logic_self(Freq::Time t) {
     auto vorig = this->vorigin();
     auto s = vec2(this->size());
 
-    auto vorig_object = (orig - vorig) * s;
+    auto vorig_object = (vorig - orig) * s;
     auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
 
-    LOGf("Player Origin: %s", Vector::to_string(orig));
-    LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
-    LOGf("Player Size: %s", Vector::to_string(s));
+    // LOGf("Player Origin: %s", Vector::to_string(orig));
+    // LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
+    // LOGf("Player Size: %s", Vector::to_string(s));
 
-    LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
-    LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
-    LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
+    // LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
+    // LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
+    // LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
 
     vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
 
@@ -219,11 +219,30 @@ void Player :: logic_self(Freq::Time t) {
        1.0f // width
     );
 
+    // Line from vision origin to world origin
     auto lineptr = line.get();
-    line->when(Freq::Time::seconds(0.5f), m_pTimeline, [lineptr]{
+    line->on_tick.connect([lineptr](Freq::Time t){
         lineptr->detach();
     });
+
     m_pGame->root()->add(line);
+
+
+
+
+    // Gather list of all nodes
+    // auto nodes = m_pGame->root()->descendants();
+    // vector<shared_ptr<Node>> visible_nodes;
+    
+    // int counter = 0;
+    // for (auto&& node: nodes) {
+    //     if (node->visible()) {
+    //         visible_nodes.push_back(node->as_node());
+    //         counter++;
+    //     }
+    // }
+
+    // LOG(to_string(counter));
 }
 
 
@@ -253,10 +272,13 @@ void Player :: shoot() {
     ));
 
     vec3 aimdir = vec3(0.0f, 0.0f, 0.0f);
+
     if(not check_state("up") && not check_state("down"))
         aimdir += check_state("left") ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f);
+
     if(check_state("up") || check_state("upward"))
         aimdir += vec3(0.0f, -1.0f, 0.0f);
+
     if(check_state("down") || check_state("downward"))
         aimdir += vec3(0.0f, 1.0f, 0.0f);
     aimdir = normalize(aimdir);

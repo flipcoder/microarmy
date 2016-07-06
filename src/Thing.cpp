@@ -69,9 +69,7 @@ void Thing :: initialize() {
     const float item_dist = 200.0f;
     const float glow = 1.0f;
 
-    if (m_ThingID == Thing::STAR) {
-        //m_pPlaceholder->visible(false);
-    
+    if (m_ThingID == Thing::STAR) {    
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
 

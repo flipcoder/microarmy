@@ -108,8 +108,8 @@ void Game :: preload() {
         &m_pMap->object_layers()
     };
 
-    for(auto&& layers: layer_types) {
-        for(auto&& layer: *layers) {
+    for (auto&& layers: layer_types) {
+        for (auto&& layer: *layers) {
             layer->set_main_camera(m_pCamera.get());
             layer->bake_visible();
 
@@ -212,7 +212,6 @@ void Game :: preload() {
                     bool depth = layer->depth() || obj->config()->has("depth");
 
                     if (depth) {
-
                         m_pMainLayer = layer.get();
 
                         // make a provider function that queries the map layer
@@ -231,6 +230,7 @@ void Game :: preload() {
                                 return r;
                             };
                         };
+
                         m_pPartitioner->register_provider(STATIC, provider_for("static"));
                         m_pPartitioner->register_provider(LEDGE, provider_for("ledge"));
                         m_pPartitioner->register_provider(FATAL, provider_for("fatal"));
@@ -682,6 +682,7 @@ void Game :: logic(Freq::Time t) {
     m_pOrthoRoot->logic(t);
 }
 
+
 void Game :: render() const {
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
 
@@ -691,13 +692,13 @@ void Game :: render() const {
     for (auto&& layer: m_ParallaxLayers) {
         layer.root->visible(true);
         m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 5.0f);
-        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx == 0 ? 0 : Pipeline::NO_CLEAR));
         layer.root->visible(false);
         ++idx;
     }
 
     m_pCamera->position(pos);
-    m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+    m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx == 0 ? 0 : Pipeline::NO_CLEAR));
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
     
     m_pPipeline->winding(true);

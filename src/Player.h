@@ -8,7 +8,6 @@
 class Game;
 
 class Player: public Sprite {
-    
     public:
         // Constructor
         Player(
@@ -26,9 +25,8 @@ class Player: public Sprite {
         virtual ~Player();
 
         
-        // Abstract Methods
+        // Overidden virtual methods
         virtual void logic_self(Freq::Time t) override;
-        //virtual void render(Pass* pass) const override;
 
 
         // Getters
@@ -49,6 +47,7 @@ class Player: public Sprite {
         
         
     private:
+        // Variables
         unsigned m_Power = 0;
         int m_LastWallJumpDir = 0;
         bool m_WasInAir = false;
@@ -57,6 +56,7 @@ class Player: public Sprite {
         Freq::Alarm m_ShootTimer;
 
 
+        // Pointers
         Game* m_pGame;
         Camera* m_pCamera;
         Controller* m_pController;
