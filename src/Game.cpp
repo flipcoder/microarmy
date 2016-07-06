@@ -265,13 +265,10 @@ void Game :: preload() {
 
                         obj->mesh()->add(n);
 
-                        if (obj_cfg->has("fatal")) {
-                            obj_cfg->set<string>("fatal", "");
-                        }
-
-                        else if (obj_cfg->has("ledge"))
-                            obj_cfg->set<string>("ledge", "");
-                        else {
+                        if (
+                            not obj_cfg->has("fatal") &&
+                            not obj_cfg->has("ledge")
+                        ){
                             obj_cfg->set<string>("static", "");
                         }
                     }
