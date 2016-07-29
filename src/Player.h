@@ -32,6 +32,9 @@ class Player: public Sprite {
         // Getters
         std::shared_ptr<Node> focus_right() { return m_pCharFocusRight; };
         std::shared_ptr<Node> focus_left() { return m_pCharFocusLeft; };
+        bool is_god() { return m_GodMode; }
+        bool no_enemy_damage() { return m_NoEnemyDamage; }
+        bool no_fatal_objects() { return m_NoFatalObjects; }
         
 
         // Methods
@@ -51,6 +54,10 @@ class Player: public Sprite {
         unsigned m_Power = 0;
         int m_LastWallJumpDir = 0;
         bool m_WasInAir = false;
+        // 28 July 2016 - KG: Added God Mode variables
+        bool m_GodMode = false; // NOTHING will kill player
+        bool m_NoFatalObjects = false; // Only affects fatal objects (including Wizard's fire)
+        bool m_NoEnemyDamage = false; // Only affects enemy overlap and bullets (but not Wizard's fire)
 
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;
