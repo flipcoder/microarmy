@@ -200,58 +200,54 @@ void Player :: logic_self(Freq::Time t) {
             set_state("forward");
     }
 
+    ////////// RAY CASTING TEST //////////
 
-    //////// RAY CASTING CODE //////////
+    //// Get player vision origin
+    //auto orig = this->origin();
+    //auto vorig = this->vorigin();
+    //auto s = vec2(this->size());
 
-    // Get player vision origin
-    auto orig = this->origin();
-    auto vorig = this->vorigin();
-    auto s = vec2(this->size());
+    //auto vorig_object = (vorig - orig) * s;
+    //auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
 
-    auto vorig_object = (vorig - orig) * s;
-    auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
+    //// LOGf("Player Origin: %s", Vector::to_string(orig));
+    //// LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
+    //// LOGf("Player Size: %s", Vector::to_string(s));
 
-    // LOGf("Player Origin: %s", Vector::to_string(orig));
-    // LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
-    // LOGf("Player Size: %s", Vector::to_string(s));
+    //// LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
+    //// LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
+    //// LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
 
-    // LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
-    // LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
-    // LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
+    //vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
 
-    vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
+    //auto line = Mesh::line(
+    //   ray[0], // start
+    //   ray[1], // end
+    //   m_pResources->cache_as<Texture>("white.png"), // tex
+    //   1.0f // width
+    //);
 
-    auto line = Mesh::line(
-       ray[0], // start
-       ray[1], // end
-       m_pResources->cache_as<Texture>("white.png"), // tex
-       1.0f // width
-    );
+    //// Line from vision origin to world origin
+    //auto lineptr = line.get();
+    //line->on_tick.connect([lineptr](Freq::Time t){
+    //    lineptr->detach();
+    //});
 
-    // Line from vision origin to world origin
-    auto lineptr = line.get();
-    line->on_tick.connect([lineptr](Freq::Time t){
-        lineptr->detach();
-    });
+    //m_pGame->root()->add(line);
 
-    m_pGame->root()->add(line);
-
-
-
-
-    // Gather list of all nodes
-    // auto nodes = m_pGame->root()->descendants();
-    // vector<shared_ptr<Node>> visible_nodes;
+    //// Gather list of all nodes
+    //// auto nodes = m_pGame->root()->descendants();
+    //// vector<shared_ptr<Node>> visible_nodes;
     
-    // int counter = 0;
-    // for (auto&& node: nodes) {
-    //     if (node->visible()) {
-    //         visible_nodes.push_back(node->as_node());
-    //         counter++;
-    //     }
-    // }
+    //// int counter = 0;
+    //// for (auto&& node: nodes) {
+    ////     if (node->visible()) {
+    ////         visible_nodes.push_back(node->as_node());
+    ////         counter++;
+    ////     }
+    //// }
 
-    // LOG(to_string(counter));
+    //// LOG(to_string(counter));
 }
 
 
