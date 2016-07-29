@@ -286,7 +286,8 @@ void Monster :: damage(int dmg) {
 void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
 
     if (m_MonsterID == Monster::WIZARD) {
-
+        if (not is_alive())
+            return;
         // Load fire sprite
         auto fire = make_shared<Sprite>(m_pResources->transform("fire.json"), m_pResources);
         fire->set_state("animated");
@@ -476,12 +477,17 @@ void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
 
 void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
     auto monster = monster_node->config()->at<Monster*>("monster", nullptr);
-
+    auto player = player_node->config()->at<Player*>("player", nullptr);
+    
     if (not monster)
         return;
-
-    if (monster->is_alive())
-        monster->m_pGame->reset();
+    else if (player->is_god() || player->no_enemy_damage()) // 29 July 2016 - KG: Added God Mode
+        return;
+    else {
+        if (monster->is_alive()) {
+            monster->m_pGame->reset();
+        }
+    }
 }
 
 

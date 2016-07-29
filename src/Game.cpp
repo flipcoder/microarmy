@@ -630,8 +630,13 @@ void Game :: cb_to_tile(Node* a, Node* b) {
 
 void Game :: cb_to_fatal(Node* a, Node* b) {
     Sound::play(m_pCamera.get(), "die.wav", m_pResources);
-    reset();
-    m_pChar->velocity(glm::vec3(0.0f));
+    // 29 July 2016 - KG: Added God Mode
+    for (auto&& Player: m_Players) {
+        if (not Player->is_god() && not Player->no_fatal_objects()) {
+            reset();
+            m_pChar->velocity(glm::vec3(0.0f));
+        }
+    }
 }
 
 

@@ -7,6 +7,9 @@
             "left": "left",
             "right": "right",
             "down": "down",
+            "8": "NoEnemyDamage",
+            "9": "NoFatalObjects",
+            "0": "God",
             "z": [
                 "shoot",
                 "back"

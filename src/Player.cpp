@@ -92,6 +92,15 @@ void Player :: logic_self(Freq::Time t) {
             move += glm::vec3(1.0f, 0.0f, 0.0f);
         }
     }
+    // 29 July 2016 - KG: Added buttons for God Mode. See "default.json" in profiles to change buttons
+    if (m_pController->button("NoEnemyDamage").pressed_now())
+        m_NoEnemyDamage = !m_NoEnemyDamage;
+    
+    if (m_pController->button("NoFatalObjects").pressed_now())
+        m_NoFatalObjects = !m_NoFatalObjects;
+    
+    if (m_pController->button("God").pressed_now())
+        m_GodMode = !m_GodMode;
 
     if (m_pController->button("shoot") && m_ShootTimer.elapsed())
         shoot();
@@ -314,6 +323,10 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
 
     // bullet owner is a player, ignore
     if (bullet->config()->has("player"))
+        return;
+    
+    // 29 July 2016 - KG: Added God Mode
+    if (player->is_god() || player->no_enemy_damage())
         return;
 
     player->reset();
