@@ -481,7 +481,7 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
     
     if (not monster)
         return;
-    else if (player->is_god() || player->no_enemy_damage()) // 29 July 2016 - KG: Added God Mode
+    else if (player->god() || player->no_enemy_damage()) // 29 July 2016 - KG: Added God Mode
         return;
     else {
         if (monster->is_alive()) {

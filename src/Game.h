@@ -60,7 +60,6 @@ class Game: public State {
         virtual bool needs_load() const override { return true; }
         virtual std::shared_ptr<Node> root() override { return m_pRoot; }
 
-
         // Setup methods
         void setup_player(std::shared_ptr<Player> player);
         void setup_thing(std::shared_ptr<Thing> thing);
@@ -73,6 +72,7 @@ class Game: public State {
         void reset();
         std::vector<Node*> get_static_collisions(Node* a);
         std::vector<std::shared_ptr<Player>>& players() { return m_Players; }
+        void checkpoint(Node* chk);
 
 
         // Callbacks
@@ -82,7 +82,7 @@ class Game: public State {
         void cb_to_fatal(Node* a, Node* b);
         void cb_thing(Node* a, Node* b);
         void cb_bullet_to_static(Node* a, Node* b);
-
+        
 
     private:
         // Variables
@@ -95,8 +95,8 @@ class Game: public State {
         std::vector<std::shared_ptr<Monster>> m_Monsters;   
         std::vector<std::shared_ptr<Player>> m_Players;
         std::vector<ParallaxLayer> m_ParallaxLayers;
-        std::vector<MapTile*> m_Spawns;
-        std::vector<MapTile*> m_AltSpawns;
+        std::vector<Node*> m_Spawns;
+        std::vector<Node*> m_AltSpawns;
 
 
         // Pointers

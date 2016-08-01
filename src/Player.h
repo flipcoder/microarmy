@@ -30,11 +30,11 @@ class Player: public Sprite {
 
 
         // Getters
-        std::shared_ptr<Node> focus_right() { return m_pCharFocusRight; };
-        std::shared_ptr<Node> focus_left() { return m_pCharFocusLeft; };
-        bool is_god() { return m_GodMode; }
-        bool no_enemy_damage() { return m_NoEnemyDamage; }
-        bool no_fatal_objects() { return m_NoFatalObjects; }
+        std::shared_ptr<Node> focus_right() { return m_pCharFocusRight; }
+        std::shared_ptr<Node> focus_left() { return m_pCharFocusLeft; }
+        bool god() const { return m_GodMode; }
+        bool no_enemy_damage() const { return m_NoEnemyDamage; }
+        bool no_fatal_objects() const { return m_NoFatalObjects; }
         
 
         // Methods
@@ -42,6 +42,7 @@ class Player: public Sprite {
         void reset_walljump();
         void shoot();
         void battery(int b) { m_Power += b; }
+        void god(bool b) { m_GodMode = b; }
         void reset();
         
 

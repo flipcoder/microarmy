@@ -60,6 +60,8 @@
     },
     "17,0": {
         "name": "duck"
+    },
+    "18,0": {
+        "name": "checkpoint"
     }
-
 }

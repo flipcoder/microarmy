@@ -322,7 +322,7 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
         return;
     
     // 29 July 2016 - KG: Added God Mode
-    if (player->is_god() || player->no_enemy_damage())
+    if (player->god() || player->no_enemy_damage())
         return;
 
     player->reset();
