@@ -3,10 +3,10 @@
     "sensitivity": 0.5,
     "input": {
         "binds": {
-            "up": "up",
-            "left": "left",
-            "right": "right",
-            "down": "down",
+            "w": "up",
+            "a": "left",
+            "d": "right",
+            "s": "down",
             "8": "NoEnemyDamage",
             "9": "NoFatalObjects",
             "0": "God",
@@ -17,7 +17,11 @@
             "x": [
                 "jump",
                 "select"
-            ]
+            ],
+            "up": "aimup",
+            "down": "aimdown",
+            "left": "aimleft",
+            "right": "aimright"
         }
     }
 }

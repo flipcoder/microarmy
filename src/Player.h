@@ -40,7 +40,8 @@ class Player: public Sprite {
         // Methods
         void enter();
         void reset_walljump();
-        void shoot();
+        void shoot(glm::vec2 dir);
+        void face(glm::vec2 dir);
         void battery(int b) { m_Power += b; }
         void god(bool b) { m_GodMode = b; }
         void reset();

@@ -146,19 +146,19 @@ unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
 }
 
 void Thing :: cb_touch_player(Node* player_node, Node* thing_node) {
-    auto thing = (Thing*)thing_node;
-    auto player = (Player*)player_node->parent();
-    if (thing->id() == Thing::CHECKPOINT) {
-       player->god(true);
-    }
+//    auto thing = (Thing*)thing_node;
+//    auto player = (Player*)player_node->parent();
+//    if (thing->id() == Thing::CHECKPOINT) {
+//       player->god(true);
+//    }
 }
 
 void Thing :: cb_untouch_player(Node* player_node, Node* thing_node) {
-    auto thing = (Thing*) thing_node;
-    auto player = (Player*)player_node->parent();
-    if (thing->id() == Thing::CHECKPOINT) {
-       player->god(false);
-    }
+    //auto thing = (Thing*) thing_node;
+    //auto player = (Player*)player_node->parent();
+    //if (thing->id() == Thing::CHECKPOINT) {
+    //   player->god(false);
+    //}
 }
 
 void Thing :: cb_to_player(Node* player_node, Node* thing_node) {

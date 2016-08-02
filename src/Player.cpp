@@ -102,11 +102,20 @@ void Player :: logic_self(Freq::Time t) {
     if (m_pController->button("God").pressed_now())
         m_GodMode = !m_GodMode;
 
-    if (m_pController->button("shoot") && m_ShootTimer.elapsed())
-        shoot();
-        
+    // aim+shoot logic
+    float xpres = m_pController->button("aimright").pressure() -
+        m_pController->button("aimleft").pressure();
+    float ypres = m_pController->button("aimdown").pressure() -
+        m_pController->button("aimup").pressure();
+    if(std::abs(xpres) > 0.25f || std::abs(ypres) > 0.25f){
+        vec2 dir = glm::normalize(vec2(xpres,ypres));
+        face(dir);
+        if(m_ShootTimer.elapsed())
+            shoot(dir);
+    }
+    
     bool block_jump = false;
-    if (m_pController->button("jump")) {
+    if (m_pController->button("up") || m_pController->button("jump")) {
         
         if (walljump || not in_air || not m_JumpTimer.elapsed()) {
             float x = 0.0f;
@@ -184,21 +193,21 @@ void Player :: logic_self(Freq::Time t) {
         snapshot();
     }
 
-    if (m_pController->button("left") or m_pController->button("right")) {
-        if (m_pController->button("up"))
-            set_state("upward");
-        else if(m_pController->button("down"))
-            set_state("downward");
-        else
-            set_state("forward");
-    } else {
-        if (m_pController->button("up"))
-            set_state("up");
-        else if (m_pController->button("down"))
-            set_state("down");
-        else
-            set_state("forward");
-    }
+    //if (m_pController->button("left") || m_pController->button("right")) {
+    //    if (m_pController->button("up"))
+    //        set_state("upward");
+    //    else if(m_pController->button("down"))
+    //        set_state("downward");
+    //    else
+    //        set_state("forward");
+    //} else {
+    //    if (m_pController->button("up"))
+    //        set_state("up");
+    //    else if (m_pController->button("down"))
+    //        set_state("down");
+    //    else
+    //        set_state("forward");
+    //}
 
     ////////// RAY CASTING TEST //////////
 
@@ -250,8 +259,42 @@ void Player :: logic_self(Freq::Time t) {
     //// LOG(to_string(counter));
 }
 
+// face a direction
+void Player :: face(glm::vec2 dir) {
 
-void Player :: shoot() {
+    auto ang = atan2(dir.y, dir.x) / K_TAU;
+
+    // I don't want negatives
+    if(ang<=0.0f)
+        ang+=1.0f;
+    
+    if(ang >= -1.0f/16.0f && ang <= 1.0f/16.0f){
+        set_state("right");
+        set_state("forward");
+    }else if(ang >= 1.0f/8.0f - 1.0f/16.0f && ang <= 1.0f/8.0f + 1.0f/16.0f){
+        set_state("downward");
+        set_state("right");
+    }else if(ang >= 2.0f/8.0f - 1.0f/16.0f && ang <= 2.0f/8.0f + 1.0f/16.0f)
+        set_state("down");
+    else if(ang >= 3.0f/8.0f - 1.0f/16.0f && ang <= 3.0f/8.0f + 1.0f/16.0f){
+        set_state("downward");
+        set_state("left");
+    }else if(ang >= 4.0f/8.0f - 1.0f/16.0f && ang <= 4.0f/8.0f + 1.0f/16.0f){
+        set_state("left");
+        set_state("forward");
+    }else if(ang >= 5.0f/8.0f - 1.0f/16.0f && ang <= 5.0f/8.0f + 1.0f/16.0f){
+        set_state("upward");
+        set_state("left");
+    }else if(ang >= 6.0f/8.0f - 1.0f/16.0f && ang <= 6.0f/8.0f + 1.0f/16.0f)
+        set_state("up");
+    else if(ang >= 7.0f/8.0f - 1.0f/16.0f && ang <= 7.0f/8.0f + 1.0f/16.0f){
+        set_state("upward");
+        set_state("right");
+    }
+}
+
+void Player :: shoot(glm::vec2 dir) {
+    
     auto shot = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
         vector<shared_ptr<IMeshModifier>>{
@@ -276,17 +319,17 @@ void Player :: shoot() {
         position().z
     ));
 
-    vec3 aimdir = vec3(0.0f, 0.0f, 0.0f);
+    vec3 aimdir = vec3(dir, 0.0f);
 
-    if(not check_state("up") && not check_state("down"))
-        aimdir += check_state("left") ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f);
+    //if(not check_state("up") && not check_state("down"))
+    //    aimdir += check_state("left") ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f);
 
-    if(check_state("up") || check_state("upward"))
-        aimdir += vec3(0.0f, -1.0f, 0.0f);
+    //if(check_state("up") || check_state("upward"))
+    //    aimdir += vec3(0.0f, -1.0f, 0.0f);
 
-    if(check_state("down") || check_state("downward"))
-        aimdir += vec3(0.0f, 1.0f, 0.0f);
-    aimdir = normalize(aimdir);
+    //if(check_state("down") || check_state("downward"))
+    //    aimdir += vec3(0.0f, 1.0f, 0.0f);
+    //aimdir = normalize(aimdir);
     
     auto ang = atan2(aimdir.y, aimdir.x) / K_TAU;
     shot->rotate(ang, glm::vec3(0.0f, 0.0f, 1.0f));
