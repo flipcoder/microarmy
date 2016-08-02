@@ -7,7 +7,7 @@
 
 class Game;
 
-class Player: public Sprite {
+class Player: public Node {
     public:
         // Constructor
         Player(
@@ -45,11 +45,12 @@ class Player: public Sprite {
         void battery(int b) { m_Power += b; }
         void god(bool b) { m_GodMode = b; }
         void reset();
-        
+        void prone(bool b);
 
         // Callbacks
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
+        Sprite* sprite() { return m_pChar.get(); }
         
     private:
         // Variables
@@ -60,10 +61,10 @@ class Player: public Sprite {
         bool m_GodMode = false; // NOTHING will kill player
         bool m_NoFatalObjects = false; // Only affects fatal objects (including Wizard's fire)
         bool m_NoEnemyDamage = false; // Only affects enemy overlap and bullets (but not Wizard's fire)
+        bool m_Prone = false;
 
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;
-
 
         // Pointers
         Game* m_pGame;
@@ -73,6 +74,8 @@ class Player: public Sprite {
         Freq::Timeline* m_pTimeline;
         Cache<Resource, std::string>* m_pResources;
 
+        std::shared_ptr<Sprite> m_pChar;
+        std::shared_ptr<Sprite> m_pProne;
         std::shared_ptr<Node> m_pCharFocusLeft;
         std::shared_ptr<Node> m_pCharFocusRight;
 };

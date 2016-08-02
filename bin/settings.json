@@ -1,7 +1,7 @@
 {
    "audio" : {
-      "music-volume" : 0,
-      "sound-volume" : 0,
+      "music-volume" : 100,
+      "sound-volume" : 100,
       "volume" : 100
    },
    "video" : {

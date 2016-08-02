@@ -16,7 +16,7 @@ Player :: Player(
     IPartitioner* part,
     Game* game
 ):
-    Sprite(fn, resources),
+    //Sprite(fn, resources),
     m_pTimeline(timeline),
     m_pResources(resources),
     m_JumpTimer(timeline),
@@ -26,14 +26,23 @@ Player :: Player(
     m_pPartitioner(part),
     m_pGame(game)
 {
-    set_states({"stand", "right", "forward"});
     //m_pCamera->position(glm::vec3(-64.0f, -64.0f, 0.0f));
     position(glm::vec3(0.0f, 0.0f, 1.0f));
 
+    m_pChar = make_shared<Sprite>(fn,resources);
+    m_pChar->config()->set<Player*>("player", this);
+    m_pChar->set_states({"stand", "right", "forward"});
+    
+    m_pProne = make_shared<Sprite>(resources->transform("guy-prone.json"),resources);
+    m_pProne->set_states({"right"});
+    m_pProne->visible(false);
+    
     m_pCharFocusRight = make_shared<Node>();
     m_pCharFocusRight->position(glm::vec3(32.0f, 0.0f, 0.0f));
     m_pCharFocusLeft = make_shared<Node>();
     m_pCharFocusLeft->position(glm::vec3(-32.0f, 0.0f, 0.0f));
+    add(m_pChar);
+    add(m_pProne);
     add(m_pCharFocusRight);
     add(m_pCharFocusLeft);
     m_JumpTimer.set(Freq::Time::ms(0));
@@ -52,7 +61,7 @@ void Player :: enter() {
 
 
 void Player :: logic_self(Freq::Time t) {
-    Sprite::logic_self(t);
+    Node::logic_self(t);
 
     auto feet_colliders = m_pGame->get_static_collisions(
         Node::find("feetmask").at(0)
@@ -76,9 +85,9 @@ void Player :: logic_self(Freq::Time t) {
     bool walljump = feet_colliders.empty() && not wall_colliders.empty();
 
     if (walljump)
-        set_state("walljump");
+        m_pChar->set_state("walljump");
     else if (in_air)
-        set_state("jump");
+        m_pChar->set_state("jump");
     
     glm::vec3 move(0.0f);
 
@@ -115,7 +124,7 @@ void Player :: logic_self(Freq::Time t) {
     }
     
     bool block_jump = false;
-    if (m_pController->button("up") || m_pController->button("jump")) {
+    if (m_pController->button("up").pressure()>0.8f || m_pController->button("jump")) {
         
         if (walljump || not in_air || not m_JumpTimer.elapsed()) {
             float x = 0.0f;
@@ -138,10 +147,10 @@ void Player :: logic_self(Freq::Time t) {
         
             // jumping from floor or from a different wall
             if (not block_jump) {
-                if (not in_air or walljump or not m_JumpTimer.elapsed()) {
+                if (not in_air || walljump || not m_JumpTimer.elapsed()) {
                     velocity(glm::vec3(x, -125.0f, 0.0f));
 
-                    if (not in_air or walljump) {
+                    if (not in_air || walljump) {
                         auto sounds = m_pCamera->find_type<Sound>();
 
                         if(sounds.empty())
@@ -169,15 +178,15 @@ void Player :: logic_self(Freq::Time t) {
 
     if (glm::length(move) > K_EPSILON) {
         if (not in_air)
-            set_state("walk");
+            m_pChar->set_state("walk");
 
         move = glm::normalize(move);
 
         if (move.x < -K_EPSILON){
-            set_state("left");
+            m_pChar->set_state("left");
         }
         else if (move.x > K_EPSILON){
-            set_state("right");
+            m_pChar->set_state("right");
         }
 
         move *= 100.0f * t.s();
@@ -187,26 +196,28 @@ void Player :: logic_self(Freq::Time t) {
     }
     else {
         if (not in_air)
-            set_state("stand");
+            m_pChar->set_state("stand");
 
         clear_snapshots();
         snapshot();
     }
 
+    prone(m_pController->button("down").pressure() > 0.8f);
+
     //if (m_pController->button("left") || m_pController->button("right")) {
     //    if (m_pController->button("up"))
-    //        set_state("upward");
+    //        m_pChar->set_state("upward");
     //    else if(m_pController->button("down"))
-    //        set_state("downward");
+    //        m_pChar->set_state("downward");
     //    else
-    //        set_state("forward");
+    //        m_pChar->set_state("forward");
     //} else {
     //    if (m_pController->button("up"))
-    //        set_state("up");
+    //        m_pChar->set_state("up");
     //    else if (m_pController->button("down"))
-    //        set_state("down");
+    //        m_pChar->set_state("down");
     //    else
-    //        set_state("forward");
+    //        m_pChar->set_state("forward");
     //}
 
     ////////// RAY CASTING TEST //////////
@@ -269,27 +280,27 @@ void Player :: face(glm::vec2 dir) {
         ang+=1.0f;
     
     if(ang >= -1.0f/16.0f && ang <= 1.0f/16.0f){
-        set_state("right");
-        set_state("forward");
+        m_pChar->set_state("right");
+        m_pChar->set_state("forward");
     }else if(ang >= 1.0f/8.0f - 1.0f/16.0f && ang <= 1.0f/8.0f + 1.0f/16.0f){
-        set_state("downward");
-        set_state("right");
+        m_pChar->set_state("downward");
+        m_pChar->set_state("right");
     }else if(ang >= 2.0f/8.0f - 1.0f/16.0f && ang <= 2.0f/8.0f + 1.0f/16.0f)
-        set_state("down");
+        m_pChar->set_state("down");
     else if(ang >= 3.0f/8.0f - 1.0f/16.0f && ang <= 3.0f/8.0f + 1.0f/16.0f){
-        set_state("downward");
-        set_state("left");
+        m_pChar->set_state("downward");
+        m_pChar->set_state("left");
     }else if(ang >= 4.0f/8.0f - 1.0f/16.0f && ang <= 4.0f/8.0f + 1.0f/16.0f){
-        set_state("left");
-        set_state("forward");
+        m_pChar->set_state("left");
+        m_pChar->set_state("forward");
     }else if(ang >= 5.0f/8.0f - 1.0f/16.0f && ang <= 5.0f/8.0f + 1.0f/16.0f){
-        set_state("upward");
-        set_state("left");
+        m_pChar->set_state("upward");
+        m_pChar->set_state("left");
     }else if(ang >= 6.0f/8.0f - 1.0f/16.0f && ang <= 6.0f/8.0f + 1.0f/16.0f)
-        set_state("up");
+        m_pChar->set_state("up");
     else if(ang >= 7.0f/8.0f - 1.0f/16.0f && ang <= 7.0f/8.0f + 1.0f/16.0f){
-        set_state("upward");
-        set_state("right");
+        m_pChar->set_state("upward");
+        m_pChar->set_state("right");
     }
 }
 
@@ -311,11 +322,11 @@ void Player :: shoot(glm::vec2 dir) {
 
     shot->position(glm::vec3(
         position().x +
-        -origin().x*size().x +
-            mesh()->world_box().size().x / 2.0f,
+        -m_pChar->origin().x * m_pChar->size().x +
+            m_pChar->mesh()->world_box().size().x / 2.0f,
         position().y +
-            -origin().y*size().y +
-            mesh()->world_box().size().y / 2.0f + -2.0f,
+            -m_pChar->origin().y * m_pChar->size().y +
+            m_pChar->mesh()->world_box().size().y / 2.0f + -2.0f,
         position().z
     ));
 
@@ -377,5 +388,19 @@ void Player :: reset() {
 
 void Player :: reset_walljump() {
     m_LastWallJumpDir = 0;
+}
+
+void Player :: prone(bool b) {
+    if(m_Prone == b)
+        return;
+    m_Prone = b;
+    
+    if(m_pChar->check_state("left"))
+        m_pProne->set_state("left");
+    else
+        m_pProne->set_state("right");
+    
+    m_pProne->visible(b);
+    m_pChar->visible(not b);
 }
 
