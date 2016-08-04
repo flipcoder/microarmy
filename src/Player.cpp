@@ -354,7 +354,7 @@ void Player :: shoot(glm::vec2 dir) {
     
     Sound::play(m_pCamera, "shoot.wav", m_pResources);
 
-    m_ShootTimer.set(Freq::Time::ms(m_Power == 0 ? 200 : 100));
+    m_ShootTimer.set(Freq::Time::ms(m_Battery == 0 ? 200 : 100));
     
     // increase box Z width
     auto shotbox = shot->box();
@@ -393,6 +393,10 @@ void Player :: reset_walljump() {
 void Player :: prone(bool b) {
     if(m_Prone == b)
         return;
+
+    if(b && std::abs(velocity().x) > K_EPSILON)
+        return;
+    
     m_Prone = b;
     
     if(m_pChar->check_state("left"))

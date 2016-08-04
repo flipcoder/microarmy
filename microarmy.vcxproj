@@ -82,7 +82,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>RakNet_VS2008_LibStatic_Debug_Win32.lib;lib_json.lib;ws2_32.lib;glibmm-vc100-2_4.lib;cairomm-vc100-1_0.lib;pangomm-vc100-1_4.lib;SDL2main.lib;OpenGL32.lib;GLU32.lib;SDL2.lib;GLEW32.lib;assimp.lib;freeimage.lib;openal32.lib;alut.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;boost_system-vc140-mt-1_61.lib;boost_thread-vc140-mt-1_61.lib;boost_filesystem-vc140-mt-1_61.lib;boost_python-vc140-mt-1_61.lib;boost_coroutine-vc140-mt-1_61.lib;boost_regex-vc140-mt-1_61.lib;BulletSoftBody_vs2010.lib;BulletDynamics_vs2010.lib;BulletCollision_vs2010.lib;LinearMath_vs2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RakNet_VS2008_LibStatic_Debug_Win32.lib;lib_json.lib;ws2_32.lib;glibmm-vc100-2_4.lib;cairomm-vc100-1_0.lib;pangomm-vc100-1_4.lib;SDL2main.lib;OpenGL32.lib;GLU32.lib;SDL2.lib;GLEW32.lib;assimp.lib;freeimage.lib;openal32.lib;alut.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;boost_system-vc140-mt-1_61.lib;boost_thread-vc140-mt-1_61.lib;libboost_filesystem-vc140-mt-gd-1_61.lib;boost_python-vc140-mt-1_61.lib;boost_coroutine-vc140-mt-1_61.lib;boost_regex-vc140-mt-1_61.lib;BulletSoftBody_vs2010.lib;BulletDynamics_vs2010.lib;BulletCollision_vs2010.lib;LinearMath_vs2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)microarmy.exe</OutputFile>
       <AdditionalLibraryDirectories>\usr\local\lib;\usr\local\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>

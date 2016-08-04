@@ -35,14 +35,14 @@ class Player: public Node {
         bool god() const { return m_GodMode; }
         bool no_enemy_damage() const { return m_NoEnemyDamage; }
         bool no_fatal_objects() const { return m_NoFatalObjects; }
-        
+        bool prone() const { return m_Prone; }
 
         // Methods
         void enter();
         void reset_walljump();
         void shoot(glm::vec2 dir);
         void face(glm::vec2 dir);
-        void battery(int b) { m_Power += b; }
+        void battery(int b) { m_Battery += b; }
         void god(bool b) { m_GodMode = b; }
         void reset();
         void prone(bool b);
@@ -54,7 +54,7 @@ class Player: public Node {
         
     private:
         // Variables
-        unsigned m_Power = 0;
+        unsigned m_Battery = 0;
         int m_LastWallJumpDir = 0;
         bool m_WasInAir = false;
         // 28 July 2016 - KG: Added God Mode variables
