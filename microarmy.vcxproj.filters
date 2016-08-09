@@ -2,58 +2,58 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{D702405C-4890-404C-B06C-2B73F399F7AF}</UniqueIdentifier>
+      <UniqueIdentifier>{04DCE3DD-4126-9047-A844-255EA7FD0E22}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib">
-      <UniqueIdentifier>{A99274F0-5316-7949-86BE-3B648ED02CDF}</UniqueIdentifier>
+      <UniqueIdentifier>{5CB36C68-EFF9-E44A-B27F-F7B74F8347D5}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor">
-      <UniqueIdentifier>{8C2E0A62-939D-9D4F-BA31-AF3F9BA5A637}</UniqueIdentifier>
+      <UniqueIdentifier>{49D64900-ADFA-4046-B096-DBB39844093B}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\Qor">
-      <UniqueIdentifier>{87421CDF-4E64-B442-ACA9-B9EB4D539018}</UniqueIdentifier>
+      <UniqueIdentifier>{14610D70-9041-E548-8F75-FB48FD854D6D}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib">
-      <UniqueIdentifier>{5C7A5085-E300-AD4E-B1F9-D2BA57C8EA99}</UniqueIdentifier>
+      <UniqueIdentifier>{98B56FE0-CCEB-9F49-979D-66456711FCAE}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit">
-      <UniqueIdentifier>{14A2B1F1-4C3D-834E-B3D4-81918A9A42DA}</UniqueIdentifier>
+      <UniqueIdentifier>{007ECA96-BFE6-3B48-954E-0F3050E55C4C}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit">
-      <UniqueIdentifier>{4CE9F128-F60B-874A-B178-CED134F0800B}</UniqueIdentifier>
+      <UniqueIdentifier>{005CEA33-4AB0-314B-9C8C-2856E2F894F7}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\args">
-      <UniqueIdentifier>{B62B0057-2A89-9348-8DCE-43ADFB322B1C}</UniqueIdentifier>
+      <UniqueIdentifier>{45BF20E1-2464-7C4C-9BB1-EAB94445D2EC}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\async">
-      <UniqueIdentifier>{022D311D-0F23-1C44-B312-324A89E74810}</UniqueIdentifier>
+      <UniqueIdentifier>{431D9C19-01E6-0948-BE34-2126FCDF3E34}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\cache">
-      <UniqueIdentifier>{81C76C03-2042-054A-94C9-12B29639B4C7}</UniqueIdentifier>
+      <UniqueIdentifier>{2C1F089C-CD97-6F46-A7AF-97788739905C}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\factory">
-      <UniqueIdentifier>{BE219FF0-7555-B54D-A480-F16CE0608B43}</UniqueIdentifier>
+      <UniqueIdentifier>{38B641FD-FFC0-794A-8AC3-28EA030CA678}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\freq">
-      <UniqueIdentifier>{EB2A8465-3E0A-5A4A-8184-49BFE11B3DFD}</UniqueIdentifier>
+      <UniqueIdentifier>{CA6E0DF2-91C8-B64C-A329-07BBAD01D325}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\fs">
-      <UniqueIdentifier>{E7B2773F-E7DB-9544-A7AF-2D5BCCFAF888}</UniqueIdentifier>
+      <UniqueIdentifier>{8DBFE1E3-6E94-A746-997D-65EBA904DEAF}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\log">
-      <UniqueIdentifier>{E29993A7-56AA-C74F-96B6-60F2DE05BA3B}</UniqueIdentifier>
+      <UniqueIdentifier>{A0470B77-226A-0741-A3A8-3AD9E416FE6F}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\math">
-      <UniqueIdentifier>{C8E031AA-2522-AA41-A13C-372FAFF50696}</UniqueIdentifier>
+      <UniqueIdentifier>{4B1E12CD-0C14-7446-A596-D5942C250EAC}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\meta">
-      <UniqueIdentifier>{49A43232-109F-7542-A10B-731B0DB9BEF2}</UniqueIdentifier>
+      <UniqueIdentifier>{F52B409F-AA73-F943-BB8F-B0564A0E64FD}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\net">
-      <UniqueIdentifier>{BD331CBC-44E3-3448-AD6F-CC49061D608D}</UniqueIdentifier>
+      <UniqueIdentifier>{289C61A3-BB5F-E040-85EB-476BA1971512}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\reactive">
-      <UniqueIdentifier>{78970AEB-B204-3A49-8AF7-2DE9CFFC87A9}</UniqueIdentifier>
+      <UniqueIdentifier>{D1C64C9A-A7FC-6046-889C-47258DDE4847}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

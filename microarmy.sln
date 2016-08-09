@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "microarmy", "microarmy.vcxproj", "{5F99BE76-AA15-4D42-AE71-575CC5CDDDB3}"
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "microarmy", "microarmy.vcxproj", "{D09068A3-4F12-004C-BAD6-05D17FD17606}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test.vcxproj", "{DA620B0C-665B-E049-AFDE-82992AB05A42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5F99BE76-AA15-4D42-AE71-575CC5CDDDB3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5F99BE76-AA15-4D42-AE71-575CC5CDDDB3}.Debug|Win32.Build.0 = Debug|Win32
-		{5F99BE76-AA15-4D42-AE71-575CC5CDDDB3}.Release|Win32.ActiveCfg = Release|Win32
-		{5F99BE76-AA15-4D42-AE71-575CC5CDDDB3}.Release|Win32.Build.0 = Release|Win32
+		{D09068A3-4F12-004C-BAD6-05D17FD17606}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D09068A3-4F12-004C-BAD6-05D17FD17606}.Debug|Win32.Build.0 = Debug|Win32
+		{D09068A3-4F12-004C-BAD6-05D17FD17606}.Release|Win32.ActiveCfg = Release|Win32
+		{D09068A3-4F12-004C-BAD6-05D17FD17606}.Release|Win32.Build.0 = Release|Win32
+		{DA620B0C-665B-E049-AFDE-82992AB05A42}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DA620B0C-665B-E049-AFDE-82992AB05A42}.Debug|Win32.Build.0 = Debug|Win32
+		{DA620B0C-665B-E049-AFDE-82992AB05A42}.Release|Win32.ActiveCfg = Release|Win32
+		{DA620B0C-665B-E049-AFDE-82992AB05A42}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
