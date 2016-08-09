@@ -143,12 +143,13 @@ solution("microarmy")
                 -- "/Gm-",
             -- }
             
-            configuration { "Debug" }
+            configuration { "windows", "Debug" }
                 links {
                     "libboost_filesystem-vc140-mt-gd-1_61",
                     "RakNet_VS2008_LibStatic_Debug_Win32",
                 }
-            configuration { "Release" }
+            configuration {}
+            configuration { "windows", "Release" }
                 links {
                     "libboost_filesystem-vc140-mt-1_61",
                     "RakNet_VS2008_LibStatic_Release_Win32",
