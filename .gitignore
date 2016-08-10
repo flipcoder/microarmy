@@ -4,3 +4,6 @@ src/Qor
 obj
 bin/microarmy
 test.make
+*.vcxproj
+*.vcxproj.*
+*.sln
