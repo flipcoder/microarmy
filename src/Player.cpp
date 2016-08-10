@@ -212,11 +212,16 @@ void Player :: logic_self(Freq::Time t) {
 
     vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
 
+    // Computing pixel size difference between object space and world space for width
+    auto world_vec = this->to_world(vec3(1.0f, 1.0f, 0.0f));
+
+    LOGf("Player Origin: %s", Vector::to_string(world_vec));
+
     auto line = Mesh::line(
        ray[0], // start
        ray[1], // end
        m_pResources->cache_as<Texture>("white.png"), // tex
-       1.0f // width
+       1.0f// width
     );
 
     // Line from vision origin to world origin
@@ -231,18 +236,15 @@ void Player :: logic_self(Freq::Time t) {
 
 
     // Gather list of all nodes
-    // auto nodes = m_pGame->root()->descendants();
-    // vector<shared_ptr<Node>> visible_nodes;
+    auto visible_nodes = m_pGame->vnodes();
+    // vector<const Node*> visible_nodes;
     
-    // int counter = 0;
-    // for (auto&& node: nodes) {
-    //     if (node->visible()) {
-    //         visible_nodes.push_back(node->as_node());
-    //         counter++;
-    //     }
-    // }
+    int counter = 0;
+    for (auto&& node: visible_nodes) {
+        counter++;
+    }
 
-    // LOG(to_string(counter));
+    LOG(to_string(counter));
 }
 
 
