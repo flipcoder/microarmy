@@ -19,6 +19,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     // objects
     "spring",
     "door",
+    "checkpoint",
 
     "light",
 });
@@ -144,6 +145,21 @@ unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
     return std::distance(s_TypeNames.begin(), itr);
 }
 
+void Thing :: cb_touch_player(Node* player_node, Node* thing_node) {
+//    auto thing = (Thing*)thing_node;
+//    auto player = (Player*)player_node->parent();
+//    if (thing->id() == Thing::CHECKPOINT) {
+//       player->god(true);
+//    }
+}
+
+void Thing :: cb_untouch_player(Node* player_node, Node* thing_node) {
+    //auto thing = (Thing*) thing_node;
+    //auto player = (Player*)player_node->parent();
+    //if (thing->id() == Thing::CHECKPOINT) {
+    //   player->god(false);
+    //}
+}
 
 void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     auto thing = (Thing*) thing_node;
@@ -258,6 +274,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
                 thing->m_pGame->event("stardoor");
             }
         }
+    } else if (thing->id() == Thing::CHECKPOINT) {
+       thing->m_pGame->checkpoint(thing->m_pPlaceholder);
     }
 }
 

@@ -263,13 +263,10 @@ void Game :: preload() {
 
                         obj->mesh()->add(n);
 
-                        if (obj_cfg->has("fatal")) {
-                            obj_cfg->set<string>("fatal", "");
-                        }
-
-                        else if (obj_cfg->has("ledge"))
-                            obj_cfg->set<string>("ledge", "");
-                        else {
+                        if (
+                            not obj_cfg->has("fatal") &&
+                            not obj_cfg->has("ledge")
+                        ){
                             obj_cfg->set<string>("static", "");
                         }
                     }
@@ -377,7 +374,11 @@ void Game :: preload() {
         THING, BULLET, std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, THING, std::bind(&Thing::cb_to_player, _::_1, _::_2)
+        CHARACTER, THING,
+        std::bind(&Thing::cb_to_player, _::_1, _::_2),
+        std::function<void(Node*, Node*)>(), // no nocol func
+        std::bind(&Thing::cb_touch_player, _::_1, _::_2),
+        std::bind(&Thing::cb_untouch_player, _::_1, _::_2)
     );
     
     m_pPartitioner->on_collision(
@@ -626,8 +627,13 @@ void Game :: cb_to_tile(Node* a, Node* b) {
 
 void Game :: cb_to_fatal(Node* a, Node* b) {
     Sound::play(m_pCamera.get(), "die.wav", m_pResources);
-    reset();
-    m_pChar->velocity(glm::vec3(0.0f));
+    // 29 July 2016 - KG: Added God Mode
+    for (auto&& Player: m_Players) {
+        if (not Player->god() && not Player->no_fatal_objects()) {
+            reset();
+            m_pChar->velocity(glm::vec3(0.0f));
+        }
+    }
 }
 
 
@@ -702,3 +708,10 @@ void Game :: render() const {
     m_pPipeline->winding(true);
     m_pPipeline->render(m_pOrthoRoot.get(), m_pOrthoCamera.get(), nullptr, Pipeline::NO_CLEAR | Pipeline::NO_DEPTH);
 }
+
+void Game :: checkpoint(Node* chk)
+{
+    m_Spawns.clear();
+    m_Spawns.push_back(chk);
+}
+

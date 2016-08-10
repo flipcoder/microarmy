@@ -1,7 +1,0 @@
-#!/bin/bash
-
-rm Makefile
-rm microarmy.make
-
-premake4 gmake
-make microarmy -j`nproc`

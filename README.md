@@ -16,9 +16,11 @@ Copyright &copy; 2016 Grady O'Connell
 
 No binary releases yet!  Check back soon!
 
-### Build Scripts
+### Build Instructions
 
-[ArchLinux, Antergos, Manjaro, etc.](https://gist.github.com/flipcoder/041e534a1aa482ff1fd5cece57052f92)
+[Windows Build Instructions](https://gist.github.com/flipcoder/087cdef35acd1fa3da8e18894b3b305b)
+
+[Script for ArchLinux, Antergos, Manjaro, etc.](https://gist.github.com/flipcoder/041e534a1aa482ff1fd5cece57052f92)
 
 ### Manual Installation
 

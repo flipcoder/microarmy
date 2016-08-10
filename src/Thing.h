@@ -25,6 +25,7 @@ class Thing: public Node {
             OBJECTS = ITEMS_END,
                 SPRING = OBJECTS,
                 DOOR,
+                CHECKPOINT,
             OBJECTS_END,
             
             MARKERS = OBJECTS_END,
@@ -89,6 +90,8 @@ class Thing: public Node {
         static void cb_to_bullet(Node* thing_node, Node* bullet);
         static void cb_to_static(Node* thing_node, Node* static_node);
         static void cb_to_player(Node* player_node, Node* thing_node);
+        static void cb_touch_player(Node* player_node, Node* thing_node);
+        static void cb_untouch_player(Node* player_node, Node* thing_node);
 
 
     private:
