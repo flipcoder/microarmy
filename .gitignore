@@ -1,9 +1,6 @@
 Makefile
-microarmy.make
 src/Qor
 obj
 bin/microarmy
 test.make
-*.vcxproj
-*.vcxproj.*
-*.sln
+microarmy_test.make
