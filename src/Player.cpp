@@ -242,7 +242,7 @@ void Player :: logic_self(Freq::Time t) {
     // Computing pixel size difference between object space and world space for width
     auto world_vec = this->to_world(vec3(1.0f, 1.0f, 0.0f));
 
-    LOGf("Player Origin: %s", Vector::to_string(world_vec));
+    //LOGf("Player Origin: %s", Vector::to_string(world_vec));
 
     auto line = Mesh::line(
        ray[0], // start
