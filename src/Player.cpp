@@ -204,26 +204,26 @@ void Player :: logic_self(Freq::Time t) {
 
     if (m_pController->button("left") or m_pController->button("right")) {
         if (m_pController->button("up"))
-            set_state("upward");
+            m_pChar->set_state("upward");
         else if(m_pController->button("down"))
-            set_state("downward");
+            m_pChar->set_state("downward");
         else
-            set_state("forward");
+            m_pChar->set_state("forward");
     } else {
         if (m_pController->button("up"))
-            set_state("up");
+            m_pChar->set_state("up");
         else if (m_pController->button("down"))
-            set_state("down");
+            m_pChar->set_state("down");
         else
-            set_state("forward");
+            m_pChar->set_state("forward");
     }
 
 
     //////// RAY CASTING CODE //////////
 
     // Get player vision origin
-    auto orig = this->origin();
-    auto vorig = this->vorigin();
+    auto orig = m_pChar->origin();
+    auto vorig = m_pChar->vorigin();
     auto s = vec2(this->size());
 
     auto vorig_object = (vorig - orig) * s;

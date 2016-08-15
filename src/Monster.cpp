@@ -381,10 +381,10 @@ void Monster :: gib() {
     stick(gib);
 
     // Sets gib size and movement
-    gib->move(vec3(rand() % 16 - 8.0f, rand() % 32 - 16.0f, 2.0f));
+    gib->move(vec3(rand() % 100 - 50.0f, rand() % 200 - 100.0f, 2.0f));
     gib->velocity(vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(vec3(0.0f, 500.0f, 0.0f));
-    gib->scale(rand() % 100 / 100.0f * 0.5f);
+    gib->scale((rand() % 100 + 1) / 100.0f * 0.5f);
 
     // Creates random gib lifetime
     auto lifetime = make_shared<float>(0.5f * (rand() % 4));
@@ -426,7 +426,7 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
         if (hp_before > hp_after) {
 
             // Generate blood splatter when hit
-            auto gibs = monster->m_Dying ? 5 : 20;
+            auto gibs = monster->m_Dying ? 20 : 5;
             for (int i = 0; i < gibs; ++i)
                 monster->gib();
 

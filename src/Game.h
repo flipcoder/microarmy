@@ -99,7 +99,8 @@ class Game: public State {
 
         std::vector<Node*> m_Spawns;
         std::vector<Node*> m_AltSpawns;
-
+        
+        std::vector<const Node*> m_VisibleNodes;
 
         // Pointers
         Qor* m_pQor = nullptr;
