@@ -95,12 +95,12 @@ void Player :: logic_self(Freq::Time t) {
         if (m_pController->button("left")) {
             m_pCamera->track(focus_left());
             move += glm::vec3(-1.0f, 0.0f, 0.0f);
-            m_pChar->set_state("left");
+            //m_pChar->set_state("left");
         }
         if (m_pController->button("right")) {
             m_pCamera->track(focus_right());
             move += glm::vec3(1.0f, 0.0f, 0.0f);
-            m_pChar->set_state("right");
+            //m_pChar->set_state("right");
         }
     }
     // 29 July 2016 - KG: Added buttons for God Mode. See "default.json" in profiles to change buttons
@@ -125,10 +125,16 @@ void Player :: logic_self(Freq::Time t) {
             shoot(dir);
     }
 
-    if(xpres < -K_EPSILON)
+    if(xpres < -K_EPSILON){
         m_pChar->set_state("left");
-    if(xpres > K_EPSILON)
+        if(std::abs(ypres) < 0.25f)
+            m_pChar->set_state("forward");
+    }
+    if(xpres > K_EPSILON){
         m_pChar->set_state("right");
+        if(std::abs(ypres) < 0.25f)
+            m_pChar->set_state("forward");
+    }
     
     bool block_jump = false;
     if (m_pController->button("up").pressure()>0.8f || m_pController->button("jump")) {
@@ -190,14 +196,14 @@ void Player :: logic_self(Freq::Time t) {
 
         move = glm::normalize(move);
 
-        //if(xpres < K_EPSILON){
-        //    if (move.x < -K_EPSILON){
-        //        m_pChar->set_state("left");
-        //    }
-        //    else if (move.x > K_EPSILON){
-        //        m_pChar->set_state("right");
-        //    }
-        //}
+        if(std::abs(xpres) < K_EPSILON){
+            if (move.x < -K_EPSILON){
+                m_pChar->set_state("left");
+            }
+            else if (move.x > K_EPSILON){
+                m_pChar->set_state("right");
+            }
+        }
 
         move *= 100.0f * t.s();
         clear_snapshots();
