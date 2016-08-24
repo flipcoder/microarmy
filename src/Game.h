@@ -71,6 +71,7 @@ class Game: public State {
         // Methods
         void reset();
         std::vector<Node*> get_static_collisions(Node* a);
+        std::vector<const Node*> vnodes() { return m_VisibleNodes; }
         std::vector<std::shared_ptr<Player>>& players() { return m_Players; }
         void checkpoint(Node* chk);
 
@@ -95,9 +96,11 @@ class Game: public State {
         std::vector<std::shared_ptr<Monster>> m_Monsters;   
         std::vector<std::shared_ptr<Player>> m_Players;
         std::vector<ParallaxLayer> m_ParallaxLayers;
+
         std::vector<Node*> m_Spawns;
         std::vector<Node*> m_AltSpawns;
-
+        
+        std::vector<const Node*> m_VisibleNodes;
 
         // Pointers
         Qor* m_pQor = nullptr;

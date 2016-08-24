@@ -26,8 +26,6 @@ Game :: Game(Qor* engine):
     m_pPartitioner(engine->pipeline()->partitioner()),
     m_pController(engine->session()->active_profile(0)->controller()),
     m_pTimeline(engine->timer()->timeline())
-    //m_JumpTimer(engine->timer()->timeline()),
-    //m_ShootTimer(engine->timer()->timeline())
 {}
 
 
@@ -552,14 +550,9 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
 }
 
 
-//void Game :: setup_player_to_map(std::shared_ptr<Player> player) {
-//    if (not m_pMap)
-//        return;
-//}
-
-
 void Game :: setup_player_to_thing(std::shared_ptr<Player> player, std::shared_ptr<Thing> thing) {}
 void Game :: setup_player_to_monster(std::shared_ptr<Player> player, std::shared_ptr<Monster> monster) {}
+
 
 std::vector<Node*> Game :: get_static_collisions(Node* a) {
     auto static_cols = m_pPartitioner->get_collisions_for(a, STATIC);
@@ -689,6 +682,8 @@ void Game :: logic(Freq::Time t) {
 
     m_pRoot->logic(t);
     m_pOrthoRoot->logic(t);
+
+    m_VisibleNodes = m_pMainLayer->visible_nodes(m_pCamera.get());
 }
 
 

@@ -95,10 +95,12 @@ void Player :: logic_self(Freq::Time t) {
         if (m_pController->button("left")) {
             m_pCamera->track(focus_left());
             move += glm::vec3(-1.0f, 0.0f, 0.0f);
+            //m_pChar->set_state("left");
         }
         if (m_pController->button("right")) {
             m_pCamera->track(focus_right());
             move += glm::vec3(1.0f, 0.0f, 0.0f);
+            //m_pChar->set_state("right");
         }
     }
     // 29 July 2016 - KG: Added buttons for God Mode. See "default.json" in profiles to change buttons
@@ -121,6 +123,17 @@ void Player :: logic_self(Freq::Time t) {
         face(dir);
         if(m_ShootTimer.elapsed())
             shoot(dir);
+    }
+
+    if(xpres < -K_EPSILON){
+        m_pChar->set_state("left");
+        if(std::abs(ypres) < 0.25f)
+            m_pChar->set_state("forward");
+    }
+    if(xpres > K_EPSILON){
+        m_pChar->set_state("right");
+        if(std::abs(ypres) < 0.25f)
+            m_pChar->set_state("forward");
     }
     
     if(xpres < -K_EPSILON){
@@ -186,21 +199,35 @@ void Player :: logic_self(Freq::Time t) {
     
     if (not in_air)
         m_LastWallJumpDir = 0;
+<<<<<<< HEAD
 	
+=======
+
+    
+>>>>>>> a028b202e9dd3833ad183dd1566e1e520d8fb23f
     if (glm::length(move) > K_EPSILON) {
         if (not in_air)
             m_pChar->set_state("walk");
 
         move = glm::normalize(move);
+<<<<<<< HEAD
         //wrp in if, if abs val x pressure < k_epsilon
         if (std::abs(xpres) < K_EPSILON){
+=======
+
+        if(std::abs(xpres) < K_EPSILON){
+>>>>>>> a028b202e9dd3833ad183dd1566e1e520d8fb23f
             if (move.x < -K_EPSILON){
                 m_pChar->set_state("left");
             }
             else if (move.x > K_EPSILON){
                 m_pChar->set_state("right");
             }
+<<<<<<< HEAD
 	    }
+=======
+        }
+>>>>>>> a028b202e9dd3833ad183dd1566e1e520d8fb23f
 
         move *= 100.0f * t.s();
         clear_snapshots();
@@ -216,6 +243,55 @@ void Player :: logic_self(Freq::Time t) {
     }
 
     prone(m_pController->button("down").pressure() > 0.8f);
+    
+    //if (m_pController->button("left") or m_pController->button("right")) {
+    //    if (m_pController->button("up"))
+    //        m_pChar->set_state("upward");
+    //    else if(m_pController->button("down"))
+    //        m_pChar->set_state("downward");
+    //    else
+    //        m_pChar->set_state("forward");
+    //} else {
+    //    if (m_pController->button("up"))
+    //        m_pChar->set_state("up");
+    //    else if (m_pController->button("down"))
+    //        m_pChar->set_state("down");
+    //    else
+    //        m_pChar->set_state("forward");
+    //}
+
+
+    //////// RAY CASTING CODE //////////
+
+    // Get player vision origin
+    auto orig = m_pChar->origin();
+    auto vorig = m_pChar->vorigin();
+    auto s = vec2(this->size());
+
+    auto vorig_object = (vorig - orig) * s;
+    auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
+
+    // LOGf("Player Origin: %s", Vector::to_string(orig));
+    // LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
+    // LOGf("Player Size: %s", Vector::to_string(s));
+
+    // LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
+    // LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
+    // LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
+
+    vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
+
+    // Computing pixel size difference between object space and world space for width
+    auto world_vec = this->to_world(vec3(1.0f, 1.0f, 0.0f));
+
+    //LOGf("Player Origin: %s", Vector::to_string(world_vec));
+
+    auto line = Mesh::line(
+       ray[0], // start
+       ray[1], // end
+       m_pResources->cache_as<Texture>("white.png"), // tex
+       1.0f// width
+    );
 
     //if (m_pController->button("left") || m_pController->button("right")) {
     //    if (m_pController->button("up"))
@@ -289,29 +365,29 @@ void Player :: face(glm::vec2 dir) {
     auto ang = atan2(dir.y, dir.x) / K_TAU;
 
     // I don't want negatives
-    if(ang<=0.0f)
-        ang+=1.0f;
+    if (ang <= 0.0f)
+        ang += 1.0f;
     
-    if(ang >= -1.0f/16.0f && ang <= 1.0f/16.0f){
+    if (ang >= -1.0f/16.0f && ang <= 1.0f/16.0f) {
         m_pChar->set_state("right");
         m_pChar->set_state("forward");
-    }else if(ang >= 1.0f/8.0f - 1.0f/16.0f && ang <= 1.0f/8.0f + 1.0f/16.0f){
+    } else if (ang >= 1.0f/8.0f - 1.0f/16.0f && ang <= 1.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("downward");
         m_pChar->set_state("right");
-    }else if(ang >= 2.0f/8.0f - 1.0f/16.0f && ang <= 2.0f/8.0f + 1.0f/16.0f)
+    } else if (ang >= 2.0f/8.0f - 1.0f/16.0f && ang <= 2.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("down");
-    else if(ang >= 3.0f/8.0f - 1.0f/16.0f && ang <= 3.0f/8.0f + 1.0f/16.0f){
+    } else if (ang >= 3.0f/8.0f - 1.0f/16.0f && ang <= 3.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("downward");
         m_pChar->set_state("left");
-    }else if(ang >= 4.0f/8.0f - 1.0f/16.0f && ang <= 4.0f/8.0f + 1.0f/16.0f){
+    } else if (ang >= 4.0f/8.0f - 1.0f/16.0f && ang <= 4.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("left");
         m_pChar->set_state("forward");
-    }else if(ang >= 5.0f/8.0f - 1.0f/16.0f && ang <= 5.0f/8.0f + 1.0f/16.0f){
+    } else if (ang >= 5.0f/8.0f - 1.0f/16.0f && ang <= 5.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("upward");
         m_pChar->set_state("left");
-    }else if(ang >= 6.0f/8.0f - 1.0f/16.0f && ang <= 6.0f/8.0f + 1.0f/16.0f)
+    } else if (ang >= 6.0f/8.0f - 1.0f/16.0f && ang <= 6.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("up");
-    else if(ang >= 7.0f/8.0f - 1.0f/16.0f && ang <= 7.0f/8.0f + 1.0f/16.0f){
+    } else if (ang >= 7.0f/8.0f - 1.0f/16.0f && ang <= 7.0f/8.0f + 1.0f/16.0f) {
         m_pChar->set_state("upward");
         m_pChar->set_state("right");
     }
@@ -367,7 +443,7 @@ void Player :: shoot(glm::vec2 dir) {
     
     Sound::play(m_pCamera, "shoot.wav", m_pResources);
 
-    m_ShootTimer.set(Freq::Time::ms(m_Power == 0 ? 200 : 100));
+    m_ShootTimer.set(Freq::Time::ms(m_Battery == 0 ? 200 : 100));
     
     // increase box Z width
     auto shotbox = shot->box();
@@ -406,6 +482,10 @@ void Player :: reset_walljump() {
 void Player :: prone(bool b) {
     if(m_Prone == b)
         return;
+
+    if(b && std::abs(velocity().x) > K_EPSILON)
+        return;
+    
     m_Prone = b;
     
     if(m_pChar->check_state("left"))
@@ -416,4 +496,3 @@ void Player :: prone(bool b) {
     m_pProne->visible(b);
     m_pChar->visible(not b);
 }
-
