@@ -199,35 +199,25 @@ void Player :: logic_self(Freq::Time t) {
     
     if (not in_air)
         m_LastWallJumpDir = 0;
-<<<<<<< HEAD
-	
-=======
 
-    
->>>>>>> a028b202e9dd3833ad183dd1566e1e520d8fb23f
     if (glm::length(move) > K_EPSILON) {
         if (not in_air)
             m_pChar->set_state("walk");
 
         move = glm::normalize(move);
-<<<<<<< HEAD
         //wrp in if, if abs val x pressure < k_epsilon
         if (std::abs(xpres) < K_EPSILON){
-=======
 
-        if(std::abs(xpres) < K_EPSILON){
->>>>>>> a028b202e9dd3833ad183dd1566e1e520d8fb23f
-            if (move.x < -K_EPSILON){
-                m_pChar->set_state("left");
+            if(std::abs(xpres) < K_EPSILON){
+                if (move.x < -K_EPSILON){
+                    m_pChar->set_state("left");
+                }
+                else if (move.x > K_EPSILON){
+                    m_pChar->set_state("right");
+                }
+            
             }
-            else if (move.x > K_EPSILON){
-                m_pChar->set_state("right");
-            }
-<<<<<<< HEAD
-	    }
-=======
         }
->>>>>>> a028b202e9dd3833ad183dd1566e1e520d8fb23f
 
         move *= 100.0f * t.s();
         clear_snapshots();
