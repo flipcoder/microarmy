@@ -123,6 +123,17 @@ void Player :: logic_self(Freq::Time t) {
             shoot(dir);
     }
     
+    if(xpres < -K_EPSILON){
+        m_pChar->set_state("left");
+        if(std::abs(ypres) < 0.25f)
+            m_pChar->set_state("forward");
+    }
+    if(xpres > K_EPSILON){
+         m_pChar->set_state("right");
+         if(std::abs(ypres) < 0.25f)
+             m_pChar->set_state("forward");
+    }
+
     bool block_jump = false;
     if (m_pController->button("up").pressure()>0.8f || m_pController->button("jump")) {
         
@@ -175,19 +186,21 @@ void Player :: logic_self(Freq::Time t) {
     
     if (not in_air)
         m_LastWallJumpDir = 0;
-
+	
     if (glm::length(move) > K_EPSILON) {
         if (not in_air)
             m_pChar->set_state("walk");
 
         move = glm::normalize(move);
-
-        if (move.x < -K_EPSILON){
-            m_pChar->set_state("left");
-        }
-        else if (move.x > K_EPSILON){
-            m_pChar->set_state("right");
-        }
+        //wrp in if, if abs val x pressure < k_epsilon
+        if (std::abs(xpres) < K_EPSILON){
+            if (move.x < -K_EPSILON){
+                m_pChar->set_state("left");
+            }
+            else if (move.x > K_EPSILON){
+                m_pChar->set_state("right");
+            }
+	    }
 
         move *= 100.0f * t.s();
         clear_snapshots();

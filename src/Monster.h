@@ -21,6 +21,8 @@ class Monster: public Node {
             ROBOT,
             SNAIL,
             WIZARD,
+            FROG,    //dd add frog/blockman
+            BLOCKMAN
         };
 
         static constexpr float DEFAULT_BULLET_SPEED = 256.0f;
