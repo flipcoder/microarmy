@@ -213,6 +213,7 @@ void Monster :: initialize() {
     m_HP = m_pConfig->at<int>("hp", 5);
     m_MaxHP = m_pConfig->at<int>("hp", 5);
     m_StartSpeed = m_pConfig->at<double>("speed", 10.0);
+	m_Damage = m_pConfig->at<int>("damage");
     m_Speed = m_StartSpeed;
 
     m_pSprite = make_shared<Sprite>(
@@ -347,6 +348,7 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
 
         m_pPartitioner->register_object(shot, Game::BULLET);
         shot->config()->set<Monster*>("monster",this);
+		shot->config()->set<Monster*>("damage", this);
 
         // Creates a box around the bullet (With increased z width)
         auto shotbox = shot->box();
@@ -493,7 +495,7 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
         return;
     else {
         if (monster->is_alive()) {
-            monster->m_pGame->reset();
+			player->hurt(monster->m_Damage);
         }
     }
 }

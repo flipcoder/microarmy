@@ -61,6 +61,7 @@ class Monster: public Node {
         bool is_alive() const { return not m_Dead and not m_Dying; }
         int hp() { return m_HP; }
         int max_hp() { return m_MaxHP; }
+		int get_damage() const { return m_Damage; }
         Game* game() { return m_pGame; }
         Sprite* sprite() { return m_pSprite.get(); }
         MapTile* placeholder() { return m_pPlaceholder; }
@@ -98,6 +99,7 @@ class Monster: public Node {
         int m_HP = 1;
         int m_MaxHP = 1;
         int m_StunTime = 0;
+		int m_Damage = 1;
         float m_StartSpeed = 0.0f;
         float m_Speed = 0.0f;
         float m_BulletSpeed = 0;
