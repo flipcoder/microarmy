@@ -462,8 +462,10 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
 	if (bullet->config()->has("damage")) {
 		auto monster = bullet->config()->at<Monster*>("monster", nullptr);
 		int damage = monster->get_damage();
+        bullet->safe_detach();
 		player->hurt(damage);
 	}
+
 }
 
 void Player :: reset() {

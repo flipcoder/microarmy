@@ -118,8 +118,8 @@ void Monster :: logic_self(Freq::Time t) {
         }
         if (m_MonsterID == Monster::BLOCKMAN) {
 			if (m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
-				shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f));
-				m_ShootTimer.set(Freq::Time::seconds(0.2f));
+				shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f), 10);
+				m_ShootTimer.set(Freq::Time::seconds(0.8f));
 			}
 		}
 
