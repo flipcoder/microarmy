@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Intro.h"
 #include "Pregame.h"
+#include "Test.h"
 
 using namespace std;
 using namespace kit;
@@ -26,7 +27,12 @@ int main(int argc, char* argv[]) {
         engine->states().register_class<Intro>("intro");
         engine->states().register_class<Pregame>("pregame");
         engine->states().register_class<Game>("game");
-        engine->run("intro");
+        engine->states().register_class<Test>("test");
+
+        if(args.has("--test"))
+            engine->run("test");
+        else
+            engine->run("intro");
 
 #ifndef DEBUG
     } catch (const Error&) {
