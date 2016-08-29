@@ -36,7 +36,7 @@ class Player: public Node {
         bool no_enemy_damage() const { return m_NoEnemyDamage; }
         bool no_fatal_objects() const { return m_NoFatalObjects; }
         bool prone() const { return m_Prone; }
-		int get_health() { return m_Health; }
+        int get_health() { return m_Health; }
 
         // Methods
         void enter();
@@ -47,7 +47,7 @@ class Player: public Node {
         void god(bool b) { m_GodMode = b; }
         void reset();
         void prone(bool b);
-		void hurt(int damage);
+        bool hurt(int damage);
 
         // Callbacks
         static void cb_to_bullet(Node* player_node, Node* bullet);
@@ -64,7 +64,7 @@ class Player: public Node {
         bool m_NoFatalObjects = false; // Only affects fatal objects (including Wizard's fire)
         bool m_NoEnemyDamage = false; // Only affects enemy overlap and bullets (but not Wizard's fire)
         bool m_Prone = false;
-		int m_Health = 100;
+        int m_Health = 100;
 
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;

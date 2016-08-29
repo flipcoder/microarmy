@@ -61,7 +61,7 @@ class Monster: public Node {
         bool is_alive() const { return not m_Dead and not m_Dying; }
         int hp() { return m_HP; }
         int max_hp() { return m_MaxHP; }
-		int get_damage() const { return m_Damage; }
+        int damage() const { return m_Damage; }
         Game* game() { return m_pGame; }
         Sprite* sprite() { return m_pSprite.get(); }
         MapTile* placeholder() { return m_pPlaceholder; }
@@ -71,7 +71,7 @@ class Monster: public Node {
         void initialize();
         void activate(Player* closest_player);
         void deactivate(Player* closest_player);
-        void damage(int dmg);
+        void hurt(int dmg);
         void shoot(float bullet_speed=DEFAULT_BULLET_SPEED, glm::vec3 offset = glm::vec3(0.0f), int life = 0);
         void stun(int m_StunTime);
         void gib();
@@ -99,7 +99,7 @@ class Monster: public Node {
         int m_HP = 1;
         int m_MaxHP = 1;
         int m_StunTime = 0;
-		int m_Damage = 1;
+        int m_Damage = 1;
         float m_StartSpeed = 0.0f;
         float m_Speed = 0.0f;
         float m_BulletSpeed = 0;

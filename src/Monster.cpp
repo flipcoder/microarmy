@@ -117,11 +117,11 @@ void Monster :: logic_self(Freq::Time t) {
             }
         }
         if (m_MonsterID == Monster::BLOCKMAN) {
-			if (m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
-				shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f), 10);
-				m_ShootTimer.set(Freq::Time::seconds(0.8f));
-			}
-		}
+            if (m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
+                shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f), 10);
+                m_ShootTimer.set(Freq::Time::seconds(0.8f));
+            }
+        }
 
     }
 
@@ -213,7 +213,7 @@ void Monster :: initialize() {
     m_HP = m_pConfig->at<int>("hp", 5);
     m_MaxHP = m_pConfig->at<int>("hp", 5);
     m_StartSpeed = m_pConfig->at<double>("speed", 10.0);
-	m_Damage = m_pConfig->at<int>("damage");
+    m_Damage = m_pConfig->at<int>("damage");
     m_Speed = m_StartSpeed;
 
     m_pSprite = make_shared<Sprite>(
@@ -280,7 +280,7 @@ void Monster :: deactivate(Player* closest_player) {
 }
 
 
-void Monster :: damage(int dmg) {
+void Monster :: hurt(int dmg) {
     if (m_HP > 0 and dmg > 0) {
         m_HP = std::max(m_HP - dmg, 0);
 
@@ -348,7 +348,7 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
 
         m_pPartitioner->register_object(shot, Game::BULLET);
         shot->config()->set<Monster*>("monster",this);
-		shot->config()->set<Monster*>("damage", this);
+        shot->config()->set<int>("damage", m_Damage);
 
         // Creates a box around the bullet (With increased z width)
         auto shotbox = shot->box();
@@ -430,7 +430,7 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
         monster->sound("damage.wav");
 
         auto hp_before = monster->m_HP;
-        monster->damage(bullet->config()->at("damage", 1));
+        monster->hurt(bullet->config()->at("damage", 1));
         auto hp_after = monster->m_HP;
 
         if (hp_before > hp_after) {
@@ -495,7 +495,7 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
         return;
     else {
         if (monster->is_alive()) {
-			player->hurt(monster->m_Damage);
+            player->hurt(monster->m_Damage);
         }
     }
 }

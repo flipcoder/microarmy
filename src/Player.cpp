@@ -459,18 +459,17 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
         return;
 
     //player->reset();
-	if (bullet->config()->has("damage")) {
-		auto monster = bullet->config()->at<Monster*>("monster", nullptr);
-		int damage = monster->get_damage();
-        bullet->safe_detach();
-		player->hurt(damage);
-	}
+    if (bullet->config()->has("damage")) {
+        int damage = bullet->config()->at<int>("damage", 1);
+        if(player->hurt(damage))
+            bullet->safe_detach();
+    }
 
 }
 
 void Player :: reset() {
     m_pGame->reset();
-	m_Health = 100;
+    m_Health = 100;
 }
 
 void Player :: reset_walljump() {
@@ -494,9 +493,11 @@ void Player :: prone(bool b) {
     m_pProne->visible(b);
     m_pChar->visible(not b);
 }
-void Player :: hurt(int damage) {
-	m_Health = m_Health - damage;
-	if (m_Health < 1) {
-		reset();
-	}
+bool Player :: hurt(int damage) {
+    if(m_Health < 1)
+        return false; // if dead, don't accept damage
+    m_Health = m_Health - damage;
+    if (m_Health < 1)
+        reset();
+    return true; // player accepts damage
 }
