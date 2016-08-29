@@ -18,8 +18,41 @@ Test :: Test(Qor* engine):
 
 void Test :: preload()
 {
+    auto sw = m_pQor->window()->size().x;
+    auto sh = m_pQor->window()->size().y;
+    
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pRoot->add(m_pCamera);
+
+    auto mat = make_shared<MeshMaterial>("bg.png", m_pQor->resources());
+    auto mesh = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(vec2(0.0f, 0.0f), vec2(16.0f, 16.0f))),
+        vector<shared_ptr<IMeshModifier>>{
+            make_shared<Wrap>(Prefab::quad_wrap(vec2(0.0f,1.0f), vec2(1.0f,0.0f)))
+        }, mat
+    );
+    m_pMesh1 = mesh;
+    m_pRoot->add(mesh);
+
+    mat = make_shared<MeshMaterial>("bg.png", m_pQor->resources());
+    mesh = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(vec2(0.0f, 0.0f), vec2(16.0f, 16.0f))),
+        vector<shared_ptr<IMeshModifier>>{
+            make_shared<Wrap>(Prefab::quad_wrap(vec2(0.0f,1.0f), vec2(1.0f,0.0f)))
+        }, mat
+    );
+    m_pMesh2 = mesh;
+    mesh->position(glm::vec3(10.0f, 10.0f, 0.0f));
+    m_pRoot->add(mesh);
+
+    m_pPipeline->partitioner()->on_touch(m_pMesh1->as_node(), m_pMesh2->as_node(),
+        [](Node* a, Node* b){
+            LOG("touch");
+        },
+        [](Node* a, Node* b){
+            LOG("untouch");
+        }
+    );
 }
 
 Test :: ~Test()
@@ -41,6 +74,8 @@ void Test :: logic(Freq::Time t)
         m_pQor->quit();
 
     m_pRoot->logic(t);
+
+    m_pMesh2->move(glm::vec3(t.s(), 0.0f, 0.0f));
 }
 
 void Test :: render() const

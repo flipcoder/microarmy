@@ -34,6 +34,9 @@ class Test:
 
         std::shared_ptr<Node> m_pRoot;
         std::shared_ptr<Camera> m_pCamera;
+
+        std::shared_ptr<Mesh> m_pMesh1;
+        std::shared_ptr<Mesh> m_pMesh2;
 };
 
 #endif
