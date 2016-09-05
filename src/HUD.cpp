@@ -15,8 +15,8 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache):
     auto sw = m_pWindow->size().x;
     auto sh = m_pWindow->size().y;
 
-    m_pCanvas = make_shared<Canvas>(sw, sh);
-    add(m_pCanvas);
+    //m_pCanvas = make_shared<Canvas>(sw, sh);
+    //add(m_pCanvas);
     
     set(0, 0, 0);
 }
@@ -26,21 +26,21 @@ void HUD :: redraw() {
     auto sw = m_pWindow->size().x;
     auto sh = m_pWindow->size().y;
     
-    // clear transparent
-    auto ctext = m_pCanvas->context();
-    m_pCanvas->clear(Color(0.0f, 0.0f, 0.0f, 0.0f));
+    //// clear transparent
+    //auto ctext = m_pCanvas->context();
+    //m_pCanvas->clear(Color(0.0f, 0.0f, 0.0f, 0.0f));
     
-    auto layout = m_pCanvas->layout();
-    layout->set_wrap(Pango::WRAP_WORD);
+    //auto layout = m_pCanvas->layout();
+    //layout->set_wrap(Pango::WRAP_WORD);
     
-    m_FontDesc = Pango::FontDescription("Press Start 2P " + to_string(sw / 36));
-    m_pCanvas->layout()->set_font_description(m_FontDesc);
+    //m_FontDesc = Pango::FontDescription("Press Start 2P " + to_string(sw / 36));
+    //m_pCanvas->layout()->set_font_description(m_FontDesc);
     
-    layout->set_text("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
-    ctext->set_source_rgba(1.0, 1.0, 1.0, 0.75);
-    layout->show_in_cairo_context(ctext);
+    //layout->set_text("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
+    //ctext->set_source_rgba(1.0, 1.0, 1.0, 0.75);
+    //layout->show_in_cairo_context(ctext);
 
-    m_pCanvas->dirty(true);
+    //m_pCanvas->dirty(true);
 }
 
 

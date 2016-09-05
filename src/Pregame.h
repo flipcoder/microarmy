@@ -48,7 +48,7 @@ class Pregame: public State {
         std::shared_ptr<Node> m_pRoot;
         std::shared_ptr<Camera> m_pCamera;
         std::shared_ptr<Sound> m_pMusic;
-        std::shared_ptr<Canvas> m_pCanvas;
+        //std::shared_ptr<Canvas> m_pCanvas;
 };
 
 #endif

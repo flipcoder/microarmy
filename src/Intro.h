@@ -33,11 +33,11 @@ class Intro: public State {
 
     private:
         // Variables
-        MenuContext m_MenuContext;
-        Menu m_MainMenu;
-        Menu m_LevelMenu;
-        Menu m_OptionsMenu;
-
+        //MenuContext m_MenuContext;
+        //Menu m_MainMenu;
+        //Menu m_LevelMenu;
+        //Menu m_OptionsMenu;
+        //std::shared_ptr<MenuGUI> m_pMenuGUI;
 
         // Pointers
         Qor* m_pQor = nullptr;
@@ -50,7 +50,6 @@ class Intro: public State {
         std::shared_ptr<Camera> m_pCamera;
         std::shared_ptr<Sound> m_pMusic;
         std::shared_ptr<Canvas> m_pCanvas;
-        std::shared_ptr<MenuGUI> m_pMenuGUI;
         std::shared_ptr<std::string> m_pVolumeText;
         std::shared_ptr<std::string> m_pSoundText;
         std::shared_ptr<std::string> m_pMusicText;

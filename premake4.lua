@@ -2,7 +2,7 @@ solution("microarmy")
     targetdir("bin")
     
     configurations {"Debug", "Release"}
-        defines { "GLM_FORCE_RADIANS", "QOR_NO_PYTHON", "QOR_NO_PHYSICS" }
+        defines { "GLM_FORCE_RADIANS", "QOR_NO_PYTHON", "QOR_NO_CAIRO", "QOR_NO_PHYSICS" }
     
         -- Debug Config
         configuration "Debug"
@@ -32,6 +32,7 @@ solution("microarmy")
                 "pthread",
                 "GL",
                 "GLU",
+                "SDL2_ttf",
                 "SDL2",
                 "GLEW",
                 "assimp",
@@ -81,12 +82,13 @@ solution("microarmy")
         configuration "windows"
             links {
                 "ws2_32",
-                "glibmm.dll",
-                "cairomm.dll",
-                "pangomm.dll",
+                --"glibmm.dll",
+                --"cairomm.dll",
+                --"pangomm.dll",
                 "SDL2main",
                 "OpenGL32",
                 "GLU32",
+                "SDL2_ttf",
                 "SDL2",
                 "GLEW32",
                 "assimp",

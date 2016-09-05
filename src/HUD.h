@@ -39,13 +39,13 @@ class HUD: public Node {
         int m_Stars = 0;
         int m_MaxStars = 0;
 
-        Pango::FontDescription m_FontDesc;
+        //Pango::FontDescription m_FontDesc;
 
 
         // Pointers
         Window* m_pWindow = nullptr;
         Input* m_pInput = nullptr;
-        std::shared_ptr<Canvas> m_pCanvas;
+        //std::shared_ptr<Canvas> m_pCanvas;
         Cache<Resource, std::string>* m_pCache;
         std::shared_ptr<Mesh> m_pMesh;
 
