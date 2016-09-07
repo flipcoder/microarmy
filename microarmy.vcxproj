@@ -114,6 +114,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="lib\Qor\Qor\Text.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\HUD.h" />
     <ClInclude Include="src\Info.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="lib\Qor\lib\kit\kit\reactive\signal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lib\Qor\Qor\Text.cpp" />
     <ClCompile Include="src\Game.cpp">
     </ClCompile>
     <ClCompile Include="src\HUD.cpp">

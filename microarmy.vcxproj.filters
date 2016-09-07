@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
@@ -366,6 +366,9 @@
     <ClInclude Include="lib\Qor\lib\kit\kit\reactive\signal.h">
       <Filter>lib\Qor\lib\kit\kit\reactive</Filter>
     </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Text.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -544,6 +547,9 @@
     </ClCompile>
     <ClCompile Include="lib\Qor\lib\kit\kit\math\matrixstack.cpp">
       <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Text.cpp">
+      <Filter>lib\Qor\Qor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
