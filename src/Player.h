@@ -36,6 +36,7 @@ class Player: public Node {
         // Getters
         std::shared_ptr<Node> focus_right() { return m_pCharFocusRight; }
         std::shared_ptr<Node> focus_left() { return m_pCharFocusLeft; }
+        bool blinking() const { return m_Blinking; }
         bool god() const { return m_GodMode; }
         bool no_enemy_damage() const { return m_NoEnemyDamage; }
         bool no_fatal_objects() const { return m_NoFatalObjects; }
@@ -49,6 +50,7 @@ class Player: public Node {
         void face(glm::vec2 dir);
         void battery(int b) { m_Battery += b; }
         void god(bool b) { m_GodMode = b; }
+        void blinking(bool b) { m_Blinking = b; }
         void blink();
         void reset();
         void prone(bool b);
@@ -65,6 +67,7 @@ class Player: public Node {
         int m_LastWallJumpDir = 0;
         bool m_WasInAir = false;
         // 28 July 2016 - KG: Added God Mode variables
+        bool m_Blinking = false;
         bool m_GodMode = false; // NOTHING will kill player
         bool m_NoFatalObjects = false; // Only affects fatal objects (including Wizard's fire)
         bool m_NoEnemyDamage = false; // Only affects enemy overlap and bullets (but not Wizard's fire)

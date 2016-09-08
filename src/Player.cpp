@@ -66,7 +66,7 @@ void Player :: logic_self(Freq::Time t) {
     Node::logic_self(t);
 
     if (m_InvincibleTime.elapsed()){
-        god(false);
+        blinking(false);
         m_pChar->visible(true);
         m_InvincibleTime.reset();
         m_BlinkTime.reset();
@@ -481,7 +481,7 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
 }
 
 void Player :: blink(){
-    god(true);
+    blinking(true);
     m_BlinkTime.set(Freq::Time::ms(BLINK_TIME));
     m_InvincibleTime.set(Freq::Time::ms(INVINCIBLE_TIME));
 }
@@ -514,7 +514,7 @@ void Player :: prone(bool b) {
 }
 bool Player :: hurt(int damage) {
     //check for vulnerability
-    if(god()) //if god we do not want to accept damage
+    if(god() || blinking()) //if god we do not want to accept damage
         return false;
     if(m_Health < 1)
         return false; // if dead, don't accept damage
