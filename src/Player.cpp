@@ -21,6 +21,8 @@ Player :: Player(
     m_pResources(resources),
     m_JumpTimer(timeline),
     m_ShootTimer(timeline),
+    m_InvincibleTime(timeline),
+    m_BlinkTime(timeline),
     m_pCamera(camera),
     m_pController(ctrl),
     m_pPartitioner(part),
@@ -62,6 +64,17 @@ void Player :: enter() {
 
 void Player :: logic_self(Freq::Time t) {
     Node::logic_self(t);
+
+    if (m_InvincibleTime.elapsed()){
+        god(false);
+        m_pChar->visible(true);
+        m_InvincibleTime.reset();
+        m_BlinkTime.reset();
+    }
+    else if (m_BlinkTime.elapsed()){
+        m_pChar->visible(!m_pChar->visible());
+        m_BlinkTime.set(Freq::Time::ms(BLINK_TIME));
+    }
 
     auto feet_colliders = m_pGame->get_static_collisions(
         Node::find("feetmask").at(0)
@@ -467,6 +480,12 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
 
 }
 
+void Player :: blink(){
+    god(true);
+    m_BlinkTime.set(Freq::Time::ms(BLINK_TIME));
+    m_InvincibleTime.set(Freq::Time::ms(INVINCIBLE_TIME));
+}
+
 void Player :: reset() {
     m_pGame->reset();
     m_Health = 100;
@@ -494,10 +513,16 @@ void Player :: prone(bool b) {
     m_pChar->visible(not b);
 }
 bool Player :: hurt(int damage) {
+    //check for vulnerability
+    if(god()) //if god we do not want to accept damage
+        return false;
     if(m_Health < 1)
         return false; // if dead, don't accept damage
     m_Health = m_Health - damage;
     if (m_Health < 1)
         reset();
+
+    blink();
+
     return true; // player accepts damage
 }

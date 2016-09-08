@@ -9,6 +9,10 @@ class Game;
 
 class Player: public Node {
     public:
+
+        static const int INVINCIBLE_TIME = 1000;    //finish to hurt method
+        static const int BLINK_TIME = 100;
+
         // Constructor
         Player(
             std::string fn,
@@ -45,6 +49,7 @@ class Player: public Node {
         void face(glm::vec2 dir);
         void battery(int b) { m_Battery += b; }
         void god(bool b) { m_GodMode = b; }
+        void blink();
         void reset();
         void prone(bool b);
         bool hurt(int damage);
@@ -68,7 +73,9 @@ class Player: public Node {
 
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;
-
+        Freq::Alarm m_InvincibleTime;
+        Freq::Alarm m_BlinkTime;
+        
         // Pointers
         Game* m_pGame;
         Camera* m_pCamera;
