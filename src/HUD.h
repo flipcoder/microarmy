@@ -5,7 +5,7 @@
 #include "Qor/Window.h"
 #include "Qor/Canvas.h"
 #include "Qor/Input.h"
-
+#include "Qor/Text.h"
 
 class HUD: public Node {
     public:
@@ -49,6 +49,9 @@ class HUD: public Node {
         Cache<Resource, std::string>* m_pCache;
         std::shared_ptr<Mesh> m_pMesh;
 
+        std::shared_ptr<Font> m_pFont;
+        std::shared_ptr<Text> m_pText;
+        
 
         // Functions
         void redraw();
