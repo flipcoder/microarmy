@@ -223,10 +223,11 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             thing->visible(false);
             thing->placeholder()->visible(false);
 
-            thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+            thing->m_ResetCon = thing->game()->on_reset.connect([thing] {
                 thing->visible(true);
                 thing->placeholder()->visible(true);
             });
+
             player_node->parent()->event("battery");
         }
     } else if (thing->id() == Thing::SPRING) {

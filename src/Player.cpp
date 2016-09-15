@@ -398,6 +398,25 @@ void Player :: face(glm::vec2 dir) {
 
 void Player :: shoot(glm::vec2 dir) {
     
+    /* ***** Weapon Upgrades *****
+    * big bullet, wave(shotgun?), flamethrower
+    * check condition for speed
+    */
+    string gfx;
+    //base
+    if (m_Battery == 0)
+        gfx = "laser";
+    //upgrade 2: big bullet (laser_nrm placehold)
+    if (m_Battery == 1)
+        gfx = "laser_NRM";
+    //upgrade 3: wave/shotgun
+    if (m_Battery == 2)
+        gfx = "blood";
+    //upgrade 4: flamethrower
+    if (m_Battery == 3)
+        gfx = "fireball";
+    if (m_Battery > 3)
+        gfx = "stickyhand";
     auto shot = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(glm::vec2(8.0f, 2.0f))),
         vector<shared_ptr<IMeshModifier>>{
@@ -405,7 +424,7 @@ void Player :: shoot(glm::vec2 dir) {
                 glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
             ))
         },
-        make_shared<MeshMaterial>("laser.png", m_pResources)
+        make_shared<MeshMaterial>(gfx + ".png", m_pResources)
     );
     shot->config()->set<Player*>("player",this);
 
@@ -433,8 +452,26 @@ void Player :: shoot(glm::vec2 dir) {
     //if(check_state("down") || check_state("downward"))
     //    aimdir += vec3(0.0f, 1.0f, 0.0f);
     //aimdir = normalize(aimdir);
-    
     auto ang = atan2(aimdir.y, aimdir.x) / K_TAU;
+   /*
+    if (m_Battery == 1) {
+        auto rAng = kit::random<float>();
+        //ang += (rAng - 0.5f) * 10.0f;
+    }
+    if (m_Battery == 2) {
+        auto rAng = kit::random<float>();
+        //ang += (rAng - 0.5f) * 10.0f;
+    }
+    if (m_Battery == 3) {
+        auto rAng = kit::random<float>();
+        ang += rAng - 0.5f;
+    }
+    if (m_Battery > 3) {
+        auto rAng = kit::random<float>();
+        ang += rAng - 0.5f;
+    }
+    aimdir = vec3(cos(ang), sin(ang), 0.0f);
+    */
     shot->rotate(ang, glm::vec3(0.0f, 0.0f, 1.0f));
     shot->velocity(aimdir * 256.0f);
 
@@ -446,6 +483,7 @@ void Player :: shoot(glm::vec2 dir) {
     
     Sound::play(m_pCamera, "shoot.wav", m_pResources);
 
+	//upgrade 1: speed upgrade battery
     m_ShootTimer.set(Freq::Time::ms(m_Battery == 0 ? 200 : 100));
     
     // increase box Z width
