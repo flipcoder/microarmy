@@ -21,27 +21,26 @@ Intro :: Intro(Qor* engine):
     m_pRoot(make_shared<Node>()),
     m_pPipeline(engine->pipeline()),
     m_pResources(engine->resources()),
-    m_pController(engine->session()->active_profile(0)->controller().get())
+    m_pController(engine->session()->active_profile(0)->controller().get()),
     //m_pCanvas(make_shared<Canvas>(
     //    engine->window()->size().x, engine->window()->size().y
     //)),
-    //m_pMenuGUI(make_shared<MenuGUI>(
-    //    engine->session()->active_profile(0)->controller().get(),
-    //    &m_MenuContext,
-    //    &m_MainMenu,
-    //    m_pPipeline->partitioner(),
-    //    m_pCanvas.get(),
-    //    m_pResources,
-    //    "PRESS START 2P",
-    //    engine->window()->size().y / 30.0f,
-    //    nullptr,
-    //    7,
-    //    1.5f,
-    //    Canvas::LEFT,
-    //    32.0f,
-    //    MenuGUI::F_BOX,
-    //    m_pQor->window()
-    //))
+    m_pMenuGUI(make_shared<MenuGUI>(
+        engine->session()->active_profile(0)->controller().get(),
+        &m_MenuContext,
+        &m_MainMenu,
+        engine->pipeline()->partitioner(),
+        engine->window(),
+        engine->resources(),
+        "PressStart2P-Regular.ttf",
+        engine->window()->size().y / 30.0f,
+        nullptr,
+        7,
+        1.5f,
+        Text::LEFT,
+        32.0f,
+        MenuGUI::F_BOX
+    ))
 {}
 
 
@@ -52,6 +51,7 @@ void Intro :: preload() {
     
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pRoot->add(m_pCamera);
+    m_pRoot->add(m_pMenuGUI);
 
     //m_pRoot->add(m_pCanvas);
 
@@ -90,105 +90,104 @@ void Intro :: enter() {
     
     //m_pPipeline->blend(true);
     
-    //m_MainMenu.options().emplace_back("PLAY", [this]{
-    //    m_MenuContext.push(&m_LevelMenu);
-    //});
-    //m_MainMenu.options().emplace_back("OPTIONS", [this]{
-    //    m_MenuContext.push(&m_OptionsMenu);
-    //});
-    //m_MainMenu.options().emplace_back("QUIT", [this]{
-    //    m_pQor->pop_state();
-    //});
+    m_MainMenu.options().emplace_back("PLAY", [this]{
+        m_MenuContext.push(&m_LevelMenu);
+    });
+    m_MainMenu.options().emplace_back("OPTIONS", [this]{
+        m_MenuContext.push(&m_OptionsMenu);
+    });
+    m_MainMenu.options().emplace_back("QUIT", [this]{
+        m_pQor->pop_state();
+    });
 
-    //m_LevelMenu.options().emplace_back("HOUSE", [qor]{
-    //    qor->args().set("map", "1");
-    //    qor->change_state("pregame");
-    //});
-    //m_LevelMenu.options().emplace_back("BACKYARD", [qor]{
-    //    qor->args().set("map", "2");
-    //    qor->change_state("pregame");
-    //});
-    //m_LevelMenu.options().emplace_back(
-    //    "BACK",
-    //    [this]{
-    //        m_pQor->save_settings();
-    //        m_MenuContext.pop();
-    //    },
-    //    std::function<bool(int)>(),
-    //    string(), // no desc
-    //    Menu::Option::BACK
-    //);
+    m_LevelMenu.options().emplace_back("HOUSE", [qor]{
+        qor->args().set("map", "1");
+        qor->change_state("pregame");
+    });
+    m_LevelMenu.options().emplace_back("BACKYARD", [qor]{
+        qor->args().set("map", "2");
+        qor->change_state("pregame");
+    });
+    m_LevelMenu.options().emplace_back(
+        "BACK",
+        [this]{
+            m_pQor->save_settings();
+            m_MenuContext.pop();
+        },
+        std::function<bool(int)>(),
+        string(), // no desc
+        Menu::Option::BACK
+    );
 
-    //m_pVolumeText = std::make_shared<string>(string("Global Vol: ") + to_string(
-    //    m_pResources->config()->meta("audio")->at<int>("volume")
-    //    ) + "%"
-    //);
-    //m_pSoundText = std::make_shared<string>(string("Sound Vol: ") + to_string(
-    //    m_pResources->config()->meta("audio")->at<int>("sound-volume")
-    //    ) + "%"
-    //);
-    //m_pMusicText = std::make_shared<string>(string("Music Vol: ") + to_string(
-    //    m_pResources->config()->meta("audio")->at<int>("music-volume")
-    //    ) + "%"
-    //);
+    m_pVolumeText = std::make_shared<string>(string("Global Vol: ") + to_string(
+        m_pResources->config()->meta("audio")->at<int>("volume")
+        ) + "%"
+    );
+    m_pSoundText = std::make_shared<string>(string("Sound Vol: ") + to_string(
+        m_pResources->config()->meta("audio")->at<int>("sound-volume")
+        ) + "%"
+    );
+    m_pMusicText = std::make_shared<string>(string("Music Vol: ") + to_string(
+        m_pResources->config()->meta("audio")->at<int>("music-volume")
+        ) + "%"
+    );
 
-    //m_OptionsMenu.options().emplace_back(m_pVolumeText,
-    //    [this]{
-    //    },
-    //    [this](int ofs){
-    //        int old_v = m_pResources->config()->meta("audio")->at<int>("volume");
-    //        int v = kit::clamp(old_v + ofs * 10, 0, 100);
-    //        if(v!=old_v) {
-    //            m_pResources->config()->meta("audio")->set<int>("volume", v);
-    //            *m_pVolumeText = string("Global Vol: ") + to_string(v) + "%";
-    //            Sound::play(m_pRoot.get(), "scroll.wav", m_pResources);
-    //            return true;
-    //        }
-    //        return false;
-    //    }
-    //);
-    //m_OptionsMenu.options().emplace_back(m_pMusicText,
-    //    [this]{
-    //        //Sound::play(m_pRoot.get(), "scroll.wav", m_pResources);
-    //    },
-    //    [this](int ofs){
-    //        int old_v = m_pResources->config()->meta("audio")->at<int>("music-volume");
-    //        int v = kit::clamp(old_v + ofs * 10, 0, 100);
-    //        if(v!=old_v) {
-    //            m_pResources->config()->meta("audio")->set<int>("music-volume", v);
-    //            *m_pMusicText = string("Music Vol: ") + to_string(v) + "%";
-    //            return true;
-    //        }
-    //        return false;
-    //    });
-    //m_OptionsMenu.options().emplace_back(m_pSoundText,
-    //    [this]{
-    //    },
-    //    [this](int ofs){
-    //        int old_v = m_pResources->config()->meta("audio")->at<int>("sound-volume");
-    //        int v = kit::clamp(old_v + ofs * 10, 0, 100);
-    //        if(v!=old_v) {
-    //            m_pResources->config()->meta("audio")->set<int>("sound-volume", v);
-    //            *m_pSoundText = string("Sound Vol: ") + to_string(v) + "%";
-    //            Sound::play(m_pRoot.get(), "scroll.wav", m_pResources);
-    //            return true;
-    //        }
-    //        return false;
-    //    });
-    //m_OptionsMenu.options().emplace_back(
-    //    "Back",
-    //    [this]{
-    //        m_pQor->save_settings();
-    //        m_MenuContext.pop();
-    //    },
-    //    std::function<bool(int)>(), // no adjust
-    //    string(), // no desc
-    //    Menu::Option::BACK
-    //);
-
+    m_OptionsMenu.options().emplace_back(m_pVolumeText,
+        [this]{
+        },
+        [this](int ofs){
+            int old_v = m_pResources->config()->meta("audio")->at<int>("volume");
+            int v = kit::clamp(old_v + ofs * 10, 0, 100);
+            if(v!=old_v) {
+                m_pResources->config()->meta("audio")->set<int>("volume", v);
+                *m_pVolumeText = string("Global Vol: ") + to_string(v) + "%";
+                Sound::play(m_pRoot.get(), "scroll.wav", m_pResources);
+                return true;
+            }
+            return false;
+        }
+    );
+    m_OptionsMenu.options().emplace_back(m_pMusicText,
+        [this]{
+            //Sound::play(m_pRoot.get(), "scroll.wav", m_pResources);
+        },
+        [this](int ofs){
+            int old_v = m_pResources->config()->meta("audio")->at<int>("music-volume");
+            int v = kit::clamp(old_v + ofs * 10, 0, 100);
+            if(v!=old_v) {
+                m_pResources->config()->meta("audio")->set<int>("music-volume", v);
+                *m_pMusicText = string("Music Vol: ") + to_string(v) + "%";
+                return true;
+            }
+            return false;
+        });
+    m_OptionsMenu.options().emplace_back(m_pSoundText,
+        [this]{
+        },
+        [this](int ofs){
+            int old_v = m_pResources->config()->meta("audio")->at<int>("sound-volume");
+            int v = kit::clamp(old_v + ofs * 10, 0, 100);
+            if(v!=old_v) {
+                m_pResources->config()->meta("audio")->set<int>("sound-volume", v);
+                *m_pSoundText = string("Sound Vol: ") + to_string(v) + "%";
+                Sound::play(m_pRoot.get(), "scroll.wav", m_pResources);
+                return true;
+            }
+            return false;
+        });
+    m_OptionsMenu.options().emplace_back(
+        "Back",
+        [this]{
+            m_pQor->save_settings();
+            m_MenuContext.pop();
+        },
+        std::function<bool(int)>(), // no adjust
+        string(), // no desc
+        Menu::Option::BACK
+    );
     
-    //m_MenuContext.clear(&m_MainMenu);
-    //m_pRoot->add(m_pMenuGUI);
+    m_MenuContext.clear(&m_MainMenu);
+    m_pRoot->add(m_pMenuGUI);
 }
 
 

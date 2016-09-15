@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         if(args.has("--test"))
             engine->run("test");
         else
-            engine->run("game");
+            engine->run("intro");
 
 #ifndef DEBUG
     } catch (const Error&) {

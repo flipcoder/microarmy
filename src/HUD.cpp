@@ -44,11 +44,12 @@ void HUD :: redraw() {
     //m_FontDesc = Pango::FontDescription("Press Start 2P " + to_string(sw / 36));
     //m_pCanvas->layout()->set_font_description(m_FontDesc);
     
-    m_pText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
     //ctext->set_source_rgba(1.0, 1.0, 1.0, 0.75);
     //layout->show_in_cairo_context(ctext);
 
     //m_pCanvas->dirty(true);
+    
+    m_pText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
 }
 
 
