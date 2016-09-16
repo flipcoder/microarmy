@@ -10,7 +10,7 @@
 #include "Qor/Mesh.h"
 #include "Qor/Sound.h"
 #include "Qor/Canvas.h"
-
+#include "Qor/Text.h"
 
 class Qor;
 
@@ -49,6 +49,9 @@ class Pregame: public State {
         std::shared_ptr<Camera> m_pCamera;
         std::shared_ptr<Sound> m_pMusic;
         //std::shared_ptr<Canvas> m_pCanvas;
+
+        std::shared_ptr<Font> m_pFont;
+        std::shared_ptr<Text> m_pText;
 };
 
 #endif

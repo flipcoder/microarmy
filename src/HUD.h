@@ -51,7 +51,6 @@ class HUD: public Node {
 
         std::shared_ptr<Font> m_pFont;
         std::shared_ptr<Text> m_pText;
-        
 
         // Functions
         void redraw();

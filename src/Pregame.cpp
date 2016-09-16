@@ -23,8 +23,20 @@ Pregame :: Pregame(Qor* engine):
     //m_pCanvas(make_shared<Canvas>(
     //    engine->window()->size().x, engine->window()->size().y
     //))
-{}
-
+{
+    float sw = m_pQor->window()->size().x;
+    float sh = m_pQor->window()->size().y;
+    
+    m_pFont = std::make_shared<Font>(
+        m_pResources->transform(string("PressStart2P-Regular.ttf:") +
+            to_string(int(sw / 64.0f + 0.5f))),
+        m_pResources
+    );
+    m_pText = std::make_shared<Text>(m_pFont);
+    m_pRoot->add(m_pText);
+    m_pText->position(glm::vec3(sw/2.0f, sh/2.0f, 0.0f));
+    m_pText->align(Text::CENTER);
+}
 
 void Pregame :: preload() {
     auto win = m_pQor->window();
@@ -62,42 +74,45 @@ void Pregame :: preload() {
     //cairo->set_font_size(sw / 64.0f);
     
     //// TEMP: just for jam
-    //auto mapname = m_pQor->args().value("map");
-    //if(mapname != "3"){
-    //    if(mapname == "1")
-    //        mapname = "House";
-    //    else if(mapname == "2")
-    //        mapname = "Backyard";
+    auto mapname = m_pQor->args().value("map");
+    if(mapname != "3"){
+        if(mapname == "1")
+            mapname = "House";
+        else if(mapname == "2")
+            mapname = "Backyard";
+
+        m_pText->set(string("Now entering: ") + mapname);
         
-    //    m_pCanvas->text(
-    //        string("Now entering: ") + mapname,
-    //        Color::white(),
-    //        vec2(sw/2.0f, sh/2.0f),
-    //        Canvas::Align::CENTER
-    //    );
-    //}else{
-    //    m_pCanvas->text(
-    //        "Thanks for playing!",
-    //        Color::white(),
-    //        vec2(sw/2.0f, sh/4.0f),
-    //        Canvas::Align::CENTER
-    //    );
-    //    m_pCanvas->text(
-    //        "To be continued...",
-    //        Color::white(),
-    //        vec2(sw/2.0f, sh/2.0f),
-    //        Canvas::Align::CENTER
-    //    );
-    //    m_pCanvas->text(
-    //        "Created by Grady O'Connell, Kevin Nelson, Mark McDaniel",
-    //        Color::white(),
-    //        vec2(sw/2.0f, 3.0f*sh/4.0f),
-    //        Canvas::Align::CENTER
-    //    );
+        //m_pCanvas->text(
+        //    string("Now entering: ") + mapname,
+        //    Color::white(),
+        //    vec2(sw/2.0f, sh/2.0f),
+        //    Text::Align::CENTER
+        //);
+    }else{
+        
+        //m_pCanvas->text(
+        //    "Thanks for playing!",
+        //    Color::white(),
+        //    vec2(sw/2.0f, sh/4.0f),
+        //    Text::CENTER
+        //);
+        //m_pCanvas->text(
+        //    "To be continued...",
+        //    Color::white(),
+        //    vec2(sw/2.0f, sh/2.0f),
+        //    Text::CENTER
+        //);
+        //m_pCanvas->text(
+        //    "Created by Grady O'Connell, Kevin Nelson, Mark McDaniel",
+        //    Color::white(),
+        //    vec2(sw/2.0f, 3.0f*sh/4.0f),
+        //    Text::CENTER
+        //);
 
         
     //    m_Win = true;
-    //}
+    }
     //m_pRoot->add(m_pCanvas);
 }
 
