@@ -4,3 +4,4 @@ obj
 bin/microarmy
 test.make
 microarmy_test.make
+/bin/profiles/ps3.json
