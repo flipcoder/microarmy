@@ -76,6 +76,7 @@ class Monster: public Node {
         void stun(int m_StunTime);
         void gib();
         void sound(const std::string& fn);
+        //bool colliding() const;
 
 
         // Callbacks

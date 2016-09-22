@@ -163,7 +163,7 @@ void Thing :: cb_untouch_player(Node* player_node, Node* thing_node) {
 
 void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     auto thing = (Thing*) thing_node;
-
+    auto player = player_node->config()->at<Player*>("player");
     // Copy mesh from maptile to thing
 
     if (thing->id() == Thing::STAR and thing->m_Collidable) {
@@ -209,9 +209,9 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     } else if (thing->id() == Thing::HEART) {
         if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
+            player->heal(10);
             thing->visible(false);
             thing->placeholder()->visible(false);
-
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 thing->visible(true);
                 thing->placeholder()->visible(true);
@@ -222,7 +222,6 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             thing->sound("pickup.wav");
             thing->visible(false);
             thing->placeholder()->visible(false);
-
             thing->m_ResetCon = thing->game()->on_reset.connect([thing] {
                 thing->visible(true);
                 thing->placeholder()->visible(true);

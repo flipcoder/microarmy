@@ -4,13 +4,13 @@
 using namespace std;
 using namespace glm;
 
-
 const std::vector<int> HUD :: STAR_LEVELS = { 7, 6, 2 };
 
-HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache):
+HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache, Player* player):
     m_pWindow(window),
     m_pInput(input),
-    m_pCache(cache)
+    m_pCache(cache),
+    m_pPlayer(player)
 {
     auto sw = m_pWindow->size().x;
     auto sh = m_pWindow->size().y;
@@ -27,6 +27,9 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache):
     add(m_pText);
     
     set(0, 0, 0);
+
+    auto _this = this;
+    m_HealthCon = m_pPlayer->on_health_change.connect([_this](int){_this->m_bDirty = true; });
 }
 
 
@@ -49,7 +52,8 @@ void HUD :: redraw() {
 
     //m_pCanvas->dirty(true);
     
-    m_pText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
+    m_pText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars) + "\n"
+        + "Health: " + to_string(m_pPlayer->health()));
 }
 
 

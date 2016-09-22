@@ -442,7 +442,10 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
 
             // Knockback and stun
             auto vel = monster->velocity();
+            //monster->snapshot();
             monster->move(vec3(-kit::sign(vel.x) * 5.0f, 0.0f, 0.0f));
+            //if(monster->colliding())
+            //    monster->restore_snapshot(0);
             monster->stun();
             
             // Change direction based on bullet velocity
@@ -514,5 +517,12 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
 //        monster->velocity().y,
 //        monster->velocity().z
 //    );
+//}
+
+
+//bool Monster :: colliding() const
+//{
+//    auto cols = m_pPartitioner->get_collisions_for((Node*)m_pSprite->mesh().get(), STATIC);
+//    return not cols.empty();
 //}
 

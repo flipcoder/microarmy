@@ -41,7 +41,7 @@ class Player: public Node {
         bool no_enemy_damage() const { return m_NoEnemyDamage; }
         bool no_fatal_objects() const { return m_NoFatalObjects; }
         bool prone() const { return m_Prone; }
-        int get_health() { return m_Health; }
+        int health() const { return m_Health; }
 
         // Methods
         void enter();
@@ -55,11 +55,14 @@ class Player: public Node {
         void reset();
         void prone(bool b);
         bool hurt(int damage);
+        void heal(int health);
 
         // Callbacks
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
         Sprite* sprite() { return m_pChar.get(); }
+
+        boost::signals2::signal<void(int)> on_health_change;
         
     private:
         // Variables
