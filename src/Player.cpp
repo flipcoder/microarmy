@@ -527,6 +527,7 @@ void Player :: blink(){
 void Player :: reset() {
     m_pGame->reset();
     m_Health = 100;
+    on_health_change(m_Health);
 }
 
 void Player :: reset_walljump() {
@@ -557,6 +558,7 @@ bool Player :: hurt(int damage) {
     if(m_Health < 1)
         return false; // if dead, don't accept damage
     m_Health = m_Health - damage;
+    on_health_change(m_Health);
     if (m_Health < 1)
         reset();
 

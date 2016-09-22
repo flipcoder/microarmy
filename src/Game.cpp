@@ -36,10 +36,25 @@ void Game :: preload() {
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pRoot->add(m_pCamera);
     
+    m_pChar = make_shared<Player>(
+        m_pQor->resource_path("guy.json"),
+        m_pResources,
+        m_pCamera.get(),
+        m_pController.get(),
+        m_pTimeline,
+        m_pPartitioner,
+        this
+    );
+    //m_pChar->texture()->ambient(Color::red(1.0f)*0.5f);
+    m_pRoot->add(m_pChar);
+    
+    m_Players.push_back(m_pChar);
+    
     m_pHUD = make_shared<HUD>(
         m_pQor->window(),
         m_pQor->input(),
-        m_pQor->resources()
+        m_pQor->resources(),
+        m_pChar.get()
     );
 
     m_pOrthoCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
@@ -60,20 +75,6 @@ void Game :: preload() {
     
     auto scale = 250.0f / std::max<float>(sw* 1.0f, 1.0f);
     m_pCamera->rescale(glm::vec3(scale, scale, 1.0f));
-
-    m_pChar = make_shared<Player>(
-        m_pQor->resource_path("guy.json"),
-        m_pResources,
-        m_pCamera.get(),
-        m_pController.get(),
-        m_pTimeline,
-        m_pPartitioner,
-        this
-    );
-    //m_pChar->texture()->ambient(Color::red(1.0f)*0.5f);
-    m_pRoot->add(m_pChar);
-    
-    m_Players.push_back(m_pChar);
     
     m_pCamera->mode(Tracker::FOLLOW);
     //m_pCamera->threshold(1.0f);
@@ -628,12 +629,12 @@ void Game :: cb_to_tile(Node* a, Node* b) {
 void Game :: cb_to_fatal(Node* a, Node* b) {
     Sound::play(m_pCamera.get(), "die.wav", m_pResources);
     // 29 July 2016 - KG: Added God Mode
-    for (auto&& Player: m_Players) {
-        if (not Player->god() && not Player->no_fatal_objects()) {
-            reset();
+    //for (auto&& Player: m_Players) {
+        if (not m_pChar->god() && not m_pChar->no_fatal_objects()) {
+            m_pChar->reset();
             m_pChar->velocity(glm::vec3(0.0f));
         }
-    }
+    //}
 }
 
 

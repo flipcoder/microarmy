@@ -6,6 +6,7 @@
 #include "Qor/Canvas.h"
 #include "Qor/Input.h"
 #include "Qor/Text.h"
+#include "Player.h"
 
 class HUD: public Node {
     public:
@@ -13,7 +14,8 @@ class HUD: public Node {
         HUD(
             Window* window,
             Input* input,
-            Cache<Resource,std::string>* cache
+            Cache<Resource,std::string>* cache,
+            Player* player
         );
 
         // Destructor
@@ -29,11 +31,9 @@ class HUD: public Node {
         
 
     private:
-        // Static variables
+        
         static const std::vector<int> STAR_LEVELS;
 
-
-        // Variables
         bool m_bDirty = true;
         int m_StarLev = -1;
         int m_Stars = 0;
@@ -41,8 +41,6 @@ class HUD: public Node {
 
         //Pango::FontDescription m_FontDesc;
 
-
-        // Pointers
         Window* m_pWindow = nullptr;
         Input* m_pInput = nullptr;
         //std::shared_ptr<Canvas> m_pCanvas;
@@ -51,6 +49,7 @@ class HUD: public Node {
 
         std::shared_ptr<Font> m_pFont;
         std::shared_ptr<Text> m_pText;
+        Player* m_pPlayer = nullptr;
 
         // Functions
         void redraw();

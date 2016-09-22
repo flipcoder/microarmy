@@ -60,6 +60,8 @@ class Player: public Node {
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
         Sprite* sprite() { return m_pChar.get(); }
+
+        boost::signals2::signal<void(int)> on_health_change;
         
     private:
         // Variables
