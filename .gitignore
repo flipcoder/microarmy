@@ -4,10 +4,12 @@ obj
 bin/microarmy
 test.make
 microarmy_test.make
-/bin/profiles/ps3.json
+bin/profiles/ps3.json
 bin/*.dll
 *.idb
 *.pdb
 *.ilk
 *.exe
 *.suo
+microarmy.VC.VC.opendb
+microarmy.VC.db
