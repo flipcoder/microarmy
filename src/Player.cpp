@@ -525,8 +525,9 @@ void Player :: blink(){
 }
 
 void Player :: reset() {
-    if (m_Lives < 1) {
-        m_Lives = 4;
+    if (m_Lives <= 0) {
+        m_pGame->end();
+        return;
     }
     m_pGame->reset();
     m_Health = 100;

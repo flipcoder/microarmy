@@ -70,11 +70,11 @@ class Game: public State {
 
         // Methods
         void reset();
+        void end();
         std::vector<Node*> get_static_collisions(Node* a);
         std::vector<const Node*> vnodes() { return m_VisibleNodes; }
         std::vector<std::shared_ptr<Player>>& players() { return m_Players; }
         void checkpoint(Node* chk);
-
 
         // Callbacks
         void cb_to_static(Node* a, Node* b, Node* m);

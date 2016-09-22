@@ -421,6 +421,9 @@ void Game :: reset() {
     on_reset();
 }
 
+void Game :: end() {
+    m_pQor->change_state("intro");
+}
 
 Game :: ~Game() {
     m_pPipeline->partitioner()->clear();
