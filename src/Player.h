@@ -42,6 +42,7 @@ class Player: public Node {
         bool no_fatal_objects() const { return m_NoFatalObjects; }
         bool prone() const { return m_Prone; }
         int health() const { return m_Health; }
+        int lives() const { return m_Lives; }
 
         // Methods
         void enter();
@@ -76,6 +77,7 @@ class Player: public Node {
         bool m_NoEnemyDamage = false; // Only affects enemy overlap and bullets (but not Wizard's fire)
         bool m_Prone = false;
         int m_Health = 100;
+        int m_Lives = 3;
 
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;
