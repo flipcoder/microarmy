@@ -53,7 +53,7 @@ void HUD :: redraw() {
     //m_pCanvas->dirty(true);
     
     m_pText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars) + "\n"
-        + "Health: " + to_string(m_pPlayer->health()));
+        + "Health: " + to_string(m_pPlayer->health()) + "/100");
 }
 
 
