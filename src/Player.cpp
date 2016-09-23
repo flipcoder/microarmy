@@ -138,25 +138,27 @@ void Player :: logic_self(Freq::Time t) {
             shoot(dir);
     }
 
-    if(xpres < -K_EPSILON){
+    const float min_pressure = 0.25f;
+    
+    if(xpres < -min_pressure){
         m_pChar->set_state("left");
-        if(std::abs(ypres) < 0.25f)
+        if(std::abs(ypres) < min_pressure)
             m_pChar->set_state("forward");
     }
-    if(xpres > K_EPSILON){
+    if(xpres > min_pressure){
         m_pChar->set_state("right");
-        if(std::abs(ypres) < 0.25f)
+        if(std::abs(ypres) < min_pressure)
             m_pChar->set_state("forward");
     }
     
-    if(xpres < -K_EPSILON){
+    if(xpres < -min_pressure){
         m_pChar->set_state("left");
-        if(std::abs(ypres) < 0.25f)
+        if(std::abs(ypres) < min_pressure)
             m_pChar->set_state("forward");
     }
-    if(xpres > K_EPSILON){
+    if(xpres > min_pressure){
          m_pChar->set_state("right");
-         if(std::abs(ypres) < 0.25f)
+         if(std::abs(ypres) < min_pressure)
              m_pChar->set_state("forward");
     }
 
@@ -219,13 +221,13 @@ void Player :: logic_self(Freq::Time t) {
 
         move = glm::normalize(move);
         //wrp in if, if abs val x pressure < k_epsilon
-        if (std::abs(xpres) < K_EPSILON){
+        if (std::abs(xpres) < min_pressure){
 
-            if(std::abs(xpres) < K_EPSILON){
-                if (move.x < -K_EPSILON){
+            if(std::abs(xpres) < min_pressure){
+                if (move.x < -min_pressure){
                     m_pChar->set_state("left");
                 }
-                else if (move.x > K_EPSILON){
+                else if (move.x > min_pressure){
                     m_pChar->set_state("right");
                 }
             
