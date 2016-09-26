@@ -67,11 +67,15 @@ void Player :: logic_self(Freq::Time t) {
 
     if (m_InvincibleTime.elapsed()){
         blinking(false);
-        m_pChar->visible(true);
+		m_pProne->visible(m_Prone);
+        m_pChar->visible(not m_Prone);
         m_InvincibleTime.reset();
         m_BlinkTime.reset();
     }
     else if (m_BlinkTime.elapsed()){
+		if (m_Prone)
+			m_pProne->visible(!m_pProne->visible());
+		else
         m_pChar->visible(!m_pChar->visible());
         m_BlinkTime.set(Freq::Time::ms(BLINK_TIME));
     }
