@@ -437,15 +437,26 @@ void Player :: shoot(glm::vec2 dir) {
     shot->material()->emissive(Color::white());
     root()->add(shot);
 
-    shot->position(glm::vec3(
-        position().x +
-        -m_pChar->origin().x * m_pChar->size().x +
-            m_pChar->mesh()->world_box().size().x / 2.0f,
-        position().y +
-            -m_pChar->origin().y * m_pChar->size().y +
-            m_pChar->mesh()->world_box().size().y / 2.0f + -2.0f,
-        position().z
-    ));
+    if(m_Prone)
+        shot->position(glm::vec3(
+            position().x +
+            -m_pProne->origin().x * m_pProne->size().x +
+                m_pProne->mesh()->world_box().size().x / 2.0f,
+            position().y +
+                -m_pProne->origin().y * m_pProne->size().y +
+                m_pProne->mesh()->world_box().size().y / 2.0f + -2.0f,
+            position().z
+        ));
+    else
+        shot->position(glm::vec3(
+            position().x +
+            -m_pChar->origin().x * m_pChar->size().x +
+                m_pChar->mesh()->world_box().size().x / 2.0f,
+            position().y +
+                -m_pChar->origin().y * m_pChar->size().y +
+                m_pChar->mesh()->world_box().size().y / 2.0f + -2.0f,
+            position().z
+        ));
 
     vec3 aimdir = vec3(dir, 0.0f);
 
