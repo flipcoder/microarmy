@@ -82,7 +82,7 @@ void HUD :: set(int star_lev, int stars, int max_stars) {
             vector<shared_ptr<IMeshModifier>>{
                 make_shared<Wrap>(Prefab::tile_wrap(
                     // Y Y (height is tile size for both dims)
-                    uvec2(mat->texture()->size().y, mat->texture()->size().y),
+                    uvec2(16,16),
                     // X Y
                     uvec2(mat->texture()->size().x, mat->texture()->size().y),
                     STAR_LEVELS[m_StarLev]
