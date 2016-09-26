@@ -516,6 +516,9 @@ void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
         int damage = bullet->config()->at<int>("damage", 1);
         if(player->hurt(damage))
             bullet->safe_detach();
+		auto gibs = player->m_Health==0 ? 20 : 5;
+		for (int i = 0; i < gibs; ++i)
+			player->gib();
     }
 
 }
@@ -576,4 +579,31 @@ bool Player :: hurt(int damage) {
 void Player::heal(int health) {
     m_Health = std::min(m_Health + health, 100);
     on_health_change(m_Health);
+}
+
+void Player::gib() {
+	auto gib = make_shared<Sprite>(m_pResources->transform("blood.json"), m_pResources);
+	gib->set_state("animated");
+
+	// Randomizes direction gib moves
+	auto dir = Angle::degrees(1.0f * (rand() % 360)).vector();
+	stick(gib);
+
+	// Sets gib size and movement
+	gib->move(vec3(rand() % 100 - 50.0f, rand() % 200 - 100.0f, 2.0f));
+	gib->velocity(vec3(dir, 0.0f) * 100.0f);
+	gib->acceleration(vec3(0.0f, 500.0f, 0.0f));
+	gib->scale((rand() % 100 + 1) / 100.0f * 0.5f);
+
+	// Creates random gib lifetime
+	auto lifetime = make_shared<float>(0.5f * (rand() % 4));
+	auto gibptr = gib.get();
+
+	// Connexts gib to game tick signal
+	gib->on_tick.connect([gibptr, lifetime](Freq::Time t) {
+		*lifetime -= t.s();
+
+		if (*lifetime < 0.0f)
+			gibptr->detach();
+	});
 }

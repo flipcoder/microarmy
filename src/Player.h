@@ -57,7 +57,7 @@ class Player: public Node {
         void prone(bool b);
         bool hurt(int damage);
         void heal(int health);
-
+		void gib();
         // Callbacks
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
