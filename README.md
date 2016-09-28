@@ -57,5 +57,14 @@ Programming
 ### [Mark McDaniel](https://github.com/AlfredAnonymous)
 Graphics
 
+### [Kyle Gray](https://github.com/gregorthebigmac)
+Programming
+
+### [Douglas Drugan](https://github.com/Douglas-Robert-Drugan)
+Programming
+
+### [Holly Buteau](https://github.com/Holly-Buteau)
+Programming
+
 =====
 
