@@ -13,7 +13,7 @@
 
 using namespace std;
 using namespace glm;
-
+using namespace Filesystem;
 
 Intro :: Intro(Qor* engine):
     m_pQor(engine),
@@ -100,6 +100,21 @@ void Intro :: enter() {
         m_pQor->pop_state();
     });
 
+    #ifdef _WIN32
+        auto lines = kit::lines(file_to_string("data\\maps\\maps.txt"));
+    #else
+        auto lines = kit::lines(file_to_string("data/maps/maps.txt"));
+    #endif
+   
+    int count = 1;
+    for (string& line : lines) {
+        m_LevelMenu.options().emplace_back(boost::to_upper_copy(line), [qor, count] {
+            qor->args().set("map", to_string(count));
+            qor->change_state("pregame");
+        });
+    }
+
+    /*
     m_LevelMenu.options().emplace_back("HOUSE", [qor]{
         qor->args().set("map", "1");
         qor->change_state("pregame");
@@ -108,6 +123,7 @@ void Intro :: enter() {
         qor->args().set("map", "2");
         qor->change_state("pregame");
     });
+    */
     m_LevelMenu.options().emplace_back(
         "BACK",
         [this]{

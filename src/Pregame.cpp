@@ -10,7 +10,7 @@
 
 using namespace std;
 using namespace glm;
-
+using namespace Filesystem;
 
 Pregame :: Pregame(Qor* engine):
     m_pQor(engine),
@@ -72,8 +72,20 @@ void Pregame :: preload() {
     //    Cairo::FONT_WEIGHT_NORMAL
     //);
     //cairo->set_font_size(sw / 64.0f);
+    #ifdef _WIN32
+        auto lines = kit::lines(file_to_string("data\\maps\\maps.txt"));
+    #else
+        auto lines = kit::lines(file_to_string("data/maps/maps.txt"));
+    #endif
+
+    string mapno = m_pQor->args().value("map");
+    int map_number = boost::lexical_cast<int>(mapno);
+
+    auto map_name = lines.at(map_number - 1);
+    m_pText->set(string("Now entering: ") + map_name);
     
     //// TEMP: just for jam
+    /*
     auto mapname = m_pQor->args().value("map");
     if(mapname != "3"){
         if(mapname == "1")
@@ -114,6 +126,7 @@ void Pregame :: preload() {
     //    m_Win = true;
     }
     //m_pRoot->add(m_pCanvas);
+    */
 }
 
 
