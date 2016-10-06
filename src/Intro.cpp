@@ -112,6 +112,7 @@ void Intro :: enter() {
             qor->args().set("map", to_string(count));
             qor->change_state("pregame");
         });
+        count++;
     }
 
     /*
