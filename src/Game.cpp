@@ -359,12 +359,20 @@ void Game :: preload() {
         CHARACTER, LEDGE, std::bind(&Game::cb_to_ledge, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, FATAL, std::bind(&Game::cb_to_fatal, this, _::_1, _::_2)
+        CHARACTER, FATAL, 
+		std::bind(&Game::cb_to_fatal, this, _::_1, _::_2),
+		std::function<void(Node*, Node*)>(),
+		std::bind(&Game::cb_touch_to_fatal, this, _::_1, _::_2)
     );
+
+	//m_pPartitioner->on_touch(
+		//CHARACTER, FATAL, std::bind(&Game::cb_touch_to_fatal, this, _::_1, _::_2)
+	//);
+
     m_pPartitioner->on_collision(
         BULLET, STATIC, std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
     );
-    
+
     m_pPartitioner->on_collision(
         THING, STATIC, std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
@@ -630,7 +638,7 @@ void Game :: cb_to_tile(Node* a, Node* b) {
 
 
 void Game :: cb_to_fatal(Node* a, Node* b) {
-    Sound::play(m_pCamera.get(), "die.wav", m_pResources);
+    //Sound::play(m_pCamera.get(), "die.wav", m_pResources);
     // 29 July 2016 - KG: Added God Mode
     //for (auto&& Player: m_Players) {
         if (not m_pChar->god() && not m_pChar->no_fatal_objects()) {
@@ -638,6 +646,10 @@ void Game :: cb_to_fatal(Node* a, Node* b) {
             m_pChar->velocity(glm::vec3(0.0f));
         }
     //}
+}
+
+void Game::cb_touch_to_fatal(Node* a, Node* b) {
+	Sound::play(m_pCamera.get(), "die.wav", m_pResources);
 }
 
 
