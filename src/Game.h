@@ -81,6 +81,7 @@ class Game: public State {
         void cb_to_ledge(Node* a, Node* b);
         void cb_to_tile(Node* a, Node* b);
         void cb_to_fatal(Node* a, Node* b);
+		void cb_touch_to_fatal(Node* a, Node* b);
         void cb_thing(Node* a, Node* b);
         void cb_bullet_to_static(Node* a, Node* b);
         
