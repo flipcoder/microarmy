@@ -2,6 +2,7 @@
 #include "Qor/Sound.h"
 #include "Game.h"
 #include "Monster.h"
+#include "Qor/Qor.h"
 
 using namespace std;
 using namespace glm;
@@ -129,6 +130,12 @@ void Player :: logic_self(Freq::Time t) {
     
     if (m_pController->button("God").pressed_now())
         m_GodMode = !m_GodMode;
+
+    if (m_pController->button("NextLevel").pressed_now())
+        next_level();
+
+    if (m_pController->button("PreviousLevel").pressed_now())
+        previous_level();
 
     // aim+shoot logic
     float xpres = m_pController->button("aimright").pressure() -
@@ -621,4 +628,20 @@ void Player::gib() {
 		if (*lifetime < 0.0f)
 			gibptr->detach();
 	});
+}
+
+void Player :: next_level() {
+    auto mapname = m_pGame->qor()->args().value_or("map", "1");
+    auto nextmap = to_string(boost::lexical_cast<int>(mapname) + 1);
+
+    m_pGame->qor()->args().set("map", nextmap);
+    m_pGame->qor()->change_state("pregame");
+}
+
+void Player :: previous_level() {
+    auto mapname = m_pGame->qor()->args().value_or("map", "1");
+    auto nextmap = to_string(boost::lexical_cast<int>(mapname) - 1);
+
+    m_pGame->qor()->args().set("map", nextmap);
+    m_pGame->qor()->change_state("pregame");
 }

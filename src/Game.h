@@ -74,6 +74,7 @@ class Game: public State {
         std::vector<Node*> get_static_collisions(Node* a);
         std::vector<const Node*> vnodes() { return m_VisibleNodes; }
         std::vector<std::shared_ptr<Player>>& players() { return m_Players; }
+        Qor* qor() { return m_pQor; }
         void checkpoint(Node* chk);
 
         // Callbacks
