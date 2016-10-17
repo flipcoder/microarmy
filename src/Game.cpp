@@ -693,8 +693,10 @@ void Game :: enter() {
 void Game :: logic(Freq::Time t) {
     Actuation::logic(t);
     
-    if (m_pInput->key(SDLK_ESCAPE))
-        m_pQor->quit();
+    if (m_pInput->key(SDLK_ESCAPE).pressed_now()){
+        m_pQor->change_state("intro");
+        return;
+    }
 
     m_pRoot->logic(t);
     m_pOrthoRoot->logic(t);
