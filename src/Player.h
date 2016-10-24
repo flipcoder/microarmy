@@ -58,6 +58,11 @@ class Player: public Node {
         bool hurt(int damage);
         void heal(int health);
 		void gib();
+
+        // debug
+        void next_level();
+        void previous_level();
+
         // Callbacks
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
