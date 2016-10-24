@@ -60,14 +60,14 @@
     },
     "17,0": {
         "name": "duck"
-    },
-    "18,0": {
-        "name": "checkpoint"
-    },
+    }, 
     "19,0": {
         "name": "frog"
     },
     "23,0": { 
         "name": "blockman"
+    },
+    "4,1": {
+        "name": "checkpoint"
     }
 }

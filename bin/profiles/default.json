@@ -10,6 +10,8 @@
             "8": "NoEnemyDamage",
             "9": "NoFatalObjects",
             "0": "God",
+            "PageUp": "NextLevel",
+            "PageDown": "PreviousLevel",
             "z": [
                 "shoot",
                 "back"
