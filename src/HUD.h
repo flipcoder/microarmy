@@ -46,9 +46,12 @@ class HUD: public Node {
         //std::shared_ptr<Canvas> m_pCanvas;
         Cache<Resource, std::string>* m_pCache;
         std::shared_ptr<Mesh> m_pMesh;
+		std::shared_ptr<Mesh> m_pHeart;
 
         std::shared_ptr<Font> m_pFont;
-        std::shared_ptr<Text> m_pText;
+        std::shared_ptr<Text> m_pLivesText;
+		std::shared_ptr<Text> m_pHealthText;
+		std::shared_ptr<Text> m_pStarText;
         Player* m_pPlayer = nullptr;
 
         boost::signals2::scoped_connection m_HealthCon;
