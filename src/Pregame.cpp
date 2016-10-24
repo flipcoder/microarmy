@@ -80,9 +80,15 @@ void Pregame :: preload() {
 
     string mapno = m_pQor->args().value("map");
     int map_number = boost::lexical_cast<int>(mapno);
-
-    auto map_name = lines.at(map_number - 1);
-    m_pText->set(string("Now entering: ") + map_name);
+	
+	string map_name;
+	try {
+		map_name = lines.at(map_number - 1);
+	}catch (const std::out_of_range&) {
+		m_Win = true;
+		return;
+	}
+	m_pText->set(string("Now entering: ") + map_name);
     
     //// TEMP: just for jam
     /*
