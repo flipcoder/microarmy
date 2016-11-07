@@ -101,13 +101,17 @@ void HUD :: redraw() {
     m_pStarText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
     m_pHealthText->set(to_string(m_pPlayer->health()) + "%");
     m_pLivesText->set(" " + to_string(m_pPlayer->lives()));
-    m_pGodText->set("God Mode: " + to_string(m_pPlayer->god()));
+    
+    if (m_pPlayer->god())
+        m_pGodText->set("God Mode: ON");
+    if (!(m_pPlayer->god()))
+        m_pGodText->set("");
 
     m_pGodText->redraw();
     m_pLivesText->redraw();
     m_pHealthText->redraw();
-    m_pGuy->position(glm::vec3(sw/2.0f - m_pLivesText->size().x, 0.0f, 0.0f));
-    m_pHeart->position(glm::vec3(sw - m_pHealthText->size().x - 64.0f, 0.0f, 0.0f));
+    //m_pGuy->position(glm::vec3(sw/2.0f - m_pLivesText->size().x, 0.0f, 0.0f));
+    //m_pHeart->position(glm::vec3(sw - m_pHealthText->size().x - 64.0f, 0.0f, 0.0f));
 }
 
 void HUD :: logic_self(Freq::Time) {
