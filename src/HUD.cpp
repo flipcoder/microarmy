@@ -24,51 +24,60 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache, Pla
         cache
     );
 
-	m_pStarText = std::make_shared<Text>(m_pFont);
-	m_pLivesText = std::make_shared<Text>(m_pFont);
-	m_pHealthText = std::make_shared<Text>(m_pFont);
+    m_pStarText = std::make_shared<Text>(m_pFont);
+    m_pLivesText = std::make_shared<Text>(m_pFont);
+    m_pHealthText = std::make_shared<Text>(m_pFont);
 
-	m_pLivesText->position(glm::vec3(sw / 2.0f, 0.0f, 0.0f));
-	m_pHealthText->position(glm::vec3(sw, 0.0f, 0.0f));
+    m_pLivesText->position(glm::vec3(sw / 2.0f, 0.0f, 0.0f));
+    m_pHealthText->position(glm::vec3(sw, 0.0f, 0.0f));
 
-	m_pStarText->align(Text::LEFT);
-	m_pLivesText->align(Text::CENTER);
-	m_pHealthText->align(Text::RIGHT);
+    m_pStarText->align(Text::LEFT);
+    m_pLivesText->align(Text::CENTER);
+    m_pHealthText->align(Text::RIGHT);
 
     add(m_pStarText);
-	add(m_pLivesText);
-	add(m_pHealthText);
+    add(m_pLivesText);
+    add(m_pHealthText);
 
     set(0, 0, 0);
 
     auto _this = this;
     m_HealthCon = m_pPlayer->on_health_change.connect([_this](int){_this->m_bDirty = true; });
 
-	auto mat = make_shared<MeshMaterial>("items.png", m_pCache);
+    auto mat = make_shared<MeshMaterial>("items.png", m_pCache);
 
-	m_pHeart = make_shared<Mesh>(
-		make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
-		vector<shared_ptr<IMeshModifier>>{
-		make_shared<Wrap>(Prefab::tile_wrap(
-			// Y Y (height is tile size for both dims)
-			uvec2(16, 16),
-			// X Y
-			uvec2(mat->texture()->size().x, mat->texture()->size().y),
-			1
-		))
-	}, mat
-		);
+    m_pHeart = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
+        vector<shared_ptr<IMeshModifier>>{
+        make_shared<Wrap>(Prefab::tile_wrap(
+            // Y Y (height is tile size for both dims)
+            uvec2(16, 16),
+            // X Y
+            uvec2(mat->texture()->size().x, mat->texture()->size().y),
+            1
+        ))
+    }, mat
+        );
 
-	add(m_pHeart);
-	
-
+    mat = make_shared<MeshMaterial>("guy-jump.png", m_pCache);
+    m_pGuy = make_shared<Mesh>(
+        make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
+        vector<shared_ptr<IMeshModifier>>{
+        make_shared<Wrap>(Prefab::quad_wrap(
+            glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
+        ))
+        }, mat
+    );
+    
+    add(m_pHeart);
+    add(m_pGuy);
 }
 
 
 void HUD :: redraw() {
     auto sw = m_pWindow->size().x;
     auto sh = m_pWindow->size().y;
-    
+     
     //// clear transparent
     //auto ctext = m_pCanvas->context();
     //m_pCanvas->clear(Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -84,23 +93,25 @@ void HUD :: redraw() {
 
     //m_pCanvas->dirty(true);
     
-	m_pStarText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
-	m_pHealthText->set("  " + to_string(m_pPlayer->health()) + "%");
-	m_pLivesText->set("  " + to_string(m_pPlayer->lives()));
-
-	
+    m_pStarText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
+    m_pHealthText->set(to_string(m_pPlayer->health()) + "%");
+    m_pLivesText->set(" " + to_string(m_pPlayer->lives()));
+    
+    m_pLivesText->redraw();
+    m_pHealthText->redraw();
+    m_pGuy->position(glm::vec3(sw/2.0f - m_pLivesText->size().x, 0.0f, 0.0f));
+    m_pHeart->position(glm::vec3(sw - m_pHealthText->size().x - 64.0f, 0.0f, 0.0f));
 }
-
 
 void HUD :: logic_self(Freq::Time) {
     if (m_bDirty) {
         redraw();
 
-		//m_pHeart->position(m_pHealthText->position() - glm::vec3(
+        //m_pHeart->position(m_pHealthText->position() - glm::vec3(
 
-		//	m_pHealthText->children()[0]->box().size().x, 0.0f, 0.0f
+        //    m_pHealthText->children()[0]->box().size().x, 0.0f, 0.0f
 
-		//));
+        //));
 
         m_bDirty = false;
     }

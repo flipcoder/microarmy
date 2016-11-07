@@ -47,6 +47,7 @@ class HUD: public Node {
         Cache<Resource, std::string>* m_pCache;
         std::shared_ptr<Mesh> m_pMesh;
 		std::shared_ptr<Mesh> m_pHeart;
+		std::shared_ptr<Mesh> m_pGuy;
 
         std::shared_ptr<Font> m_pFont;
         std::shared_ptr<Text> m_pLivesText;
