@@ -129,7 +129,7 @@ void Player :: logic_self(Freq::Time t) {
         m_NoFatalObjects = !m_NoFatalObjects;
     
     if (m_pController->button("God").pressed_now())
-        m_GodMode = !m_GodMode;
+        god(!m_GodMode);
 
     if (m_pController->button("NextLevel").pressed_now())
         next_level();

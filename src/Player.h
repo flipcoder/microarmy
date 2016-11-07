@@ -50,7 +50,7 @@ class Player: public Node {
         void shoot(glm::vec2 dir);
         void face(glm::vec2 dir);
         void battery(int b) { m_Battery += b; }
-        void god(bool b) { m_GodMode = b; }
+        void god(bool b) { m_GodMode = b; on_god_change(m_GodMode);}
         void blinking(bool b) { m_Blinking = b; }
         void blink();
         void reset();
@@ -69,6 +69,7 @@ class Player: public Node {
         Sprite* sprite() { return m_pChar.get(); }
 
         boost::signals2::signal<void(int)> on_health_change;
+        boost::signals2::signal<void(bool)> on_god_change;
         
     private:
         // Variables

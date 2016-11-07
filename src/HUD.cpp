@@ -27,22 +27,27 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache, Pla
     m_pStarText = std::make_shared<Text>(m_pFont);
     m_pLivesText = std::make_shared<Text>(m_pFont);
     m_pHealthText = std::make_shared<Text>(m_pFont);
+    m_pGodText = std::make_shared<Text>(m_pFont);
 
     m_pLivesText->position(glm::vec3(sw / 2.0f, 0.0f, 0.0f));
     m_pHealthText->position(glm::vec3(sw, 0.0f, 0.0f));
+    m_pGodText->position(glm::vec3(0.0f, sh *.1, 0.2f));
 
     m_pStarText->align(Text::LEFT);
     m_pLivesText->align(Text::CENTER);
     m_pHealthText->align(Text::RIGHT);
+    m_pGodText->align(Text::LEFT);
 
     add(m_pStarText);
     add(m_pLivesText);
     add(m_pHealthText);
+    add(m_pGodText);
 
     set(0, 0, 0);
 
     auto _this = this;
     m_HealthCon = m_pPlayer->on_health_change.connect([_this](int){_this->m_bDirty = true; });
+    m_GodCon = m_pPlayer->on_god_change.connect([_this](bool) {_this->m_bDirty = true; });
 
     auto mat = make_shared<MeshMaterial>("items.png", m_pCache);
 
@@ -96,7 +101,9 @@ void HUD :: redraw() {
     m_pStarText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
     m_pHealthText->set(to_string(m_pPlayer->health()) + "%");
     m_pLivesText->set(" " + to_string(m_pPlayer->lives()));
-    
+    m_pGodText->set("God Mode: " + to_string(m_pPlayer->god()));
+
+    m_pGodText->redraw();
     m_pLivesText->redraw();
     m_pHealthText->redraw();
     m_pGuy->position(glm::vec3(sw/2.0f - m_pLivesText->size().x, 0.0f, 0.0f));

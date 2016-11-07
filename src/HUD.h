@@ -53,9 +53,11 @@ class HUD: public Node {
         std::shared_ptr<Text> m_pLivesText;
 		std::shared_ptr<Text> m_pHealthText;
 		std::shared_ptr<Text> m_pStarText;
+        std::shared_ptr<Text> m_pGodText;
         Player* m_pPlayer = nullptr;
 
         boost::signals2::scoped_connection m_HealthCon;
+        boost::signals2::scoped_connection m_GodCon;
 
         // Functions
         void redraw();
