@@ -264,8 +264,9 @@ void Player :: logic_self(Freq::Time t) {
             snapshot();
         }
 
-        prone(m_pController->button("down").pressure() > 0.8f);
-
+		if (not in_air) {
+			prone(m_pController->button("down").pressure() > 0.8f);
+		}
         //if (m_pController->button("left") or m_pController->button("right")) {
         //    if (m_pController->button("up"))
         //        m_pChar->set_state("upward");
