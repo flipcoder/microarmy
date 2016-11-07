@@ -174,205 +174,212 @@ void Player :: logic_self(Freq::Time t) {
     }
 
     bool block_jump = false;
-    if (m_pController->button("up").pressure()>0.8f || m_pController->button("jump")) {
-        
-        if (walljump || not in_air || not m_JumpTimer.elapsed()) {
-            float x = 0.0f;
+	if (m_pController->button("up").pressure() > 0.8f || m_pController->button("jump")) {
 
-            if (walljump) {
-                auto last_dir = m_LastWallJumpDir;
-                auto tile_loc = wall_colliders.at(0)->world_box().center().x;
+		if (!m_Prone) {
 
-                if (tile_loc < position(Space::WORLD).x + 4.0f) {
-                    m_LastWallJumpDir = -1;
-                } else {
-                    m_LastWallJumpDir = 1;
-                }
+		if (walljump || not in_air || not m_JumpTimer.elapsed()) {
+			float x = 0.0f;
 
-                // prevent "climbing" the wall by checking to make sure last wall jump was a diff direction (or floor)
-                // 0 means floors, -1 and 1 are directions
-                if (m_LastWallJumpDir != 0 and last_dir != 0 and m_LastWallJumpDir == last_dir)
-                    block_jump = true;
-            }
-        
-            // jumping from floor or from a different wall
-            if (not block_jump) {
-                if (not in_air || walljump || not m_JumpTimer.elapsed()) {
-                    velocity(glm::vec3(x, -125.0f, 0.0f));
+			if (walljump) {
+				auto last_dir = m_LastWallJumpDir;
+				auto tile_loc = wall_colliders.at(0)->world_box().center().x;
 
-                    if (not in_air || walljump) {
-                        auto sounds = m_pCamera->find_type<Sound>();
+				if (tile_loc < position(Space::WORLD).x + 4.0f) {
+					m_LastWallJumpDir = -1;
+				}
+				else {
+					m_LastWallJumpDir = 1;
+				}
 
-                        if(sounds.empty())
-                            Sound::play(m_pCamera, "jump.wav", m_pResources);
-                        m_JumpTimer.set(Freq::Time::ms(200));
-                    }
-                }
-            } else {
-                // jumping on same wall? only allow this if jump timer is still running
-                if (not m_JumpTimer.elapsed())
-                    velocity(glm::vec3(x, -125.0f, 0.0f));
-            }
-        }
-    } else {
-        m_JumpTimer.set(Freq::Time::ms(0));
-    }
+				// prevent "climbing" the wall by checking to make sure last wall jump was a diff direction (or floor)
+				// 0 means floors, -1 and 1 are directions
+				if (m_LastWallJumpDir != 0 and last_dir != 0 and m_LastWallJumpDir == last_dir)
+					block_jump = true;
+			}
 
-    if (not in_air and m_WasInAir)
-        Sound::play(m_pCamera, "touch.wav", m_pResources);
+			// jumping from floor or from a different wall
+			if (not block_jump) {
+				if (not in_air || walljump || not m_JumpTimer.elapsed()) {
+					velocity(glm::vec3(x, -125.0f, 0.0f));
 
-    m_WasInAir = in_air;
-    
-    if (not in_air)
-        m_LastWallJumpDir = 0;
+					if (not in_air || walljump) {
+						auto sounds = m_pCamera->find_type<Sound>();
 
-    if (glm::length(move) > K_EPSILON) {
-        if (not in_air)
-            m_pChar->set_state("walk");
+						if (sounds.empty())
+							Sound::play(m_pCamera, "jump.wav", m_pResources);
+						m_JumpTimer.set(Freq::Time::ms(200));
+					}
+				}
+			}
+			else {
+				// jumping on same wall? only allow this if jump timer is still running
+				if (not m_JumpTimer.elapsed())
+					velocity(glm::vec3(x, -125.0f, 0.0f));
+			}
+		}
+	}
+		}
+		else {
+			m_JumpTimer.set(Freq::Time::ms(0));
+		}
 
-        move = glm::normalize(move);
-        //wrp in if, if abs val x pressure < k_epsilon
-        if (std::abs(xpres) < min_pressure){
+		if (not in_air and m_WasInAir)
+			Sound::play(m_pCamera, "touch.wav", m_pResources);
 
-            if(std::abs(xpres) < min_pressure){
-                if (move.x < -min_pressure){
-                    m_pChar->set_state("left");
-                }
-                else if (move.x > min_pressure){
-                    m_pChar->set_state("right");
-                }
-            
-            }
-        }
+		m_WasInAir = in_air;
 
-        move *= 100.0f * t.s();
-        clear_snapshots();
-        snapshot();
-        this->move(move);
-    }
-    else {
-        if (not in_air)
-            m_pChar->set_state("stand");
+		if (not in_air)
+			m_LastWallJumpDir = 0;
 
-        clear_snapshots();
-        snapshot();
-    }
+		if (glm::length(move) > K_EPSILON) {
+			if (not in_air)
+				m_pChar->set_state("walk");
 
-    prone(m_pController->button("down").pressure() > 0.8f);
-    
-    //if (m_pController->button("left") or m_pController->button("right")) {
-    //    if (m_pController->button("up"))
-    //        m_pChar->set_state("upward");
-    //    else if(m_pController->button("down"))
-    //        m_pChar->set_state("downward");
-    //    else
-    //        m_pChar->set_state("forward");
-    //} else {
-    //    if (m_pController->button("up"))
-    //        m_pChar->set_state("up");
-    //    else if (m_pController->button("down"))
-    //        m_pChar->set_state("down");
-    //    else
-    //        m_pChar->set_state("forward");
-    //}
+			move = glm::normalize(move);
+			//wrp in if, if abs val x pressure < k_epsilon
+			if (std::abs(xpres) < min_pressure) {
+
+				if (std::abs(xpres) < min_pressure) {
+					if (move.x < -min_pressure) {
+						m_pChar->set_state("left");
+					}
+					else if (move.x > min_pressure) {
+						m_pChar->set_state("right");
+					}
+
+				}
+			}
+
+			move *= 100.0f * t.s();
+			clear_snapshots();
+			snapshot();
+			this->move(move);
+		}
+		else {
+			if (not in_air)
+				m_pChar->set_state("stand");
+
+			clear_snapshots();
+			snapshot();
+		}
+
+		prone(m_pController->button("down").pressure() > 0.8f);
+
+		//if (m_pController->button("left") or m_pController->button("right")) {
+		//    if (m_pController->button("up"))
+		//        m_pChar->set_state("upward");
+		//    else if(m_pController->button("down"))
+		//        m_pChar->set_state("downward");
+		//    else
+		//        m_pChar->set_state("forward");
+		//} else {
+		//    if (m_pController->button("up"))
+		//        m_pChar->set_state("up");
+		//    else if (m_pController->button("down"))
+		//        m_pChar->set_state("down");
+		//    else
+		//        m_pChar->set_state("forward");
+		//}
 
 
-    //////// RAY CASTING CODE //////////
+		//////// RAY CASTING CODE //////////
 
-    // Get player vision origin
-    auto orig = m_pChar->origin();
-    auto vorig = m_pChar->vorigin();
-    auto s = vec2(this->size());
+		// Get player vision origin
+		auto orig = m_pChar->origin();
+		auto vorig = m_pChar->vorigin();
+		auto s = vec2(this->size());
 
-    auto vorig_object = (vorig - orig) * s;
-    auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
+		auto vorig_object = (vorig - orig) * s;
+		auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
 
-    // LOGf("Player Origin: %s", Vector::to_string(orig));
-    // LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
-    // LOGf("Player Size: %s", Vector::to_string(s));
+		// LOGf("Player Origin: %s", Vector::to_string(orig));
+		// LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
+		// LOGf("Player Size: %s", Vector::to_string(s));
 
-    // LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
-    // LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
-    // LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
+		// LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
+		// LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
+		// LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
 
-    vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
+		vec3 ray[2] = { vorig_world, vec3(0.0f, 0.0f, 0.0f) };
 
-    // Computing pixel size difference between object space and world space for width
-    auto world_vec = this->to_world(vec3(1.0f, 1.0f, 0.0f));
+		// Computing pixel size difference between object space and world space for width
+		auto world_vec = this->to_world(vec3(1.0f, 1.0f, 0.0f));
 
-    //LOGf("Player Origin: %s", Vector::to_string(world_vec));
+		//LOGf("Player Origin: %s", Vector::to_string(world_vec));
 
-    auto line = Mesh::line(
-       ray[0], // start
-       ray[1], // end
-       m_pResources->cache_as<Texture>("white.png"), // tex
-       1.0f// width
-    );
+		auto line = Mesh::line(
+			ray[0], // start
+			ray[1], // end
+			m_pResources->cache_as<Texture>("white.png"), // tex
+			1.0f// width
+		);
 
-    //if (m_pController->button("left") || m_pController->button("right")) {
-    //    if (m_pController->button("up"))
-    //        m_pChar->set_state("upward");
-    //    else if(m_pController->button("down"))
-    //        m_pChar->set_state("downward");
-    //    else
-    //        m_pChar->set_state("forward");
-    //} else {
-    //    if (m_pController->button("up"))
-    //        m_pChar->set_state("up");
-    //    else if (m_pController->button("down"))
-    //        m_pChar->set_state("down");
-    //    else
-    //        m_pChar->set_state("forward");
-    //}
+		//if (m_pController->button("left") || m_pController->button("right")) {
+		//    if (m_pController->button("up"))
+		//        m_pChar->set_state("upward");
+		//    else if(m_pController->button("down"))
+		//        m_pChar->set_state("downward");
+		//    else
+		//        m_pChar->set_state("forward");
+		//} else {
+		//    if (m_pController->button("up"))
+		//        m_pChar->set_state("up");
+		//    else if (m_pController->button("down"))
+		//        m_pChar->set_state("down");
+		//    else
+		//        m_pChar->set_state("forward");
+		//}
 
-    ////////// RAY CASTING TEST //////////
+		////////// RAY CASTING TEST //////////
 
-    //// Get player vision origin
-    //auto orig = this->origin();
-    //auto vorig = this->vorigin();
-    //auto s = vec2(this->size());
+		//// Get player vision origin
+		//auto orig = this->origin();
+		//auto vorig = this->vorigin();
+		//auto s = vec2(this->size());
 
-    //auto vorig_object = (vorig - orig) * s;
-    //auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
+		//auto vorig_object = (vorig - orig) * s;
+		//auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
 
-    //// LOGf("Player Origin: %s", Vector::to_string(orig));
-    //// LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
-    //// LOGf("Player Size: %s", Vector::to_string(s));
+		//// LOGf("Player Origin: %s", Vector::to_string(orig));
+		//// LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
+		//// LOGf("Player Size: %s", Vector::to_string(s));
 
-    //// LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
-    //// LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
-    //// LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
+		//// LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
+		//// LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
+		//// LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
 
-    //vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
+		//vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
 
-    //auto line = Mesh::line(
-    //   ray[0], // start
-    //   ray[1], // end
-    //   m_pResources->cache_as<Texture>("white.png"), // tex
-    //   1.0f // width
-    //);
+		//auto line = Mesh::line(
+		//   ray[0], // start
+		//   ray[1], // end
+		//   m_pResources->cache_as<Texture>("white.png"), // tex
+		//   1.0f // width
+		//);
 
-    //// Line from vision origin to world origin
-    //auto lineptr = line.get();
-    //line->on_tick.connect([lineptr](Freq::Time t){
-    //    lineptr->detach();
-    //});
+		//// Line from vision origin to world origin
+		//auto lineptr = line.get();
+		//line->on_tick.connect([lineptr](Freq::Time t){
+		//    lineptr->detach();
+		//});
 
-    //m_pGame->root()->add(line);
+		//m_pGame->root()->add(line);
 
-    //// Gather list of all nodes
-    //// auto nodes = m_pGame->root()->descendants();
-    //// vector<shared_ptr<Node>> visible_nodes;
-    
-    //// int counter = 0;
-    //// for (auto&& node: nodes) {
-    ////     if (node->visible()) {
-    ////         visible_nodes.push_back(node->as_node());
-    ////         counter++;
-    ////     }
-    //// }
+		//// Gather list of all nodes
+		//// auto nodes = m_pGame->root()->descendants();
+		//// vector<shared_ptr<Node>> visible_nodes;
 
-    //// LOG(to_string(counter));
+		//// int counter = 0;
+		//// for (auto&& node: nodes) {
+		////     if (node->visible()) {
+		////         visible_nodes.push_back(node->as_node());
+		////         counter++;
+		////     }
+		//// }
+
+		//// LOG(to_string(counter));
+	
 }
 
 // face a direction
