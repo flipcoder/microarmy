@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
 
         if(args.has("--test"))
             engine->run("test");
+        else if(!args.value("map").empty())
+            engine->run("game");
         else
             engine->run("intro");
 
