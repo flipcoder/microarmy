@@ -209,8 +209,10 @@ void Intro :: enter() {
 
 
 void Intro :: logic(Freq::Time t) {
-    if(m_pInput->key(SDLK_ESCAPE).pressed_now())
+    if (m_pInput->key(SDLK_ESCAPE).pressed_now()) {
         m_pQor->quit();
+        return;
+    }
 
     m_pRoot->logic(t);
 }
