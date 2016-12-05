@@ -31,12 +31,13 @@ class Pregame: public State {
         virtual void render() const override;
         virtual bool needs_load() const override { return true; }
 
-
     private:
+
+        //static const std::vector<int> STAR_LEVELS;
+        
         // Variables
         bool m_Win = false;
         Freq::Alarm m_Transition;
-
 
         // Pointers
         Qor* m_pQor = nullptr;
@@ -52,6 +53,10 @@ class Pregame: public State {
 
         std::shared_ptr<Font> m_pFont;
         std::shared_ptr<Text> m_pText;
+
+        std::vector<int> m_Stars;
+        std::vector<int> m_MaxStars;
 };
 
 #endif
+

@@ -3,6 +3,7 @@
 #include "Qor/Input.h"
 #include "Qor/Material.h"
 #include "Qor/Qor.h"
+#include "Persistence.h"
 #include <glm/glm.hpp>
 #include <cstdlib>
 #include <chrono>
@@ -11,6 +12,8 @@
 using namespace std;
 using namespace glm;
 using namespace Filesystem;
+
+//const std::vector<int> HUD :: STAR_LEVELS = { 7, 6, 2 };
 
 Pregame :: Pregame(Qor* engine):
     m_pQor(engine),
@@ -89,6 +92,22 @@ void Pregame :: preload() {
 		return;
 	}
 	m_pText->set(string("Now entering: ") + map_name);
+
+    //auto mat = make_shared<MeshMaterial>("items.png", m_pCache);
+
+    //auto mesh = make_shared<Mesh>(
+    //    make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
+    //    vector<shared_ptr<IMeshModifier>>{
+    //        make_shared<Wrap>(Prefab::tile_wrap(
+    //            // Y Y (height is tile size for both dims)
+    //            uvec2(16,16),
+    //            // X Y
+    //            uvec2(mat->texture()->size().x, mat->texture()->size().y),
+    //            STAR_LEVELS[0]
+    //        ))
+    //    }, mat
+    //);
+    //add(mesh);
     
     //// TEMP: just for jam
     /*
@@ -133,6 +152,10 @@ void Pregame :: preload() {
     }
     //m_pRoot->add(m_pCanvas);
     */
+
+    auto ps = m_pQor->session()->module<Persistence>("persistence");
+    m_Stars = ps->stars;
+    m_MaxStars = ps->max_stars;
 }
 
 
@@ -148,6 +171,8 @@ void Pregame :: enter() {
     m_pPipeline->winding(true);
     m_pPipeline->bg_color(Color::black());
     m_pInput->relative_mouse(false);
+
+    Sound::play(m_pCamera.get(), "starpop.wav", m_pResources);
 }
 
 

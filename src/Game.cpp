@@ -6,6 +6,7 @@
 #include "Qor/Input.h"
 #include "Qor/Qor.h"
 #include "Qor/Shader.h"
+#include "Persistence.h"
 #include <glm/glm.hpp>
 #include <cstdlib>
 #include <chrono>
@@ -315,6 +316,11 @@ void Game :: preload() {
             if (_this->m_Stars[0] == _this->m_MaxStars[0]) {
                 auto mapname = _this->m_pQor->args().value_or("map","1");
                 auto nextmap = to_string(boost::lexical_cast<int>(mapname) + 1);
+
+                // TODO: store star data in persistence module
+                auto ps = _this->m_pQor->session()->module<Persistence>("persistence");
+                ps->stars = _this->m_Stars;
+                ps->max_stars = _this->m_MaxStars;
 
                 _this->m_pQor->args().set("map", nextmap);
                 _this->m_pQor->change_state("pregame");
