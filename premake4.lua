@@ -5,7 +5,7 @@ solution("microarmy")
 
         -- Debug Config
         configuration "Debug"
-            defines { "DEBUG", "BACKWARD_HAS_BFD=1", "GLM_FORCE_RADIANS" }
+            defines { "DEBUG", "BACKWARD_HAS_BFD=1", "GLM_FORCE_RADIANS", "QOR_NO_PYTHON" }
             flags { "Symbols" }
             links {
                 "z",

@@ -1,9 +1,11 @@
 #include "Player.h"
 #include "Qor/Sound.h"
-using namespace std;
-using namespace glm;
 #include "Game.h"
 #include "Monster.h"
+
+using namespace std;
+using namespace glm;
+
 
 Player :: Player(
     std::string fn,
@@ -112,16 +114,16 @@ void Player :: logic_self(Freq::Time t) {
 
                 // prevent "climbing" the wall by checking to make sure last wall jump was a diff direction (or floor)
                 // 0 means floors, -1 and 1 are directions
-                if (m_LastWallJumpDir != 0 && last_dir != 0 && m_LastWallJumpDir == last_dir)
+                if (m_LastWallJumpDir != 0 and last_dir != 0 and m_LastWallJumpDir == last_dir)
                     block_jump = true;
             }
         
             // jumping from floor or from a different wall
             if (not block_jump) {
-                if (not in_air || walljump || not m_JumpTimer.elapsed()) {
+                if (not in_air or walljump or not m_JumpTimer.elapsed()) {
                     velocity(glm::vec3(x, -125.0f, 0.0f));
 
-                    if (not in_air || walljump) {
+                    if (not in_air or walljump) {
                         auto sounds = m_pCamera->find_type<Sound>();
 
                         if(sounds.empty())
@@ -139,7 +141,7 @@ void Player :: logic_self(Freq::Time t) {
         m_JumpTimer.set(Freq::Time::ms(0));
     }
 
-    if (not in_air && m_WasInAir)
+    if (not in_air and m_WasInAir)
         Sound::play(m_pCamera, "touch.wav", m_pResources);
 
     m_WasInAir = in_air;
@@ -173,21 +175,74 @@ void Player :: logic_self(Freq::Time t) {
         snapshot();
     }
 
-    if(m_pController->button("left") || m_pController->button("right")) {
-        if(m_pController->button("up"))
+    if (m_pController->button("left") or m_pController->button("right")) {
+        if (m_pController->button("up"))
             set_state("upward");
         else if(m_pController->button("down"))
             set_state("downward");
         else
             set_state("forward");
-    }else{
-        if(m_pController->button("up"))
+    } else {
+        if (m_pController->button("up"))
             set_state("up");
-        else if(m_pController->button("down"))
+        else if (m_pController->button("down"))
             set_state("down");
         else
             set_state("forward");
     }
+
+
+    //////// RAY CASTING CODE //////////
+
+    // Get player vision origin
+    auto orig = this->origin();
+    auto vorig = this->vorigin();
+    auto s = vec2(this->size());
+
+    auto vorig_object = (vorig - orig) * s;
+    auto vorig_world = this->to_world(vec3(vorig_object, 0.0f));
+
+    // LOGf("Player Origin: %s", Vector::to_string(orig));
+    // LOGf("Player Vision Origin: %s", Vector::to_string(vorig));
+    // LOGf("Player Size: %s", Vector::to_string(s));
+
+    // LOGf("Player Vision Origin [Percentage]: %s", Vector::to_string(vorig));
+    // LOGf("Player Vision Origin [Object Space]: %s", Vector::to_string(vorig_object));
+    // LOGf("Player Vision Origin [World Space]: %s", Vector::to_string(vorig_world));
+
+    vec3 ray[2] = {vorig_world, vec3(0.0f, 0.0f, 0.0f)};
+
+    auto line = Mesh::line(
+       ray[0], // start
+       ray[1], // end
+       m_pResources->cache_as<Texture>("white.png"), // tex
+       1.0f // width
+    );
+
+    // Line from vision origin to world origin
+    auto lineptr = line.get();
+    line->on_tick.connect([lineptr](Freq::Time t){
+        lineptr->detach();
+    });
+
+    m_pGame->root()->add(line);
+
+
+
+
+    // Gather list of all nodes
+    // auto nodes = m_pGame->root()->descendants();
+    // vector<shared_ptr<Node>> visible_nodes;
+    
+    // int counter = 0;
+    // for (auto&& node: nodes) {
+    //     if (node->visible()) {
+    //         visible_nodes.push_back(node->as_node());
+    //         counter++;
+    //     }
+    // }
+
+    // LOG(to_string(counter));
 }
 
 
@@ -217,10 +272,13 @@ void Player :: shoot() {
     ));
 
     vec3 aimdir = vec3(0.0f, 0.0f, 0.0f);
+
     if(not check_state("up") && not check_state("down"))
         aimdir += check_state("left") ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f);
+
     if(check_state("up") || check_state("upward"))
         aimdir += vec3(0.0f, -1.0f, 0.0f);
+
     if(check_state("down") || check_state("downward"))
         aimdir += vec3(0.0f, 1.0f, 0.0f);
     aimdir = normalize(aimdir);
@@ -248,27 +306,24 @@ void Player :: shoot() {
     ));
 }
 
-void Player :: cb_to_bullet(Node* player_node, Node* bullet)
-{
+void Player :: cb_to_bullet(Node* player_node, Node* bullet) {
     auto player = player_node->config()->at<Player*>("player", nullptr);
 
     if (not player)
         return;
 
     // bullet owner is a player, ignore
-    if(bullet->config()->has("player"))
+    if (bullet->config()->has("player"))
         return;
 
     player->reset();
 }
 
-void Player :: reset()
-{
+void Player :: reset() {
     m_pGame->reset();
 }
 
-void Player :: reset_walljump()
-{
+void Player :: reset_walljump() {
     m_LastWallJumpDir = 0;
 }
 

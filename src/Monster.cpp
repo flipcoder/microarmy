@@ -313,38 +313,19 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         Sound::play(m_pSprite.get(), "fire.wav", m_pResources);
 
         auto _this = this;
-        auto fireptr = fire.get();
-        auto origin = m_pSprite.get();
-        //fireptr->on_tick.connect_extended([
         auto part = m_pPartitioner;
-        fireptr->on_tick.connect([
-            _this, spawn_timer, death_timer, bullet_speed, offset, fireptr,
-            origin, life, part
-        //](boost::signals2::connection con, Freq::Time t){
-        ](Freq::Time t){
-            //auto fire = firew.lock();
-            //if(not fire){
-            //    con.disconnect();
-            //    return;
-            //}
-        
+        fire->on_tick_with([
+            _this, spawn_timer, death_timer, bullet_speed, offset, life
+        ](Node* fire, Freq::Time t){
             if(spawn_timer->elapsed()){
                 if(life > 0)
                     _this->shoot(bullet_speed, offset, life-1);
                 spawn_timer->reset();
             }
             if(death_timer->elapsed()){
-                fireptr->safe_detach();
-                //part->after([fireptr]{
-                //});
-                //con.disconnect();
+                fire->safe_detach();
             }
         });
-        //fire->on_tick.connect([fireptr, death_timer](Freq::Time){
-        //    if(death_timer->elapsed()){
-        //        fireptr->safe_detach();
-        //    }
-        //});
     }
 
     else {
@@ -377,18 +358,9 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
             vec3((m_pSprite->check_state("left") ? -1.0f : 1.0f) * bullet_speed, 0.0f, 0.0f)
         ));
 
-        // Sets timer for bullets before disappearing
-        auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-        timer->set(Freq::Time::seconds(0.5f));
-
         Sound::play(m_pSprite.get(), "shoot.wav", m_pResources);
 
-        // Connects shot to a game tick signal
-        auto shotptr = shot.get();
-        shot->on_tick.connect([timer, shotptr](Freq::Time t){
-            if (timer->elapsed())
-                shotptr->detach();
-        });
+        shot->detach_after(Freq::Time::seconds(0.5f), m_pTimeline);
     }
 }
 

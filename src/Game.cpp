@@ -108,8 +108,8 @@ void Game :: preload() {
         &m_pMap->object_layers()
     };
 
-    for(auto&& layers: layer_types) {
-        for(auto&& layer: *layers) {
+    for (auto&& layers: layer_types) {
+        for (auto&& layer: *layers) {
             layer->set_main_camera(m_pCamera.get());
             layer->bake_visible();
 
@@ -212,6 +212,7 @@ void Game :: preload() {
                     bool depth = layer->depth() || obj->config()->has("depth");
 
                     if (depth) {
+                        m_pMainLayer = layer.get();
 
                         // make a provider function that queries the map layer
                         // for currently visible objects identifiable by a string
@@ -229,6 +230,7 @@ void Game :: preload() {
                                 return r;
                             };
                         };
+
                         m_pPartitioner->register_provider(STATIC, provider_for("static"));
                         m_pPartitioner->register_provider(LEDGE, provider_for("ledge"));
                         m_pPartitioner->register_provider(FATAL, provider_for("fatal"));
@@ -263,13 +265,10 @@ void Game :: preload() {
 
                         obj->mesh()->add(n);
 
-                        if (obj_cfg->has("fatal")) {
-                            obj_cfg->set<string>("fatal", "");
-                        }
-
-                        else if (obj_cfg->has("ledge"))
-                            obj_cfg->set<string>("ledge", "");
-                        else {
+                        if (
+                            not obj_cfg->has("fatal") &&
+                            not obj_cfg->has("ledge")
+                        ){
                             obj_cfg->set<string>("static", "");
                         }
                     }
@@ -479,36 +478,44 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
 
     //setup_player_to_map(player);
 
-    //// TESTING - ADD BOX AROUND PLAYER
+    // // TESTING - ADD BOX AROUND PLAYER
 
-    //// Draw a white wireframe box around the player
-    //auto position = player->position() ; // returns vec3
-    //auto size = player->size();// returns vec3
-    //auto min = -vec3(size, 0.0f) * vec3(player->origin(),0.0f);
-    //auto max = vec3(size, 0.0f) * vec3(1.0f - player->origin().x, 1.0f - player->origin().y,0.0f);
+    // // Draw a white wireframe box around the player
+    // auto origin = vec2(player->origin()) ; // returns vec3
+    // auto size = vec2(player->size()); // returns vec3
 
-    //LOGf("Player origin: %s", Vector::to_string(vec3(player->origin(), 0.0f)));
-    //LOGf("Player size: %s", Vector::to_string(vec3(size, 0.0f)));
+    // auto min = -size * origin; // top left point
+    // auto max = size * vec2(1.0f - origin.x, 1.0f - origin.y); // bottom right point
 
-    //// Getting corners
-    //std::vector<glm::vec2> coordinate_list;
+    // LOGf("Player origin: %s", Vector::to_string(origin));
+    // LOGf("Player size: %s", Vector::to_string(size));
 
-    //// Starting at top left clockwise
-    //coordinate_list.push_back(vec2(min.x, min.y));
-    //coordinate_list.push_back(vec2(max.x, min.y));
-    //coordinate_list.push_back(vec2(max.x, max.y));
-    //coordinate_list.push_back(vec2(min.x, max.y));
+    // // Getting corners
+    // std::vector<glm::vec2> coordinate_list;
+
+    // // Starting at top left going clockwise
+    // coordinate_list.push_back(vec2(min.x, min.y));
+    // coordinate_list.push_back(vec2(max.x, min.y));
+    // coordinate_list.push_back(vec2(max.x, max.y));
+    // coordinate_list.push_back(vec2(min.x, max.y));
 
 
-    //LOGf("Min: (%s, %s)", min.x % min.y);
-    //LOGf("Max: (%s, %s)", max.x % max.y);
+    // LOGf("Min: (%s, %s)", min.x % min.y);
+    // LOGf("Max: (%s, %s)", max.x % max.y);
 
-    //LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
-    //LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
-    //LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
-    //LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
+    // LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
+    // LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
+    // LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
+    // LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
 
-    //for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
+    // LOGf("Coordinate 1 (World Space): (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
+    // LOGf("Coordinate 2 (World Space): (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
+    // LOGf("Coordinate 3 (World Space): (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
+    // LOGf("Coordinate 4 (World Space): (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
+
+    // auto root_node = m_pRoot;
+
+    // for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
         
     //    // if not the last coordinate
     //    if (coord + 1 != coordinate_list.end()) {
@@ -520,7 +527,7 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     //            m_pResources->cache_as<Texture>("white.png"), // tex
     //            1.0f // width
     //        );
-    //        player->add(line);
+    //        root_node->add(line->position(Space::WORLD));
     //    }
     //    else {
     //        auto line = Mesh::line(
@@ -529,9 +536,10 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     //            m_pResources->cache_as<Texture>("white.png"), // tex
     //            1.0f // width
     //        );
-    //        player->add(line);
+
+    //        root_node->add(line->position(Space::WORLD));
     //    }
-    //}
+    // }
 
     //// END TESTING
 
@@ -674,6 +682,7 @@ void Game :: logic(Freq::Time t) {
     m_pOrthoRoot->logic(t);
 }
 
+
 void Game :: render() const {
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
 
@@ -683,13 +692,13 @@ void Game :: render() const {
     for (auto&& layer: m_ParallaxLayers) {
         layer.root->visible(true);
         m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 5.0f);
-        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx == 0 ? 0 : Pipeline::NO_CLEAR));
         layer.root->visible(false);
         ++idx;
     }
 
     m_pCamera->position(pos);
-    m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+    m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx == 0 ? 0 : Pipeline::NO_CLEAR));
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
     
     m_pPipeline->winding(true);

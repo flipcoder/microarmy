@@ -17,41 +17,43 @@ class Canvas;
 
 class Intro: public State {
     public:
-        
+        // Constructor
         Intro(Qor* engine);
+
+        // Destructor
         virtual ~Intro();
 
+        // Overriden virtual methods
         virtual void preload() override;
         virtual void enter() override;
         virtual void logic(Freq::Time t) override;
         virtual void render() const override;
-        virtual bool needs_load() const override {
-            return true;
-        }
+        virtual bool needs_load() const override { return true; }
+
 
     private:
-        
-        Qor* m_pQor = nullptr;
-        Input* m_pInput = nullptr;
-        Pipeline* m_pPipeline = nullptr;
-        ResourceCache* m_pResources = nullptr;
-
-        std::shared_ptr<Node> m_pRoot;
-        std::shared_ptr<Camera> m_pCamera;
-        std::shared_ptr<Sound> m_pMusic;
-        
-        std::shared_ptr<Canvas> m_pCanvas;
-        std::shared_ptr<MenuGUI> m_pMenuGUI;
+        // Variables
         MenuContext m_MenuContext;
         Menu m_MainMenu;
         Menu m_LevelMenu;
         Menu m_OptionsMenu;
-        
+
+
+        // Pointers
+        Qor* m_pQor = nullptr;
+        Input* m_pInput = nullptr;
+        Pipeline* m_pPipeline = nullptr;
+        ResourceCache* m_pResources = nullptr;
+        Controller* m_pController = nullptr;
+
+        std::shared_ptr<Node> m_pRoot;
+        std::shared_ptr<Camera> m_pCamera;
+        std::shared_ptr<Sound> m_pMusic;
+        std::shared_ptr<Canvas> m_pCanvas;
+        std::shared_ptr<MenuGUI> m_pMenuGUI;
         std::shared_ptr<std::string> m_pVolumeText;
         std::shared_ptr<std::string> m_pSoundText;
         std::shared_ptr<std::string> m_pMusicText;
-
-        Controller* m_pController = nullptr;
 };
 
 #endif
