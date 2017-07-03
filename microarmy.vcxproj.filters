@@ -1,89 +1,62 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src">
-      <UniqueIdentifier>{8D40D88B-49C9-E949-AE00-D74D743BC93B}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib">
-      <UniqueIdentifier>{EF124BDA-B349-094E-8780-7014D0F9A95B}</UniqueIdentifier>
+      <UniqueIdentifier>{3C8C880B-A895-887C-3111-9F7C9D19947C}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor">
-      <UniqueIdentifier>{EA749F4A-15DC-E74B-898D-0F88CBAF5B9B}</UniqueIdentifier>
+      <UniqueIdentifier>{5D774779-C956-C614-D26E-51EB3ECD2C76}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\Qor">
-      <UniqueIdentifier>{6680DB7D-893E-304F-AB86-A4525D4EB71B}</UniqueIdentifier>
+      <UniqueIdentifier>{FE0AD934-6AC0-512A-F3B4-4B015F69482E}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib">
-      <UniqueIdentifier>{6767D39A-6AF2-E444-9BED-C97860BE6DF2}</UniqueIdentifier>
+      <UniqueIdentifier>{037DD934-6F32-522A-F826-4C0164DB482E}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit">
-      <UniqueIdentifier>{F016631E-3197-AD4A-A4EC-3A9ED3706754}</UniqueIdentifier>
+      <UniqueIdentifier>{7AE1A1CF-E66C-0F94-EF7D-92885B886B94}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit">
-      <UniqueIdentifier>{0850E49D-A337-7A44-8129-1742C1E2F6E3}</UniqueIdentifier>
+      <UniqueIdentifier>{71A965A8-DD0A-43B6-6678-8968D2D87975}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\args">
-      <UniqueIdentifier>{137A3925-F079-CA4E-B50C-B59AD59F84EE}</UniqueIdentifier>
+      <UniqueIdentifier>{2DDB77F2-1900-C772-424B-AC022ECFC590}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\async">
-      <UniqueIdentifier>{D5CB3E08-AFB2-6748-BAA7-8118EAF1F164}</UniqueIdentifier>
+      <UniqueIdentifier>{7E197441-EADB-A7CB-338C-36589F8D80A9}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\cache">
-      <UniqueIdentifier>{34E80D77-D84B-4040-92B3-37A64600204E}</UniqueIdentifier>
+      <UniqueIdentifier>{540D8E41-C0CF-C1CB-0980-505875819AA9}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\factory">
-      <UniqueIdentifier>{582A96E5-5F85-6A40-A45E-6D69004E49D1}</UniqueIdentifier>
+      <UniqueIdentifier>{D8363CC4-4444-6AAA-CD2A-669539373661}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\freq">
-      <UniqueIdentifier>{0843D773-8A0D-8548-85C4-2DDB4D5319E6}</UniqueIdentifier>
+      <UniqueIdentifier>{CE987AF2-BABD-C972-E308-AF02CF8CC890}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\fs">
-      <UniqueIdentifier>{D59F857E-9109-5548-AC31-0FD4080551DB}</UniqueIdentifier>
+      <UniqueIdentifier>{59D52F67-45CF-58B9-2E3C-EFC91AD5BE25}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\log">
-      <UniqueIdentifier>{FBB16419-786A-7141-893C-0F1F01C78CB6}</UniqueIdentifier>
+      <UniqueIdentifier>{E2992A4D-4ED1-72E4-57DB-D607C39199DD}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\math">
-      <UniqueIdentifier>{C67610DF-D870-AE43-932B-B082E66B2E93}</UniqueIdentifier>
+      <UniqueIdentifier>{0A297EF2-F64D-CD72-1F99-B2020B1DCC90}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\meta">
-      <UniqueIdentifier>{E5A55664-38D4-9144-9D48-E86DBE17306F}</UniqueIdentifier>
+      <UniqueIdentifier>{073A7EF2-F35E-CD72-1CAA-B202082ECC90}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\net">
-      <UniqueIdentifier>{09EF15A8-77B7-AA4A-A3B9-ADC9B00F051D}</UniqueIdentifier>
+      <UniqueIdentifier>{27A12A4D-93D8-72E4-9CE2-D607089999DD}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\Qor\lib\kit\kit\reactive">
-      <UniqueIdentifier>{600ABA5A-341D-DA4A-A91B-0C54D6D970EF}</UniqueIdentifier>
+      <UniqueIdentifier>{33A5E68C-1F60-D638-C817-4F83B4B120C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\HUD.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Info.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Intro.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Monster.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Player.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Pregame.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Thing.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="lib\Qor\Qor\Actuation.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
@@ -111,9 +84,6 @@
     <ClInclude Include="lib\Qor\Qor\Filesystem.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
-    <ClInclude Include="lib\Qor\Qor\Font.h">
-      <Filter>lib\Qor\Qor</Filter>
-    </ClInclude>
     <ClInclude Include="lib\Qor\Qor\GLTask.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
@@ -127,15 +97,6 @@
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
     <ClInclude Include="lib\Qor\Qor\ILight.h">
-      <Filter>lib\Qor\Qor</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\Qor\Qor\Info.h">
-      <Filter>lib\Qor\Qor</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\Qor\Qor\Input.h">
-      <Filter>lib\Qor\Qor</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\Qor\Qor\Interpreter.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
     <ClInclude Include="lib\Qor\Qor\IPartitioner.h">
@@ -157,6 +118,15 @@
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
     <ClInclude Include="lib\Qor\Qor\ITexture.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Info.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Input.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Interpreter.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
     <ClInclude Include="lib\Qor\Qor\Light.h">
@@ -267,6 +237,9 @@
     <ClInclude Include="lib\Qor\Qor\TaskHandler.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Text.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
     <ClInclude Include="lib\Qor\Qor\Texture.h">
       <Filter>lib\Qor\Qor</Filter>
     </ClInclude>
@@ -287,9 +260,6 @@
     </ClInclude>
     <ClInclude Include="lib\Qor\Qor\Window.h">
       <Filter>lib\Qor\Qor</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\Qor\lib\kit\kit\kit.h">
-      <Filter>lib\Qor\lib\kit\kit</Filter>
     </ClInclude>
     <ClInclude Include="lib\Qor\lib\kit\kit\args\args.h">
       <Filter>lib\Qor\lib\kit\kit\args</Filter>
@@ -330,6 +300,9 @@
     <ClInclude Include="lib\Qor\lib\kit\kit\fs\fs.h">
       <Filter>lib\Qor\lib\kit\kit\fs</Filter>
     </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\kit.h">
+      <Filter>lib\Qor\lib\kit\kit</Filter>
+    </ClInclude>
     <ClInclude Include="lib\Qor\lib\kit\kit\log\errors.h">
       <Filter>lib\Qor\lib\kit\kit\log</Filter>
     </ClInclude>
@@ -366,38 +339,38 @@
     <ClInclude Include="lib\Qor\lib\kit\kit\reactive\signal.h">
       <Filter>lib\Qor\lib\kit\kit\reactive</Filter>
     </ClInclude>
-    <ClInclude Include="lib\Qor\Qor\Text.h">
-      <Filter>lib\Qor\Qor</Filter>
+    <ClInclude Include="src\Game.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HUD.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Info.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Intro.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Monster.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Persistence.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pregame.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Thing.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\HUD.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Intro.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Monster.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Player.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pregame.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Thing.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="lib\Qor\Qor\Actuation.cpp">
       <Filter>lib\Qor\Qor</Filter>
     </ClCompile>
@@ -521,6 +494,9 @@
     <ClCompile Include="lib\Qor\Qor\StateMachine.cpp">
       <Filter>lib\Qor\Qor</Filter>
     </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Text.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
     <ClCompile Include="lib\Qor\Qor\Texture.cpp">
       <Filter>lib\Qor\Qor</Filter>
     </ClCompile>
@@ -548,8 +524,32 @@
     <ClCompile Include="lib\Qor\lib\kit\kit\math\matrixstack.cpp">
       <Filter>lib\Qor\lib\kit\kit\math</Filter>
     </ClCompile>
-    <ClCompile Include="lib\Qor\Qor\Text.cpp">
-      <Filter>lib\Qor\Qor</Filter>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HUD.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Intro.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Monster.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pregame.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Thing.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
