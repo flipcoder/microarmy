@@ -2,7 +2,15 @@ workspace("microarmy")
     targetdir("bin")
     
     configurations {"Debug", "Release"}
-        defines { "GLM_FORCE_RADIANS", "QOR_NO_PYTHON", "QOR_NO_CAIRO", "QOR_NO_PHYSICS" }
+        defines {
+            "GLM_FORCE_CTOR_INIT",
+            "GLM_ENABLE_EXPERIMENTAL",
+            "GLM_FORCE_RADIANS",
+            "QOR_NO_PYTHON",
+            "QOR_NO_CAIRO",
+            "QOR_NO_PHYSICS",
+            "NOMINMAX"
+        }
     
         -- Debug Config
         configuration "Debug"
@@ -50,13 +58,14 @@ workspace("microarmy")
                 "boost_regex",
                 "jsoncpp",
                 "z",
-                "RakNetDLL",
+                "raknet",
             }
             includedirs {
                 "lib/Qor/",
                 "lib/Qor/lib/kit",
                 "/usr/local/include/",
                 "/usr/include/bullet/",
+                "/usr/include/rapidxml/",
                 "/usr/include/raknet/DependentExtensions"
             }
 

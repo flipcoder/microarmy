@@ -1,4 +1,6 @@
 
 [submodule "lib/Qor"]
 	path = lib/Qor
-	url = https://github.com/flipcoder/qor.git
+	url = https://gitlab.com/flipcoder/qor.git
+    branch = master
+
