@@ -1,12 +1,20 @@
-solution("microarmy")
+workspace("microarmy")
     targetdir("bin")
+    debugdir("bin")
     
     configurations {"Debug", "Release"}
 
         -- Debug Config
         configuration "Debug"
-            defines { "DEBUG", "BACKWARD_HAS_BFD=1", "GLM_FORCE_RADIANS" }
-            flags { "Symbols" }
+            
+            defines {
+                "GLM_FORCE_CTOR_INIT",
+                "GLM_ENABLE_EXPERIMENTAL",
+                "GLM_FORCE_RADIANS",
+                "NOMINMAX"
+            }
+            
+            symbols "On"
             links {
                 "z",
                 "bfd",
@@ -17,7 +25,8 @@ solution("microarmy")
         -- Release Config
         configuration "Release"
             defines { "NDEBUG" }
-            flags { "OptimizeSpeed" }
+            optimize "Speed"
+            floatingpoint "Fast"
             targetname("microarmy_dist")
 
         -- gmake Config
@@ -40,6 +49,7 @@ solution("microarmy")
             "GL",
             "GLU",
             "SDL2",
+            "SDL2_ttf",
             "GLEW",
             "assimp",
             "freeimage",
@@ -60,7 +70,7 @@ solution("microarmy")
             "BulletCollision",
             "LinearMath",
             "z",
-            "RakNetDLL",
+            "raknet",
         }
 
         -- Project Files
@@ -90,6 +100,7 @@ solution("microarmy")
             "lib/Qor/lib/kit",
             "/usr/local/include/",
             "/usr/include/bullet/",
+            "/usr/include/rapidxml/",
             "/usr/include/raknet/DependentExtensions"
         }
 
@@ -168,6 +179,7 @@ solution("microarmy")
             "lib/Qor/lib/kit",
             "/usr/local/include/",
             "/usr/include/bullet/",
+            "/usr/include/rapidxml/",
             "/usr/include/raknet/DependentExtensions"
         }
 

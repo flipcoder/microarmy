@@ -6,27 +6,35 @@
 #include "Game.h"
 #include "Intro.h"
 #include "Pregame.h"
+#include "Test.h"
 
 using namespace std;
 using namespace kit;
 
-
-int main(int argc, const char** argv) {
+int main(int argc, char* argv[]) {
     
-    Args args(argc, argv);
+    Args args(argc, (const char**)argv);
     args.set("mod", PACKAGE);
     args.set("title", "Micro Army");
     
     Texture::DEFAULT_FLAGS = Texture::TRANS | Texture::MIPMAP;
+    Sound::SOUND_GAIN = 0.1f;
     
 #ifndef DEBUG
     try {
 #endif
-        auto engine = kit::make_unique<Qor>(args);
+        auto engine = kit::make_unique<Qor>(args, Info::Program);
         engine->states().register_class<Intro>("intro");
         engine->states().register_class<Pregame>("pregame");
         engine->states().register_class<Game>("game");
-        engine->run("intro");
+        engine->states().register_class<Test>("test");
+
+        if(args.has("--test"))
+            engine->run("test");
+        else if(!args.value("map").empty())
+            engine->run("game");
+        else
+            engine->run("intro");
 
 #ifndef DEBUG
     } catch (const Error&) {

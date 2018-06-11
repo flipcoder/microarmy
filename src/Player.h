@@ -7,10 +7,13 @@
 
 class Game;
 
-class Player: public Sprite {
-    
+class Player: public Node {
     public:
 
+        static const int INVINCIBLE_TIME = 1000;    //finish to hurt method
+        static const int BLINK_TIME = 100;
+
+        // Constructor
         Player(
             std::string fn,
             Cache<Resource, std::string>* resources,
@@ -20,45 +23,85 @@ class Player: public Sprite {
             IPartitioner* part,
             Game* game
         );
+
+
+        // Destructor
         virtual ~Player();
 
-        void enter();
         
+        // Overidden virtual methods
         virtual void logic_self(Freq::Time t) override;
-        //virtual void render(Pass* pass) const override;
 
-        std::shared_ptr<Node> focus_right() { return m_pCharFocusRight; };
-        std::shared_ptr<Node> focus_left() { return m_pCharFocusLeft; };
-        
-        void shoot();
-        void battery(int b) { m_Power += b; }
+
+        // Getters
+        std::shared_ptr<Node> focus_right() { return m_pCharFocusRight; }
+        std::shared_ptr<Node> focus_left() { return m_pCharFocusLeft; }
+        bool blinking() const { return m_Blinking; }
+        bool god() const { return m_GodMode; }
+        bool no_enemy_damage() const { return m_NoEnemyDamage; }
+        bool no_fatal_objects() const { return m_NoFatalObjects; }
+        bool prone() const { return m_Prone; }
+        int health() const { return m_Health; }
+        int lives() const { return m_Lives; }
+
+        // Methods
+        void enter();
+        void reset_walljump();
+        void shoot(glm::vec2 dir);
+        void face(glm::vec2 dir);
+        void battery(int b) { m_Battery += b; }
+        void god(bool b) { m_GodMode = b; on_god_change(m_GodMode);}
+        void blinking(bool b) { m_Blinking = b; }
+        void blink();
         void reset();
-        
+        void prone(bool b);
+        bool hurt(int damage);
+        void heal(int health);
+		void gib();
+
+        // debug
+        void next_level();
+        void previous_level();
+
+        // Callbacks
         static void cb_to_bullet(Node* player_node, Node* bullet);
         
-        void reset_walljump();
+        Sprite* sprite() { return m_pChar.get(); }
+
+        boost::signals2::signal<void(int)> on_health_change;
+        boost::signals2::signal<void(bool)> on_god_change;
         
     private:
-        
-        Freq::Timeline* m_pTimeline;
-        
-        Cache<Resource, std::string>* m_pResources;
-        
-        std::shared_ptr<Node> m_pCharFocusLeft;
-        std::shared_ptr<Node> m_pCharFocusRight;
-        
-        Camera* m_pCamera;
+        // Variables
+        unsigned m_Battery = 0;
         int m_LastWallJumpDir = 0;
+        bool m_WasInAir = false;
+        // 28 July 2016 - KG: Added God Mode variables
+        bool m_Blinking = false;
+        bool m_GodMode = false; // NOTHING will kill player
+        bool m_NoFatalObjects = false; // Only affects fatal objects (including Wizard's fire)
+        bool m_NoEnemyDamage = false; // Only affects enemy overlap and bullets (but not Wizard's fire)
+        bool m_Prone = false;
+        int m_Health = 100;
+        int m_Lives = 3;
+
         Freq::Alarm m_JumpTimer;
         Freq::Alarm m_ShootTimer;
-        bool m_WasInAir = false;
-        unsigned m_Power = 0;
+        Freq::Alarm m_InvincibleTime;
+        Freq::Alarm m_BlinkTime;
         
+        // Pointers
+        Game* m_pGame;
+        Camera* m_pCamera;
         Controller* m_pController;
         IPartitioner* m_pPartitioner;
+        Freq::Timeline* m_pTimeline;
+        Cache<Resource, std::string>* m_pResources;
 
-        Game* m_pGame;
+        std::shared_ptr<Sprite> m_pChar;
+        std::shared_ptr<Sprite> m_pProne;
+        std::shared_ptr<Node> m_pCharFocusLeft;
+        std::shared_ptr<Node> m_pCharFocusRight;
 };
 
 #endif
-

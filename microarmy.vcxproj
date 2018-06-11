@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D852DA48-44BD-8EBF-8DFB-3F65F9A46C14}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>microarmy</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\Debug\</IntDir>
+    <TargetName>microarmy</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\Release\</IntDir>
+    <TargetName>microarmy_dist</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLM_FORCE_RADIANS;QOR_NO_PYTHON;QOR_NO_CAIRO;QOR_NO_PHYSICS;DEBUG;BACKWARD_HAS_BFD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>c:\gtkmm\lib\pangomm\include;c:\gtkmm\lib\sigc++\include;c:\gtkmm\lib\cairomm\include;c:\gtkmm\include\pango;c:\gtkmm\include\pangomm;c:\gtkmm\include\sigc++;c:\gtkmm\include\cairo;c:\gtkmm\lib\glib\include;c:\gtkmm\include\glib;c:\gtkmm\lib\glibmm\include;c:\gtkmm\include\glibmm;c:\gtkmm\include\cairomm;c:\gtkmm\include;c:\local\boost_1_64_0;c:\Program Files (x86)\OpenAL 1.1 SDK\include;c:\msvc\include;lib\Qor;lib\Qor\lib\kit;\usr\local\include;\usr\include\bullet;\usr\include\raknet\DependentExtensions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ws2_32.lib;SDL2main.lib;OpenGL32.lib;GLU32.lib;SDL2_ttf.lib;SDL2.lib;GLEW32.lib;assimp.lib;freeimage.lib;openal32.lib;alut.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;lib_json.lib;RakNet_VS2008_LibStatic_Debug_Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\msvc\lib32\debug;c:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;c:\msvc\lib32;c:\gtkmm\lib;c:\local\boost_1_64_0\lib32-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLM_FORCE_RADIANS;QOR_NO_PYTHON;QOR_NO_CAIRO;QOR_NO_PHYSICS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>c:\gtkmm\lib\pangomm\include;c:\gtkmm\lib\sigc++\include;c:\gtkmm\lib\cairomm\include;c:\gtkmm\include\pango;c:\gtkmm\include\pangomm;c:\gtkmm\include\sigc++;c:\gtkmm\include\cairo;c:\gtkmm\lib\glib\include;c:\gtkmm\include\glib;c:\gtkmm\lib\glibmm\include;c:\gtkmm\include\glibmm;c:\gtkmm\include\cairomm;c:\gtkmm\include;c:\local\boost_1_64_0;c:\Program Files (x86)\OpenAL 1.1 SDK\include;c:\msvc\include;lib\Qor;lib\Qor\lib\kit;\usr\local\include;\usr\include\bullet;\usr\include\raknet\DependentExtensions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;SDL2main.lib;OpenGL32.lib;GLU32.lib;SDL2_ttf.lib;SDL2.lib;GLEW32.lib;assimp.lib;freeimage.lib;openal32.lib;alut.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;lib_json.lib;RakNet_VS2008_LibStatic_Release_Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32;c:\msvc\lib32;c:\gtkmm\lib;c:\local\boost_1_64_0\lib32-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\Qor\Qor\Actuation.h" />
+    <ClInclude Include="lib\Qor\Qor\Audio.h" />
+    <ClInclude Include="lib\Qor\Qor\BasicPartitioner.h" />
+    <ClInclude Include="lib\Qor\Qor\BasicState.h" />
+    <ClInclude Include="lib\Qor\Qor\Camera.h" />
+    <ClInclude Include="lib\Qor\Qor\Canvas.h" />
+    <ClInclude Include="lib\Qor\Qor\Common.h" />
+    <ClInclude Include="lib\Qor\Qor\Console.h" />
+    <ClInclude Include="lib\Qor\Qor\Filesystem.h" />
+    <ClInclude Include="lib\Qor\Qor\GLTask.h" />
+    <ClInclude Include="lib\Qor\Qor\Graphics.h" />
+    <ClInclude Include="lib\Qor\Qor\Grid.h" />
+    <ClInclude Include="lib\Qor\Qor\Headless.h" />
+    <ClInclude Include="lib\Qor\Qor\ILight.h" />
+    <ClInclude Include="lib\Qor\Qor\IPartitioner.h" />
+    <ClInclude Include="lib\Qor\Qor\IPhysical.h" />
+    <ClInclude Include="lib\Qor\Qor\IPreloadable.h" />
+    <ClInclude Include="lib\Qor\Qor\IRealtime.h" />
+    <ClInclude Include="lib\Qor\Qor\IRenderable.h" />
+    <ClInclude Include="lib\Qor\Qor\ISceneGraph.h" />
+    <ClInclude Include="lib\Qor\Qor\ITexture.h" />
+    <ClInclude Include="lib\Qor\Qor\Info.h" />
+    <ClInclude Include="lib\Qor\Qor\Input.h" />
+    <ClInclude Include="lib\Qor\Qor\Interpreter.h" />
+    <ClInclude Include="lib\Qor\Qor\Light.h" />
+    <ClInclude Include="lib\Qor\Qor\LoadingState.h" />
+    <ClInclude Include="lib\Qor\Qor\Material.h" />
+    <ClInclude Include="lib\Qor\Qor\Menu.h" />
+    <ClInclude Include="lib\Qor\Qor\Mesh.h" />
+    <ClInclude Include="lib\Qor\Qor\Net.h" />
+    <ClInclude Include="lib\Qor\Qor\Node.h" />
+    <ClInclude Include="lib\Qor\Qor\NodeInterface.h" />
+    <ClInclude Include="lib\Qor\Qor\Nodes.h" />
+    <ClInclude Include="lib\Qor\Qor\Particle.h" />
+    <ClInclude Include="lib\Qor\Qor\Pass.h" />
+    <ClInclude Include="lib\Qor\Qor\Physics.h" />
+    <ClInclude Include="lib\Qor\Qor\PhysicsObject.h" />
+    <ClInclude Include="lib\Qor\Qor\Pipeline.h" />
+    <ClInclude Include="lib\Qor\Qor\PipelineShader.h" />
+    <ClInclude Include="lib\Qor\Qor\PlayerInterface2D.h" />
+    <ClInclude Include="lib\Qor\Qor\PlayerInterface3D.h" />
+    <ClInclude Include="lib\Qor\Qor\Profile.h" />
+    <ClInclude Include="lib\Qor\Qor\PythonBindings.h" />
+    <ClInclude Include="lib\Qor\Qor\Qor.h" />
+    <ClInclude Include="lib\Qor\Qor\RenderBuffer.h" />
+    <ClInclude Include="lib\Qor\Qor\Resource.h" />
+    <ClInclude Include="lib\Qor\Qor\ResourceCache.h" />
+    <ClInclude Include="lib\Qor\Qor\ResourceLocator.h" />
+    <ClInclude Include="lib\Qor\Qor\Scene.h" />
+    <ClInclude Include="lib\Qor\Qor\ScreenFader.h" />
+    <ClInclude Include="lib\Qor\Qor\ScriptState.h" />
+    <ClInclude Include="lib\Qor\Qor\Session.h" />
+    <ClInclude Include="lib\Qor\Qor\Shader.h" />
+    <ClInclude Include="lib\Qor\Qor\ShadowBuffer.h" />
+    <ClInclude Include="lib\Qor\Qor\Sound.h" />
+    <ClInclude Include="lib\Qor\Qor\Sprite.h" />
+    <ClInclude Include="lib\Qor\Qor\State.h" />
+    <ClInclude Include="lib\Qor\Qor\StateMachine.h" />
+    <ClInclude Include="lib\Qor\Qor\StateManager.h" />
+    <ClInclude Include="lib\Qor\Qor\TaskHandler.h" />
+    <ClInclude Include="lib\Qor\Qor\Text.h" />
+    <ClInclude Include="lib\Qor\Qor\Texture.h" />
+    <ClInclude Include="lib\Qor\Qor\TileMap.h" />
+    <ClInclude Include="lib\Qor\Qor\Tracker.h" />
+    <ClInclude Include="lib\Qor\Qor\Util.h" />
+    <ClInclude Include="lib\Qor\Qor\VertexBuffer.h" />
+    <ClInclude Include="lib\Qor\Qor\ViewModel.h" />
+    <ClInclude Include="lib\Qor\Qor\Window.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\args\args.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\async.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\async_fstream.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\channel.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\mx.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\task.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\cache\cache.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\cache\icache.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\factory\factory.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\factory\ifactory.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\freq\animation.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\freq\freq.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\fs\fs.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\kit.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\log\errors.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\log\log.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\angle.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\common.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\matrixops.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\matrixstack.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\vectorops.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\meta\meta.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\meta\schema.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\net\net.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\reactive\reactive.h" />
+    <ClInclude Include="lib\Qor\lib\kit\kit\reactive\signal.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\HUD.h" />
+    <ClInclude Include="src\Info.h" />
+    <ClInclude Include="src\Intro.h" />
+    <ClInclude Include="src\Monster.h" />
+    <ClInclude Include="src\Persistence.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Pregame.h" />
+    <ClInclude Include="src\Test.h" />
+    <ClInclude Include="src\Thing.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\Qor\Qor\Actuation.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Audio.cpp" />
+    <ClCompile Include="lib\Qor\Qor\BasicPartitioner.cpp" />
+    <ClCompile Include="lib\Qor\Qor\BasicState.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Camera.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Canvas.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Console.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Filesystem.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Graphics.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Grid.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Headless.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Input.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Interpreter.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Light.cpp" />
+    <ClCompile Include="lib\Qor\Qor\LoadingState.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Material.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Menu.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Mesh.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Net.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Node.cpp" />
+    <ClCompile Include="lib\Qor\Qor\NodeInterface.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Particle.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Pass.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Physics.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Pipeline.cpp" />
+    <ClCompile Include="lib\Qor\Qor\PipelineShader.cpp" />
+    <ClCompile Include="lib\Qor\Qor\PlayerInterface2D.cpp" />
+    <ClCompile Include="lib\Qor\Qor\PlayerInterface3D.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Profile.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Qor.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Resource.cpp" />
+    <ClCompile Include="lib\Qor\Qor\ResourceCache.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Scene.cpp" />
+    <ClCompile Include="lib\Qor\Qor\ScreenFader.cpp" />
+    <ClCompile Include="lib\Qor\Qor\ScriptState.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Session.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Shader.cpp" />
+    <ClCompile Include="lib\Qor\Qor\ShadowBuffer.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Sound.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Sprite.cpp" />
+    <ClCompile Include="lib\Qor\Qor\StateMachine.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Text.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Texture.cpp" />
+    <ClCompile Include="lib\Qor\Qor\TileMap.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Tracker.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Util.cpp" />
+    <ClCompile Include="lib\Qor\Qor\ViewModel.cpp" />
+    <ClCompile Include="lib\Qor\Qor\Window.cpp" />
+    <ClCompile Include="lib\Qor\lib\kit\kit\args\args.cpp" />
+    <ClCompile Include="lib\Qor\lib\kit\kit\log\log.cpp" />
+    <ClCompile Include="lib\Qor\lib\kit\kit\math\matrixstack.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\HUD.cpp" />
+    <ClCompile Include="src\Intro.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Monster.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Pregame.cpp" />
+    <ClCompile Include="src\Test.cpp" />
+    <ClCompile Include="src\Thing.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

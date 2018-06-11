@@ -6,6 +6,7 @@
 #include "Qor/Input.h"
 #include "Qor/Qor.h"
 #include "Qor/Shader.h"
+#include "Persistence.h"
 #include <glm/glm.hpp>
 #include <cstdlib>
 #include <chrono>
@@ -26,8 +27,6 @@ Game :: Game(Qor* engine):
     m_pPartitioner(engine->pipeline()->partitioner()),
     m_pController(engine->session()->active_profile(0)->controller()),
     m_pTimeline(engine->timer()->timeline())
-    //m_JumpTimer(engine->timer()->timeline()),
-    //m_ShootTimer(engine->timer()->timeline())
 {}
 
 
@@ -38,10 +37,25 @@ void Game :: preload() {
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pRoot->add(m_pCamera);
     
+    m_pChar = make_shared<Player>(
+        m_pQor->resource_path("guy.json"),
+        m_pResources,
+        m_pCamera.get(),
+        m_pController.get(),
+        m_pTimeline,
+        m_pPartitioner,
+        this
+    );
+    //m_pChar->texture()->ambient(Color::red(1.0f)*0.5f);
+    m_pRoot->add(m_pChar);
+    
+    m_Players.push_back(m_pChar);
+    
     m_pHUD = make_shared<HUD>(
         m_pQor->window(),
         m_pQor->input(),
-        m_pQor->resources()
+        m_pQor->resources(),
+        m_pChar.get()
     );
 
     m_pOrthoCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
@@ -62,20 +76,6 @@ void Game :: preload() {
     
     auto scale = 250.0f / std::max<float>(sw* 1.0f, 1.0f);
     m_pCamera->rescale(glm::vec3(scale, scale, 1.0f));
-
-    m_pChar = make_shared<Player>(
-        m_pQor->resource_path("guy.json"),
-        m_pResources,
-        m_pCamera.get(),
-        m_pController.get(),
-        m_pTimeline,
-        m_pPartitioner,
-        this
-    );
-    //m_pChar->texture()->ambient(Color::red(1.0f)*0.5f);
-    m_pRoot->add(m_pChar);
-    
-    m_Players.push_back(m_pChar);
     
     m_pCamera->mode(Tracker::FOLLOW);
     //m_pCamera->threshold(1.0f);
@@ -108,8 +108,8 @@ void Game :: preload() {
         &m_pMap->object_layers()
     };
 
-    for(auto&& layers: layer_types) {
-        for(auto&& layer: *layers) {
+    for (auto&& layers: layer_types) {
+        for (auto&& layer: *layers) {
             layer->set_main_camera(m_pCamera.get());
             layer->bake_visible();
 
@@ -212,6 +212,7 @@ void Game :: preload() {
                     bool depth = layer->depth() || obj->config()->has("depth");
 
                     if (depth) {
+                        m_pMainLayer = layer.get();
 
                         // make a provider function that queries the map layer
                         // for currently visible objects identifiable by a string
@@ -229,6 +230,7 @@ void Game :: preload() {
                                 return r;
                             };
                         };
+
                         m_pPartitioner->register_provider(STATIC, provider_for("static"));
                         m_pPartitioner->register_provider(LEDGE, provider_for("ledge"));
                         m_pPartitioner->register_provider(FATAL, provider_for("fatal"));
@@ -263,13 +265,10 @@ void Game :: preload() {
 
                         obj->mesh()->add(n);
 
-                        if (obj_cfg->has("fatal")) {
-                            obj_cfg->set<string>("fatal", "");
-                        }
-
-                        else if (obj_cfg->has("ledge"))
-                            obj_cfg->set<string>("ledge", "");
-                        else {
+                        if (
+                            not obj_cfg->has("fatal") &&
+                            not obj_cfg->has("ledge")
+                        ){
                             obj_cfg->set<string>("static", "");
                         }
                     }
@@ -318,6 +317,11 @@ void Game :: preload() {
                 auto mapname = _this->m_pQor->args().value_or("map","1");
                 auto nextmap = to_string(boost::lexical_cast<int>(mapname) + 1);
 
+                // TODO: store star data in persistence module
+                auto ps = _this->m_pQor->session()->module<Persistence>("persistence");
+                ps->stars = _this->m_Stars;
+                ps->max_stars = _this->m_MaxStars;
+
                 _this->m_pQor->args().set("map", nextmap);
                 _this->m_pQor->change_state("pregame");
             }
@@ -361,12 +365,20 @@ void Game :: preload() {
         CHARACTER, LEDGE, std::bind(&Game::cb_to_ledge, this, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, FATAL, std::bind(&Game::cb_to_fatal, this, _::_1, _::_2)
+        CHARACTER, FATAL, 
+		std::bind(&Game::cb_to_fatal, this, _::_1, _::_2),
+		std::function<void(Node*, Node*)>(),
+		std::bind(&Game::cb_touch_to_fatal, this, _::_1, _::_2)
     );
+
+	//m_pPartitioner->on_touch(
+		//CHARACTER, FATAL, std::bind(&Game::cb_touch_to_fatal, this, _::_1, _::_2)
+	//);
+
     m_pPartitioner->on_collision(
         BULLET, STATIC, std::bind(&Game::cb_bullet_to_static, this, _::_1, _::_2)
     );
-    
+
     m_pPartitioner->on_collision(
         THING, STATIC, std::bind(&Thing::cb_to_static, _::_1, _::_2)
     );
@@ -377,7 +389,11 @@ void Game :: preload() {
         THING, BULLET, std::bind(&Thing::cb_to_bullet, _::_1, _::_2)
     );
     m_pPartitioner->on_collision(
-        CHARACTER, THING, std::bind(&Thing::cb_to_player, _::_1, _::_2)
+        CHARACTER, THING,
+        std::bind(&Thing::cb_to_player, _::_1, _::_2),
+        std::function<void(Node*, Node*)>(), // no nocol func
+        std::bind(&Thing::cb_touch_player, _::_1, _::_2),
+        std::bind(&Thing::cb_untouch_player, _::_1, _::_2)
     );
     
     m_pPartitioner->on_collision(
@@ -419,6 +435,9 @@ void Game :: reset() {
     on_reset();
 }
 
+void Game :: end() {
+    m_pQor->change_state("intro");
+}
 
 Game :: ~Game() {
     m_pPipeline->partitioner()->clear();
@@ -479,36 +498,44 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
 
     //setup_player_to_map(player);
 
-    //// TESTING - ADD BOX AROUND PLAYER
+    // // TESTING - ADD BOX AROUND PLAYER
 
-    //// Draw a white wireframe box around the player
-    //auto position = player->position() ; // returns vec3
-    //auto size = player->size();// returns vec3
-    //auto min = -vec3(size, 0.0f) * vec3(player->origin(),0.0f);
-    //auto max = vec3(size, 0.0f) * vec3(1.0f - player->origin().x, 1.0f - player->origin().y,0.0f);
+    // // Draw a white wireframe box around the player
+    // auto origin = vec2(player->origin()) ; // returns vec3
+    // auto size = vec2(player->size()); // returns vec3
 
-    //LOGf("Player origin: %s", Vector::to_string(vec3(player->origin(), 0.0f)));
-    //LOGf("Player size: %s", Vector::to_string(vec3(size, 0.0f)));
+    // auto min = -size * origin; // top left point
+    // auto max = size * vec2(1.0f - origin.x, 1.0f - origin.y); // bottom right point
 
-    //// Getting corners
-    //std::vector<glm::vec2> coordinate_list;
+    // LOGf("Player origin: %s", Vector::to_string(origin));
+    // LOGf("Player size: %s", Vector::to_string(size));
 
-    //// Starting at top left clockwise
-    //coordinate_list.push_back(vec2(min.x, min.y));
-    //coordinate_list.push_back(vec2(max.x, min.y));
-    //coordinate_list.push_back(vec2(max.x, max.y));
-    //coordinate_list.push_back(vec2(min.x, max.y));
+    // // Getting corners
+    // std::vector<glm::vec2> coordinate_list;
+
+    // // Starting at top left going clockwise
+    // coordinate_list.push_back(vec2(min.x, min.y));
+    // coordinate_list.push_back(vec2(max.x, min.y));
+    // coordinate_list.push_back(vec2(max.x, max.y));
+    // coordinate_list.push_back(vec2(min.x, max.y));
 
 
-    //LOGf("Min: (%s, %s)", min.x % min.y);
-    //LOGf("Max: (%s, %s)", max.x % max.y);
+    // LOGf("Min: (%s, %s)", min.x % min.y);
+    // LOGf("Max: (%s, %s)", max.x % max.y);
 
-    //LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
-    //LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
-    //LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
-    //LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
+    // LOGf("Coordinate 1: (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
+    // LOGf("Coordinate 2: (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
+    // LOGf("Coordinate 3: (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
+    // LOGf("Coordinate 4: (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
 
-    //for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
+    // LOGf("Coordinate 1 (World Space): (%s, %s)", coordinate_list[0].x % coordinate_list[0].y);
+    // LOGf("Coordinate 2 (World Space): (%s, %s)", coordinate_list[1].x % coordinate_list[1].y);
+    // LOGf("Coordinate 3 (World Space): (%s, %s)", coordinate_list[2].x % coordinate_list[2].y);
+    // LOGf("Coordinate 4 (World Space): (%s, %s)", coordinate_list[3].x % coordinate_list[3].y);
+
+    // auto root_node = m_pRoot;
+
+    // for(std::vector<glm::vec2>::iterator coord = coordinate_list.begin(); coord != coordinate_list.end(); ++coord) {
         
     //    // if not the last coordinate
     //    if (coord + 1 != coordinate_list.end()) {
@@ -520,7 +547,7 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     //            m_pResources->cache_as<Texture>("white.png"), // tex
     //            1.0f // width
     //        );
-    //        player->add(line);
+    //        root_node->add(line->position(Space::WORLD));
     //    }
     //    else {
     //        auto line = Mesh::line(
@@ -529,9 +556,10 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
     //            m_pResources->cache_as<Texture>("white.png"), // tex
     //            1.0f // width
     //        );
-    //        player->add(line);
+
+    //        root_node->add(line->position(Space::WORLD));
     //    }
-    //}
+    // }
 
     //// END TESTING
 
@@ -540,14 +568,9 @@ void Game :: setup_player(std::shared_ptr<Player> player) {
 }
 
 
-//void Game :: setup_player_to_map(std::shared_ptr<Player> player) {
-//    if (not m_pMap)
-//        return;
-//}
-
-
 void Game :: setup_player_to_thing(std::shared_ptr<Player> player, std::shared_ptr<Thing> thing) {}
 void Game :: setup_player_to_monster(std::shared_ptr<Player> player, std::shared_ptr<Monster> monster) {}
+
 
 std::vector<Node*> Game :: get_static_collisions(Node* a) {
     auto static_cols = m_pPartitioner->get_collisions_for(a, STATIC);
@@ -621,9 +644,18 @@ void Game :: cb_to_tile(Node* a, Node* b) {
 
 
 void Game :: cb_to_fatal(Node* a, Node* b) {
-    Sound::play(m_pCamera.get(), "die.wav", m_pResources);
-    reset();
-    m_pChar->velocity(glm::vec3(0.0f));
+    //Sound::play(m_pCamera.get(), "die.wav", m_pResources);
+    // 29 July 2016 - KG: Added God Mode
+    //for (auto&& Player: m_Players) {
+        if (not m_pChar->god() && not m_pChar->no_fatal_objects()) {
+            m_pChar->reset();
+            m_pChar->velocity(glm::vec3(0.0f));
+        }
+    //}
+}
+
+void Game::cb_touch_to_fatal(Node* a, Node* b) {
+	Sound::play(m_pCamera.get(), "die.wav", m_pResources);
 }
 
 
@@ -667,12 +699,17 @@ void Game :: enter() {
 void Game :: logic(Freq::Time t) {
     Actuation::logic(t);
     
-    if (m_pInput->key(SDLK_ESCAPE))
-        m_pQor->quit();
+    if (m_pInput->key(SDLK_ESCAPE).pressed_now()){
+        m_pQor->change_state("intro");
+        return;
+    }
 
     m_pRoot->logic(t);
     m_pOrthoRoot->logic(t);
+
+    m_VisibleNodes = m_pMainLayer->visible_nodes(m_pCamera.get());
 }
+
 
 void Game :: render() const {
     m_pPipeline->override_shader(PassType::NORMAL, m_Shader);
@@ -683,15 +720,22 @@ void Game :: render() const {
     for (auto&& layer: m_ParallaxLayers) {
         layer.root->visible(true);
         m_pCamera->position(pos.x * layer.scale, pos.y * layer.scale, 5.0f);
-        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+        m_pPipeline->render(layer.root.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx == 0 ? 0 : Pipeline::NO_CLEAR));
         layer.root->visible(false);
         ++idx;
     }
 
     m_pCamera->position(pos);
-    m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx==0?0:Pipeline::NO_CLEAR));
+    m_pPipeline->render(m_pRoot.get(), m_pCamera.get(), nullptr, Pipeline::LIGHTS | (idx == 0 ? 0 : Pipeline::NO_CLEAR));
     m_pPipeline->override_shader(PassType::NORMAL, (unsigned)PassType::NONE);
     
     m_pPipeline->winding(true);
     m_pPipeline->render(m_pOrthoRoot.get(), m_pOrthoCamera.get(), nullptr, Pipeline::NO_CLEAR | Pipeline::NO_DEPTH);
 }
+
+void Game :: checkpoint(Node* chk)
+{
+    m_Spawns.clear();
+    m_Spawns.push_back(chk);
+}
+

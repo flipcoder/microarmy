@@ -1,24 +1,24 @@
 {
     "type" : "sprite",
-    "size" : [ 32, 32 ],
-    "tile-size" : [ 32, 32 ],
+    "size" : [ 8, 16 ],
+    "tile-size" : [ 8, 16 ],
     "origin" : [ 0.5, 0.8 ],
     "mask" : [ 0.1, 0.0, 0.8, 0.9 ],
     "animation" : {
         "speed" : 10.0,
         "frames" : {
             "unhit":{
-                "left": [ 0 ],
-                "right": [ "hflip", 0 ]
+                "left": [ 0, 1 ],
+                "right": [ "hflip", 0, 1 ]
             },
             "hit":{
-                "left": [ 0 ],
-                "right": [ "hflip", 0 ]
+                "left": [ 1 ],
+                "right": [ "hflip", 1 ]
             }
         }
     },
     "hp": 20,
   "speed": 10.0,
-  "damage": 10
+  "damage" : 10
 }
 

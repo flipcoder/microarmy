@@ -2,7 +2,7 @@
 
 # Micro Army
 
-A cross between Contra and Super Meat Boy
+A twin-stick platformer, inspired by Contra and Super Meat Boy
 
 Originally developed for 1-Game-A-Month Game Jam (1GAM) during June 2016
 
@@ -18,17 +18,18 @@ No binary releases yet!  Check back soon!
 
 ### Build Instructions
 
-[Windows Build Instructions](https://gist.github.com/flipcoder/087cdef35acd1fa3da8e18894b3b305b)
+[Windows build instructions (from QorBook)](https://github.com/flipcoder/qor/blob/master/QorBook.md)
 
 [Script for ArchLinux, Antergos, Manjaro, etc.](https://gist.github.com/flipcoder/041e534a1aa482ff1fd5cece57052f92)
 
-### Manual Installation
+### Manual Installation (advanced)
 
 - Initialize the submodules and checkout the master branches:
 
 ```
 git submodule update --init --recursive
 git submodule foreach --recursive git checkout master
+git submodule foreach --recursive git pull origin master
 ```
 
 - Get the libraries:
@@ -40,9 +41,11 @@ Vorbis, Boost, Jsoncpp, Pthread, Bullet, Sdl2, Raknet, Glew, Assimp, Freeimage, 
 - Build with [premake4](http://industriousone.com/premake/download):
 
 ```
-premake4 gmake
+premake5 gmake
 make microarmy config=release -j`nproc`
 ```
+
+If the make command stalls your system, use -j1 or a number lower than your cpu core count.
 
 - Run microarmy_dist from the bin folder
 

@@ -43,6 +43,8 @@ const vector<string> Monster :: s_TypeNames({
     "robot",
     "snail",
     "wizard",
+    "frog",    //DD: add frog, add blockman
+    "blockman"
 });
 
 
@@ -112,6 +114,12 @@ void Monster :: logic_self(Freq::Time t) {
             if(m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
                 shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f));
                 m_ShootTimer.set(Freq::Time::seconds(0.5f));
+            }
+        }
+        if (m_MonsterID == Monster::BLOCKMAN) {
+            if (m_ShootTimer.elapsed() || not m_ShootTimer.started()) {
+                shoot(DEFAULT_BULLET_SPEED, vec3(kit::sign(velocity().x)*10.0f, 0.0f, 0.0f), 10);
+                m_ShootTimer.set(Freq::Time::seconds(0.8f));
             }
         }
 
@@ -205,6 +213,7 @@ void Monster :: initialize() {
     m_HP = m_pConfig->at<int>("hp", 5);
     m_MaxHP = m_pConfig->at<int>("hp", 5);
     m_StartSpeed = m_pConfig->at<double>("speed", 10.0);
+    m_Damage = m_pConfig->at<int>("damage");
     m_Speed = m_StartSpeed;
 
     m_pSprite = make_shared<Sprite>(
@@ -271,7 +280,7 @@ void Monster :: deactivate(Player* closest_player) {
 }
 
 
-void Monster :: damage(int dmg) {
+void Monster :: hurt(int dmg) {
     if (m_HP > 0 and dmg > 0) {
         m_HP = std::max(m_HP - dmg, 0);
 
@@ -286,7 +295,8 @@ void Monster :: damage(int dmg) {
 void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
 
     if (m_MonsterID == Monster::WIZARD) {
-
+        if (not is_alive())
+            return;
         // Load fire sprite
         auto fire = make_shared<Sprite>(m_pResources->transform("fire.json"), m_pResources);
         fire->set_state("animated");
@@ -313,38 +323,19 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
         Sound::play(m_pSprite.get(), "fire.wav", m_pResources);
 
         auto _this = this;
-        auto fireptr = fire.get();
-        auto origin = m_pSprite.get();
-        //fireptr->on_tick.connect_extended([
         auto part = m_pPartitioner;
-        fireptr->on_tick.connect([
-            _this, spawn_timer, death_timer, bullet_speed, offset, fireptr,
-            origin, life, part
-        //](boost::signals2::connection con, Freq::Time t){
-        ](Freq::Time t){
-            //auto fire = firew.lock();
-            //if(not fire){
-            //    con.disconnect();
-            //    return;
-            //}
-        
+        fire->on_tick_with([
+            _this, spawn_timer, death_timer, bullet_speed, offset, life
+        ](Node* fire, Freq::Time t){
             if(spawn_timer->elapsed()){
                 if(life > 0)
                     _this->shoot(bullet_speed, offset, life-1);
                 spawn_timer->reset();
             }
             if(death_timer->elapsed()){
-                fireptr->safe_detach();
-                //part->after([fireptr]{
-                //});
-                //con.disconnect();
+                fire->safe_detach();
             }
         });
-        //fire->on_tick.connect([fireptr, death_timer](Freq::Time){
-        //    if(death_timer->elapsed()){
-        //        fireptr->safe_detach();
-        //    }
-        //});
     }
 
     else {
@@ -357,6 +348,7 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
 
         m_pPartitioner->register_object(shot, Game::BULLET);
         shot->config()->set<Monster*>("monster",this);
+        shot->config()->set<int>("damage", m_Damage);
 
         // Creates a box around the bullet (With increased z width)
         auto shotbox = shot->box();
@@ -377,18 +369,9 @@ void Monster :: shoot(float bullet_speed, glm::vec3 offset, int life) {
             vec3((m_pSprite->check_state("left") ? -1.0f : 1.0f) * bullet_speed, 0.0f, 0.0f)
         ));
 
-        // Sets timer for bullets before disappearing
-        auto timer = make_shared<Freq::Alarm>(m_pTimeline);
-        timer->set(Freq::Time::seconds(0.5f));
-
         Sound::play(m_pSprite.get(), "shoot.wav", m_pResources);
 
-        // Connects shot to a game tick signal
-        auto shotptr = shot.get();
-        shot->on_tick.connect([timer, shotptr](Freq::Time t){
-            if (timer->elapsed())
-                shotptr->detach();
-        });
+        shot->detach_after(Freq::Time::seconds(0.5f), m_pTimeline);
     }
 }
 
@@ -408,10 +391,10 @@ void Monster :: gib() {
     stick(gib);
 
     // Sets gib size and movement
-    gib->move(vec3(rand() % 16 - 8.0f, rand() % 32 - 16.0f, 2.0f));
+    gib->move(vec3(rand() % 100 - 50.0f, rand() % 200 - 100.0f, 2.0f));
     gib->velocity(vec3(dir, 0.0f) * 100.0f);
     gib->acceleration(vec3(0.0f, 500.0f, 0.0f));
-    gib->scale(rand() % 100 / 100.0f * 0.5f);
+    gib->scale((rand() % 100 + 1) / 100.0f * 0.5f);
 
     // Creates random gib lifetime
     auto lifetime = make_shared<float>(0.5f * (rand() % 4));
@@ -447,19 +430,22 @@ void Monster :: cb_to_bullet(Node* monster_node, Node* bullet) {
         monster->sound("damage.wav");
 
         auto hp_before = monster->m_HP;
-        monster->damage(bullet->config()->at("damage", 1));
+        monster->hurt(bullet->config()->at("damage", 1));
         auto hp_after = monster->m_HP;
 
         if (hp_before > hp_after) {
 
             // Generate blood splatter when hit
-            auto gibs = monster->m_Dying ? 5 : 20;
+            auto gibs = monster->m_Dying ? 20 : 5;
             for (int i = 0; i < gibs; ++i)
                 monster->gib();
 
             // Knockback and stun
             auto vel = monster->velocity();
+            //monster->snapshot();
             monster->move(vec3(-kit::sign(vel.x) * 5.0f, 0.0f, 0.0f));
+            //if(monster->colliding())
+            //    monster->restore_snapshot(0);
             monster->stun();
             
             // Change direction based on bullet velocity
@@ -504,12 +490,17 @@ void Monster :: cb_to_static(Node* monster_node, Node* static_node) {
 
 void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
     auto monster = monster_node->config()->at<Monster*>("monster", nullptr);
-
+    auto player = player_node->config()->at<Player*>("player", nullptr);
+    
     if (not monster)
         return;
-
-    if (monster->is_alive())
-        monster->m_pGame->reset();
+    else if (player->god() || player->no_enemy_damage()) // 29 July 2016 - KG: Added God Mode
+        return;
+    else {
+        if (monster->is_alive()) {
+            player->hurt(monster->m_Damage);
+        }
+    }
 }
 
 
@@ -526,5 +517,12 @@ void Monster :: cb_to_player(Node* player_node, Node* monster_node) {
 //        monster->velocity().y,
 //        monster->velocity().z
 //    );
+//}
+
+
+//bool Monster :: colliding() const
+//{
+//    auto cols = m_pPartitioner->get_collisions_for((Node*)m_pSprite->mesh().get(), STATIC);
+//    return not cols.empty();
 //}
 

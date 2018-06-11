@@ -25,6 +25,7 @@ class Thing: public Node {
             OBJECTS = ITEMS_END,
                 SPRING = OBJECTS,
                 DOOR,
+                CHECKPOINT,
             OBJECTS_END,
             
             MARKERS = OBJECTS_END,
@@ -55,7 +56,7 @@ class Thing: public Node {
         static std::shared_ptr<Thing> find_thing(Node* n);
 
 
-        // Abstract Methods
+        // Overriden virtual methods
         //virtual void lazy_logic_self(Freq::Time t) override;
         //virtual void logic_self(Freq::Time t) override;
 
@@ -84,15 +85,21 @@ class Thing: public Node {
         void sound(const std::string& fn);
         void origin();
         
+
         // Callbacks
         static void cb_to_bullet(Node* thing_node, Node* bullet);
         static void cb_to_static(Node* thing_node, Node* static_node);
         static void cb_to_player(Node* player_node, Node* thing_node);
+        static void cb_touch_player(Node* player_node, Node* thing_node);
+        static void cb_untouch_player(Node* player_node, Node* thing_node);
 
 
     private:
+        // Static variables
         const static std::vector<std::string> s_TypeNames;
         
+
+        // Variables
         unsigned m_ThingID = 0;
         bool m_Collidable = true;
         bool m_Dying = false;
@@ -104,15 +111,16 @@ class Thing: public Node {
         glm::vec3 m_Impulse;
         Freq::Alarm m_StunTimer;
         boost::signals2::scoped_connection m_ResetCon;
-        
+
+
+        // Pointers
         Cache<Resource, std::string>* m_pResources = nullptr;
         MapTile* m_pPlaceholder = nullptr;
         BasicPartitioner* m_pPartitioner = nullptr;
         Game* m_pGame = nullptr;
         TileMap* m_pMap = nullptr;
         Freq::Timeline* m_pTimeline;
-        
-        // sprite is optional for thing type, not attached
+
         std::shared_ptr<Sprite> m_pSprite;
 };
 

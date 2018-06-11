@@ -10,7 +10,6 @@
 #include "Qor/Mesh.h"
 #include "Qor/Menu.h"
 
-
 class Qor;
 class Sound;
 class Canvas;
@@ -19,39 +18,36 @@ class Intro: public State {
     public:
         
         Intro(Qor* engine);
+
         virtual ~Intro();
 
         virtual void preload() override;
         virtual void enter() override;
         virtual void logic(Freq::Time t) override;
         virtual void render() const override;
-        virtual bool needs_load() const override {
-            return true;
-        }
+        virtual bool needs_load() const override { return true; }
 
     private:
-        
+
         Qor* m_pQor = nullptr;
         Input* m_pInput = nullptr;
         Pipeline* m_pPipeline = nullptr;
         ResourceCache* m_pResources = nullptr;
+        Controller* m_pController = nullptr;
 
         std::shared_ptr<Node> m_pRoot;
         std::shared_ptr<Camera> m_pCamera;
         std::shared_ptr<Sound> m_pMusic;
-        
         std::shared_ptr<Canvas> m_pCanvas;
-        std::shared_ptr<MenuGUI> m_pMenuGUI;
-        MenuContext m_MenuContext;
-        Menu m_MainMenu;
-        Menu m_LevelMenu;
-        Menu m_OptionsMenu;
-        
         std::shared_ptr<std::string> m_pVolumeText;
         std::shared_ptr<std::string> m_pSoundText;
         std::shared_ptr<std::string> m_pMusicText;
 
-        Controller* m_pController = nullptr;
+        MenuContext m_MenuContext;
+        Menu m_MainMenu;
+        Menu m_LevelMenu;
+        Menu m_OptionsMenu;
+        std::shared_ptr<MenuGUI> m_pMenuGUI;
 };
 
 #endif

@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "microarmy", "microarmy.vcxproj", "{D852DA48-44BD-8EBF-8DFB-3F65F9A46C14}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D852DA48-44BD-8EBF-8DFB-3F65F9A46C14}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D852DA48-44BD-8EBF-8DFB-3F65F9A46C14}.Debug|Win32.Build.0 = Debug|Win32
+		{D852DA48-44BD-8EBF-8DFB-3F65F9A46C14}.Release|Win32.ActiveCfg = Release|Win32
+		{D852DA48-44BD-8EBF-8DFB-3F65F9A46C14}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -13,7 +13,7 @@
 
 using namespace std;
 using namespace glm;
-
+using namespace Filesystem;
 
 Intro :: Intro(Qor* engine):
     m_pQor(engine),
@@ -22,25 +22,24 @@ Intro :: Intro(Qor* engine):
     m_pPipeline(engine->pipeline()),
     m_pResources(engine->resources()),
     m_pController(engine->session()->active_profile(0)->controller().get()),
-    m_pCanvas(make_shared<Canvas>(
-        engine->window()->size().x, engine->window()->size().y
-    )),
+    //m_pCanvas(make_shared<Canvas>(
+    //    engine->window()->size().x, engine->window()->size().y
+    //)),
     m_pMenuGUI(make_shared<MenuGUI>(
         engine->session()->active_profile(0)->controller().get(),
         &m_MenuContext,
         &m_MainMenu,
-        m_pPipeline->partitioner(),
-        m_pCanvas.get(),
-        m_pResources,
-        "PRESS START 2P",
+        engine->pipeline()->partitioner(),
+        engine->window(),
+        engine->resources(),
+        "PressStart2P-Regular.ttf",
         engine->window()->size().y / 30.0f,
         nullptr,
         7,
         1.5f,
-        Canvas::LEFT,
+        Text::LEFT,
         32.0f,
-        MenuGUI::F_BOX,
-        m_pQor->window()
+        MenuGUI::F_BOX
     ))
 {}
 
@@ -52,8 +51,9 @@ void Intro :: preload() {
     
     m_pCamera = make_shared<Camera>(m_pQor->resources(), m_pQor->window());
     m_pRoot->add(m_pCamera);
+    m_pRoot->add(m_pMenuGUI);
 
-    m_pRoot->add(m_pCanvas);
+    //m_pRoot->add(m_pCanvas);
 
     m_pMusic = m_pQor->make<Sound>("menu.ogg");
     m_pRoot->add(m_pMusic);
@@ -100,6 +100,22 @@ void Intro :: enter() {
         m_pQor->pop_state();
     });
 
+    #ifdef _WIN32
+        auto lines = kit::lines(file_to_string("data\\maps\\maps.txt"));
+    #else
+        auto lines = kit::lines(file_to_string("data/maps/maps.txt"));
+    #endif
+   
+    int count = 1;
+    for (string& line : lines) {
+        m_LevelMenu.options().emplace_back(boost::to_upper_copy(line), [qor, count] {
+            qor->args().set("map", to_string(count));
+            qor->change_state("pregame");
+        });
+        count++;
+    }
+
+    /*
     m_LevelMenu.options().emplace_back("HOUSE", [qor]{
         qor->args().set("map", "1");
         qor->change_state("pregame");
@@ -108,6 +124,7 @@ void Intro :: enter() {
         qor->args().set("map", "2");
         qor->change_state("pregame");
     });
+    */
     m_LevelMenu.options().emplace_back(
         "BACK",
         [this]{
@@ -185,7 +202,6 @@ void Intro :: enter() {
         string(), // no desc
         Menu::Option::BACK
     );
-
     
     m_MenuContext.clear(&m_MainMenu);
     m_pRoot->add(m_pMenuGUI);
@@ -193,8 +209,10 @@ void Intro :: enter() {
 
 
 void Intro :: logic(Freq::Time t) {
-    if(m_pInput->key(SDLK_ESCAPE))
+    if (m_pInput->key(SDLK_ESCAPE).pressed_now()) {
         m_pQor->quit();
+        return;
+    }
 
     m_pRoot->logic(t);
 }

@@ -3,6 +3,7 @@
 #include "Qor/Input.h"
 #include "Qor/Material.h"
 #include "Qor/Qor.h"
+#include "Persistence.h"
 #include <glm/glm.hpp>
 #include <cstdlib>
 #include <chrono>
@@ -10,7 +11,9 @@
 
 using namespace std;
 using namespace glm;
+using namespace Filesystem;
 
+//const std::vector<int> HUD :: STAR_LEVELS = { 7, 6, 2 };
 
 Pregame :: Pregame(Qor* engine):
     m_pQor(engine),
@@ -19,12 +22,24 @@ Pregame :: Pregame(Qor* engine):
     m_pResources(engine->resources()),
     m_pPipeline(engine->pipeline()),
     m_pController(engine->session()->active_profile(0)->controller().get()),
-    m_Transition(engine->timer()->timeline()),
-    m_pCanvas(make_shared<Canvas>(
-        engine->window()->size().x, engine->window()->size().y
-    ))
-{}
-
+    m_Transition(engine->timer()->timeline())
+    //m_pCanvas(make_shared<Canvas>(
+    //    engine->window()->size().x, engine->window()->size().y
+    //))
+{
+    float sw = m_pQor->window()->size().x;
+    float sh = m_pQor->window()->size().y;
+    
+    m_pFont = std::make_shared<Font>(
+        m_pResources->transform(string("PressStart2P-Regular.ttf:") +
+            to_string(int(sw / 64.0f + 0.5f))),
+        m_pResources
+    );
+    m_pText = std::make_shared<Text>(m_pFont);
+    m_pRoot->add(m_pText);
+    m_pText->position(glm::vec3(sw/2.0f, sh/2.0f, 0.0f));
+    m_pText->align(Text::CENTER);
+}
 
 void Pregame :: preload() {
     auto win = m_pQor->window();
@@ -53,52 +68,94 @@ void Pregame :: preload() {
 
     m_Transition.set(Freq::Time::seconds(11.0f));
 
-    auto cairo = m_pCanvas->context();
-    cairo->select_font_face(
-        "Press Start 2P",
-        Cairo::FONT_SLANT_NORMAL,
-        Cairo::FONT_WEIGHT_NORMAL
-    );
-    cairo->set_font_size(sw / 64.0f);
+    //auto cairo = m_pCanvas->context();
+    //cairo->select_font_face(
+    //    "Press Start 2P",
+    //    Cairo::FONT_SLANT_NORMAL,
+    //    Cairo::FONT_WEIGHT_NORMAL
+    //);
+    //cairo->set_font_size(sw / 64.0f);
+    #ifdef _WIN32
+        auto lines = kit::lines(file_to_string("data\\maps\\maps.txt"));
+    #else
+        auto lines = kit::lines(file_to_string("data/maps/maps.txt"));
+    #endif
+
+    string mapno = m_pQor->args().value("map");
+    int map_number = boost::lexical_cast<int>(mapno);
+	
+	string map_name;
+	try {
+		map_name = lines.at(map_number - 1);
+	}catch (const std::out_of_range&) {
+		m_Win = true;
+		return;
+	}
+	m_pText->set(string("Now entering: ") + map_name);
+
+    //auto mat = make_shared<MeshMaterial>("items.png", m_pCache);
+
+    //auto mesh = make_shared<Mesh>(
+    //    make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
+    //    vector<shared_ptr<IMeshModifier>>{
+    //        make_shared<Wrap>(Prefab::tile_wrap(
+    //            // Y Y (height is tile size for both dims)
+    //            uvec2(16,16),
+    //            // X Y
+    //            uvec2(mat->texture()->size().x, mat->texture()->size().y),
+    //            STAR_LEVELS[0]
+    //        ))
+    //    }, mat
+    //);
+    //add(mesh);
     
-    // TEMP: just for jam
+    //// TEMP: just for jam
+    /*
     auto mapname = m_pQor->args().value("map");
     if(mapname != "3"){
         if(mapname == "1")
             mapname = "House";
         else if(mapname == "2")
             mapname = "Backyard";
+
+        m_pText->set(string("Now entering: ") + mapname);
         
-        m_pCanvas->text(
-            string("Now entering: ") + mapname,
-            Color::white(),
-            vec2(sw/2.0f, sh/2.0f),
-            Canvas::Align::CENTER
-        );
+        //m_pCanvas->text(
+        //    string("Now entering: ") + mapname,
+        //    Color::white(),
+        //    vec2(sw/2.0f, sh/2.0f),
+        //    Text::Align::CENTER
+        //);
     }else{
-        m_pCanvas->text(
-            "Thanks for playing!",
-            Color::white(),
-            vec2(sw/2.0f, sh/4.0f),
-            Canvas::Align::CENTER
-        );
-        m_pCanvas->text(
-            "To be continued...",
-            Color::white(),
-            vec2(sw/2.0f, sh/2.0f),
-            Canvas::Align::CENTER
-        );
-        m_pCanvas->text(
-            "Created by Grady O'Connell, Kevin Nelson, Mark McDaniel",
-            Color::white(),
-            vec2(sw/2.0f, 3.0f*sh/4.0f),
-            Canvas::Align::CENTER
-        );
+        
+        //m_pCanvas->text(
+        //    "Thanks for playing!",
+        //    Color::white(),
+        //    vec2(sw/2.0f, sh/4.0f),
+        //    Text::CENTER
+        //);
+        //m_pCanvas->text(
+        //    "To be continued...",
+        //    Color::white(),
+        //    vec2(sw/2.0f, sh/2.0f),
+        //    Text::CENTER
+        //);
+        //m_pCanvas->text(
+        //    "Created by Grady O'Connell, Kevin Nelson, Mark McDaniel",
+        //    Color::white(),
+        //    vec2(sw/2.0f, 3.0f*sh/4.0f),
+        //    Text::CENTER
+        //);
 
         
-        m_Win = true;
+    //    m_Win = true;
     }
-    m_pRoot->add(m_pCanvas);
+    //m_pRoot->add(m_pCanvas);
+    */
+
+    auto ps = m_pQor->session()->module<Persistence>("persistence");
+    m_Stars = ps->stars;
+    m_MaxStars = ps->max_stars;
 }
 
 
@@ -114,6 +171,8 @@ void Pregame :: enter() {
     m_pPipeline->winding(true);
     m_pPipeline->bg_color(Color::black());
     m_pInput->relative_mouse(false);
+
+    Sound::play(m_pCamera.get(), "starpop.wav", m_pResources);
 }
 
 

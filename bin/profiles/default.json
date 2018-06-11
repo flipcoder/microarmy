@@ -3,10 +3,15 @@
     "sensitivity": 0.5,
     "input": {
         "binds": {
-            "up": "up",
-            "left": "left",
-            "right": "right",
-            "down": "down",
+            "w": "up",
+            "a": "left",
+            "d": "right",
+            "s": "down",
+            "8": "NoEnemyDamage",
+            "9": "NoFatalObjects",
+            "0": "God",
+            "PageUp": "NextLevel",
+            "PageDown": "PreviousLevel",
             "z": [
                 "shoot",
                 "back"
@@ -14,7 +19,11 @@
             "x": [
                 "jump",
                 "select"
-            ]
+            ],
+            "i": "aimup",
+            "k": "aimdown",
+            "j": "aimleft",
+            "l": "aimright"
         }
     }
 }

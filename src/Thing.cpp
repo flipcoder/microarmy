@@ -19,6 +19,7 @@ const std::vector<std::string> Thing :: s_TypeNames({
     // objects
     "spring",
     "door",
+    "checkpoint",
 
     "light",
 });
@@ -69,9 +70,7 @@ void Thing :: initialize() {
     const float item_dist = 200.0f;
     const float glow = 1.0f;
 
-    if (m_ThingID == Thing::STAR) {
-        //m_pPlaceholder->visible(false);
-    
+    if (m_ThingID == Thing::STAR) {    
         auto l = make_shared<Light>();
         string type = config()->at<string>("type");
 
@@ -146,10 +145,25 @@ unsigned Thing :: get_id(const std::shared_ptr<Meta>& config) {
     return std::distance(s_TypeNames.begin(), itr);
 }
 
+void Thing :: cb_touch_player(Node* player_node, Node* thing_node) {
+//    auto thing = (Thing*)thing_node;
+//    auto player = (Player*)player_node->parent();
+//    if (thing->id() == Thing::CHECKPOINT) {
+//       player->god(true);
+//    }
+}
+
+void Thing :: cb_untouch_player(Node* player_node, Node* thing_node) {
+    //auto thing = (Thing*) thing_node;
+    //auto player = (Player*)player_node->parent();
+    //if (thing->id() == Thing::CHECKPOINT) {
+    //   player->god(false);
+    //}
+}
 
 void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     auto thing = (Thing*) thing_node;
-
+    auto player = player_node->config()->at<Player*>("player");
     // Copy mesh from maptile to thing
 
     if (thing->id() == Thing::STAR and thing->m_Collidable) {
@@ -195,9 +209,9 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
     } else if (thing->id() == Thing::HEART) {
         if (thing->placeholder()->visible()) {
             thing->sound("pickup.wav");
+            player->heal(10);
             thing->visible(false);
             thing->placeholder()->visible(false);
-
             thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
                 thing->visible(true);
                 thing->placeholder()->visible(true);
@@ -208,11 +222,11 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
             thing->sound("pickup.wav");
             thing->visible(false);
             thing->placeholder()->visible(false);
-
-            thing->m_ResetCon = thing->game()->on_reset.connect([thing]{
+            thing->m_ResetCon = thing->game()->on_reset.connect([thing] {
                 thing->visible(true);
                 thing->placeholder()->visible(true);
             });
+
             player_node->parent()->event("battery");
         }
     } else if (thing->id() == Thing::SPRING) {
@@ -260,6 +274,8 @@ void Thing :: cb_to_player(Node* player_node, Node* thing_node) {
                 thing->m_pGame->event("stardoor");
             }
         }
+    } else if (thing->id() == Thing::CHECKPOINT) {
+       thing->m_pGame->checkpoint(thing->m_pPlaceholder);
     }
 }
 

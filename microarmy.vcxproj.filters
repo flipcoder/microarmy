@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lib">
+      <UniqueIdentifier>{3C8C880B-A895-887C-3111-9F7C9D19947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor">
+      <UniqueIdentifier>{5D774779-C956-C614-D26E-51EB3ECD2C76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\Qor">
+      <UniqueIdentifier>{FE0AD934-6AC0-512A-F3B4-4B015F69482E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib">
+      <UniqueIdentifier>{037DD934-6F32-522A-F826-4C0164DB482E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit">
+      <UniqueIdentifier>{7AE1A1CF-E66C-0F94-EF7D-92885B886B94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit">
+      <UniqueIdentifier>{71A965A8-DD0A-43B6-6678-8968D2D87975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\args">
+      <UniqueIdentifier>{2DDB77F2-1900-C772-424B-AC022ECFC590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\async">
+      <UniqueIdentifier>{7E197441-EADB-A7CB-338C-36589F8D80A9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\cache">
+      <UniqueIdentifier>{540D8E41-C0CF-C1CB-0980-505875819AA9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\factory">
+      <UniqueIdentifier>{D8363CC4-4444-6AAA-CD2A-669539373661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\freq">
+      <UniqueIdentifier>{CE987AF2-BABD-C972-E308-AF02CF8CC890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\fs">
+      <UniqueIdentifier>{59D52F67-45CF-58B9-2E3C-EFC91AD5BE25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\log">
+      <UniqueIdentifier>{E2992A4D-4ED1-72E4-57DB-D607C39199DD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\math">
+      <UniqueIdentifier>{0A297EF2-F64D-CD72-1F99-B2020B1DCC90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\meta">
+      <UniqueIdentifier>{073A7EF2-F35E-CD72-1CAA-B202082ECC90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\net">
+      <UniqueIdentifier>{27A12A4D-93D8-72E4-9CE2-D607089999DD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Qor\lib\kit\kit\reactive">
+      <UniqueIdentifier>{33A5E68C-1F60-D638-C817-4F83B4B120C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\Qor\Qor\Actuation.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Audio.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\BasicPartitioner.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\BasicState.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Camera.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Canvas.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Common.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Console.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Filesystem.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\GLTask.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Graphics.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Grid.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Headless.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ILight.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\IPartitioner.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\IPhysical.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\IPreloadable.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\IRealtime.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\IRenderable.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ISceneGraph.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ITexture.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Info.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Input.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Interpreter.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Light.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\LoadingState.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Material.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Menu.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Mesh.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Net.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Node.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\NodeInterface.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Nodes.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Particle.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Pass.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Physics.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\PhysicsObject.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Pipeline.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\PipelineShader.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\PlayerInterface2D.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\PlayerInterface3D.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Profile.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\PythonBindings.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Qor.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\RenderBuffer.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Resource.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ResourceCache.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ResourceLocator.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Scene.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ScreenFader.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ScriptState.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Session.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Shader.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ShadowBuffer.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Sound.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Sprite.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\State.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\StateMachine.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\StateManager.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\TaskHandler.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Text.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Texture.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\TileMap.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Tracker.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Util.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\VertexBuffer.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\ViewModel.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\Qor\Window.h">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\args\args.h">
+      <Filter>lib\Qor\lib\kit\kit\args</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\async.h">
+      <Filter>lib\Qor\lib\kit\kit\async</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\async_fstream.h">
+      <Filter>lib\Qor\lib\kit\kit\async</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\channel.h">
+      <Filter>lib\Qor\lib\kit\kit\async</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\mx.h">
+      <Filter>lib\Qor\lib\kit\kit\async</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\async\task.h">
+      <Filter>lib\Qor\lib\kit\kit\async</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\cache\cache.h">
+      <Filter>lib\Qor\lib\kit\kit\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\cache\icache.h">
+      <Filter>lib\Qor\lib\kit\kit\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\factory\factory.h">
+      <Filter>lib\Qor\lib\kit\kit\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\factory\ifactory.h">
+      <Filter>lib\Qor\lib\kit\kit\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\freq\animation.h">
+      <Filter>lib\Qor\lib\kit\kit\freq</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\freq\freq.h">
+      <Filter>lib\Qor\lib\kit\kit\freq</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\fs\fs.h">
+      <Filter>lib\Qor\lib\kit\kit\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\kit.h">
+      <Filter>lib\Qor\lib\kit\kit</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\log\errors.h">
+      <Filter>lib\Qor\lib\kit\kit\log</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\log\log.h">
+      <Filter>lib\Qor\lib\kit\kit\log</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\angle.h">
+      <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\common.h">
+      <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\matrixops.h">
+      <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\matrixstack.h">
+      <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\math\vectorops.h">
+      <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\meta\meta.h">
+      <Filter>lib\Qor\lib\kit\kit\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\meta\schema.h">
+      <Filter>lib\Qor\lib\kit\kit\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\net\net.h">
+      <Filter>lib\Qor\lib\kit\kit\net</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\reactive\reactive.h">
+      <Filter>lib\Qor\lib\kit\kit\reactive</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Qor\lib\kit\kit\reactive\signal.h">
+      <Filter>lib\Qor\lib\kit\kit\reactive</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HUD.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Info.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Intro.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Monster.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Persistence.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pregame.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Thing.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\Qor\Qor\Actuation.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Audio.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\BasicPartitioner.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\BasicState.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Camera.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Canvas.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Console.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Filesystem.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Graphics.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Grid.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Headless.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Input.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Interpreter.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Light.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\LoadingState.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Material.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Menu.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Mesh.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Net.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Node.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\NodeInterface.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Particle.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Pass.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Physics.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Pipeline.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\PipelineShader.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\PlayerInterface2D.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\PlayerInterface3D.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Profile.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Qor.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Resource.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\ResourceCache.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Scene.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\ScreenFader.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\ScriptState.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Session.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Shader.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\ShadowBuffer.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Sound.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Sprite.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\StateMachine.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Text.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Texture.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\TileMap.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Tracker.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Util.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\ViewModel.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\Qor\Window.cpp">
+      <Filter>lib\Qor\Qor</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\lib\kit\kit\args\args.cpp">
+      <Filter>lib\Qor\lib\kit\kit\args</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\lib\kit\kit\log\log.cpp">
+      <Filter>lib\Qor\lib\kit\kit\log</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Qor\lib\kit\kit\math\matrixstack.cpp">
+      <Filter>lib\Qor\lib\kit\kit\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HUD.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Intro.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Monster.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pregame.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Thing.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
