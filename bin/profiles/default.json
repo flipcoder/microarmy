@@ -20,10 +20,10 @@
                 "jump",
                 "select"
             ],
-            "up": "aimup",
-            "down": "aimdown",
-            "left": "aimleft",
-            "right": "aimright"
+            "i": "aimup",
+            "k": "aimdown",
+            "j": "aimleft",
+            "l": "aimright"
         }
     }
 }

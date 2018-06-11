@@ -11,7 +11,6 @@
 using namespace std;
 using namespace kit;
 
-
 int main(int argc, char* argv[]) {
     
     Args args(argc, (const char**)argv);
@@ -19,6 +18,7 @@ int main(int argc, char* argv[]) {
     args.set("title", "Micro Army");
     
     Texture::DEFAULT_FLAGS = Texture::TRANS | Texture::MIPMAP;
+    Sound::SOUND_GAIN = 0.1f;
     
 #ifndef DEBUG
     try {

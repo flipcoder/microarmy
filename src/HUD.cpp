@@ -25,17 +25,17 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache, Pla
     );
 
     m_pStarText = std::make_shared<Text>(m_pFont);
-    m_pLivesText = std::make_shared<Text>(m_pFont);
     m_pHealthText = std::make_shared<Text>(m_pFont);
+    m_pLivesText = std::make_shared<Text>(m_pFont);
     m_pGodText = std::make_shared<Text>(m_pFont);
 
-    m_pLivesText->position(glm::vec3(sw / 2.0f, 0.0f, 0.0f));
-    m_pHealthText->position(glm::vec3(sw, 0.0f, 0.0f));
-    m_pGodText->position(glm::vec3(0.0f, sh *.1, 0.2f));
+    m_pHealthText->position(vec3(sw / 2.0f, 0.0f, 0.0f));
+    m_pLivesText->position(vec3(sw, 0.0f, 0.0f));
+    m_pGodText->position(vec3(0.0f, sh *.1, 0.2f));
 
     m_pStarText->align(Text::LEFT);
-    m_pLivesText->align(Text::CENTER);
-    m_pHealthText->align(Text::RIGHT);
+    m_pHealthText->align(Text::CENTER);
+    m_pLivesText->align(Text::RIGHT);
     m_pGodText->align(Text::LEFT);
 
     add(m_pStarText);
@@ -54,27 +54,26 @@ HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache, Pla
     m_pHeart = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
         vector<shared_ptr<IMeshModifier>>{
-        make_shared<Wrap>(Prefab::tile_wrap(
-            // Y Y (height is tile size for both dims)
-            uvec2(16, 16),
-            // X Y
-            uvec2(mat->texture()->size().x, mat->texture()->size().y),
-            1
-        ))
-    }, mat
-        );
+            make_shared<Wrap>(Prefab::tile_wrap(
+                // Y Y (height is tile size for both dims)
+                uvec2(16, 16),
+                // X Y
+                uvec2(mat->texture()->size().x, mat->texture()->size().y),
+                1
+            ))
+        }, mat
+    );
+    add(m_pHeart);
 
     mat = make_shared<MeshMaterial>("guy-jump.png", m_pCache);
     m_pGuy = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(vec2(sw / 24, sw / 24))),
         vector<shared_ptr<IMeshModifier>>{
-        make_shared<Wrap>(Prefab::quad_wrap(
-            glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f)
-        ))
+            make_shared<Wrap>(Prefab::quad_wrap(
+                vec2(0.0f, 1.0f), vec2(1.0f, 0.0f)
+            ))
         }, mat
     );
-    
-    add(m_pHeart);
     add(m_pGuy);
 }
 
@@ -99,7 +98,7 @@ void HUD :: redraw() {
     //m_pCanvas->dirty(true);
     
     m_pStarText->set("  " + to_string(m_Stars) + "/" + to_string(m_MaxStars));
-    m_pHealthText->set(to_string(m_pPlayer->health()) + "%");
+    m_pHealthText->set(to_string(m_pPlayer->health()));
     m_pLivesText->set(" " + to_string(m_pPlayer->lives()));
     
     if (m_pPlayer->god())
@@ -110,15 +109,17 @@ void HUD :: redraw() {
     m_pGodText->redraw();
     m_pLivesText->redraw();
     m_pHealthText->redraw();
-    //m_pGuy->position(glm::vec3(sw/2.0f - m_pLivesText->size().x, 0.0f, 0.0f));
-    //m_pHeart->position(glm::vec3(sw - m_pHealthText->size().x - 64.0f, 0.0f, 0.0f));
+    m_pHeart->position(vec3(sw / 2.0 - m_pHealthText->size().x/2.0f - m_pHeart->box().size().x, 0.0f, 0.0f));
+    m_pGuy->position(vec3(sw - m_pLivesText->size().x - m_pGuy->box().size().x, 0.0f, 0.0f));
+    //m_pGuy->position(vec3(sw/2.0f - m_pLivesText->size().x, 0.0f, 0.0f));
+    //m_pHeart->position(vec3(sw - m_pHealthText->size().x - 64.0f, 0.0f, 0.0f));
 }
 
 void HUD :: logic_self(Freq::Time) {
     if (m_bDirty) {
         redraw();
 
-        //m_pHeart->position(m_pHealthText->position() - glm::vec3(
+        //m_pHeart->position(m_pHealthText->position() - vec3(
 
         //    m_pHealthText->children()[0]->box().size().x, 0.0f, 0.0f
 
