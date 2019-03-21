@@ -18,7 +18,7 @@ Monster :: Monster(
     TileMap* map,
     BasicPartitioner* partitioner,
     Freq::Timeline* timeline,
-    Cache<Resource, string>* resources
+    ResourceCache* resources
 ):                                                  /* Initializers */
     Node(config),                                   // Calls the Node Constructor
     m_pPlaceholder(placeholder),                    // Set Monster Placeholder

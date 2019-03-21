@@ -32,7 +32,7 @@ Thing :: Thing( // Parameters
     TileMap* map,
     BasicPartitioner* partitioner,
     Freq::Timeline* timeline,
-    Cache<Resource, std::string>* resources
+    ResourceCache* resources
 ): // Initialize Variables
     Node(config),
     m_pPlaceholder(placeholder),

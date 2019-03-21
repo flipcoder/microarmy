@@ -106,7 +106,7 @@ class Game: public State {
 
         // Pointers
         Qor* m_pQor = nullptr;
-        Cache<Resource, std::string>* m_pResources = nullptr;
+        ResourceCache* m_pResources = nullptr;
         Input* m_pInput = nullptr;
         Pipeline* m_pPipeline = nullptr;
         BasicPartitioner* m_pPartitioner = nullptr;

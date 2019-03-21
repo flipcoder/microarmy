@@ -14,7 +14,7 @@ class HUD: public Node {
         HUD(
             Window* window,
             Input* input,
-            Cache<Resource,std::string>* cache,
+            ResourceCache* cache,
             Player* player
         );
 
@@ -44,7 +44,7 @@ class HUD: public Node {
         Window* m_pWindow = nullptr;
         Input* m_pInput = nullptr;
         //std::shared_ptr<Canvas> m_pCanvas;
-        Cache<Resource, std::string>* m_pCache;
+        ResourceCache* m_pCache;
         std::shared_ptr<Mesh> m_pMesh;
 		std::shared_ptr<Mesh> m_pHeart;
 		std::shared_ptr<Mesh> m_pGuy;

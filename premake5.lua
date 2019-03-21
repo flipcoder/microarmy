@@ -5,6 +5,7 @@ workspace("microarmy")
     configurations {"Debug", "Release"}
 
         defines {
+            "META_SHARED",
             "GLM_FORCE_RADIANS",
             "GLM_ENABLE_EXPERIMENTAL",
             "GLM_FORCE_CTOR_INIT",
@@ -197,12 +198,9 @@ workspace("microarmy")
 
         -- Project Files
         files {
-            "src/**.h",
             "src/**.cpp",
-            "lib/Qor/**.h",
-            "lib/Qor/**.cpp",
-            "lib/Qor/lib/kit/**.h",
-            "lib/Qor/lib/kit/**.cpp"
+            "lib/Qor/Qor/**.cpp",
+            "lib/Qor/lib/kit/kit/**.cpp"
         }
 
         -- Exluding Files
@@ -223,8 +221,9 @@ workspace("microarmy")
         }
         
         includedirs {
-            "lib/Qor",
-            "lib/Qor/lib/kit",
+            "lib/Qor/Qor",
+            "lib/Qor/lib/kit/kit",
+            "lib/Qor/lib/kit/lib/local_shared_ptr",
             "/usr/local/include/",
             "/usr/include/bullet/",
             "/usr/include/rapidxml/",

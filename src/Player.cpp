@@ -10,7 +10,7 @@ using namespace glm;
 
 Player :: Player(
     std::string fn,
-    Cache<Resource, std::string>* resources,
+    ResourceCache* resources,
     Camera* camera,
     Controller* ctrl,
     Freq::Timeline* timeline,

@@ -6,7 +6,7 @@ using namespace glm;
 
 const std::vector<int> HUD :: STAR_LEVELS = { 7, 6, 2 };
 
-HUD :: HUD(Window* window, Input* input, Cache<Resource,std::string>* cache, Player* player):
+HUD :: HUD(Window* window, Input* input, ResourceCache* cache, Player* player):
     m_pWindow(window),
     m_pInput(input),
     m_pCache(cache),

@@ -58,7 +58,7 @@ void Intro :: preload() {
     m_pMusic = m_pQor->make<Sound>("menu.ogg");
     m_pRoot->add(m_pMusic);
 
-    auto mat = make_shared<Material>("title.png", m_pResources);
+    auto mat = make_shared<Material>("splash.png", m_pResources);
     auto bg = make_shared<Mesh>(
         make_shared<MeshGeometry>(Prefab::quad(vec2(sw, sh), vec2(0.0f, 0.0f))),
         vector<shared_ptr<IMeshModifier>>{

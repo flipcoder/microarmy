@@ -16,7 +16,7 @@ class Player: public Node {
         // Constructor
         Player(
             std::string fn,
-            Cache<Resource, std::string>* resources,
+            ResourceCache* resources,
             Camera* camera,
             Controller* ctrl,
             Freq::Timeline* timeline,
@@ -96,7 +96,7 @@ class Player: public Node {
         Controller* m_pController;
         IPartitioner* m_pPartitioner;
         Freq::Timeline* m_pTimeline;
-        Cache<Resource, std::string>* m_pResources;
+        ResourceCache* m_pResources;
 
         std::shared_ptr<Sprite> m_pChar;
         std::shared_ptr<Sprite> m_pProne;

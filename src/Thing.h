@@ -42,7 +42,7 @@ class Thing: public Node {
             TileMap* map,
             BasicPartitioner* partitioner,
             Freq::Timeline* timeline,
-            Cache<Resource, std::string>* resources
+            ResourceCache* resources
         );
 
 
@@ -114,7 +114,7 @@ class Thing: public Node {
 
 
         // Pointers
-        Cache<Resource, std::string>* m_pResources = nullptr;
+        ResourceCache* m_pResources = nullptr;
         MapTile* m_pPlaceholder = nullptr;
         BasicPartitioner* m_pPartitioner = nullptr;
         Game* m_pGame = nullptr;
